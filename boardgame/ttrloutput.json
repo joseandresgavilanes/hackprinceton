@@ -1,0 +1,244 @@
+{
+  "game": "Ticket to Ride: London",
+  "edition": "Days of Wonder, 2019",
+  "organizer": "boxes",
+  "selection_reason": "6 sets exceed the divider limit of 5.",
+  "divider_set_limit": 5,
+  "set_count": 6,
+  "physical_fit_verified": false,
+  "box": {
+    "dimensions_mm": {
+      "length": 226.0,
+      "width": 226.0,
+      "height": 44.0
+    },
+    "basis": "estimated_from_external",
+    "source_url": "https://boardgamegeek.com/boardgameversion/451831/english-edition-2019",
+    "explanation": "BGG lists the 2019 English edition external dimensions as 230 \u00d7 230 \u00d7 47 mm. Internal dimensions were not found. Estimated internal by subtracting 4 mm total from each of length and width (226 \u00d7 226 mm) and 3 mm from height (44 mm), per standard assumption. These are estimates only."
+  },
+  "sets": [
+    {
+      "name": "Player 1 Bus Set (17 buses + 1 Scoring Marker)",
+      "reason": "Each player owns 17 buses of their colour and one matching scoring marker. Grouping per player enables quick setup and independent access during play. The set is physically heterogeneous (bus pieces and a cylinder), so loose storage is appropriate.",
+      "storage_style": "loose",
+      "members": [
+        {
+          "component_id": "component_2",
+          "quantity": 17,
+          "name": "Plastic Bus piece",
+          "shape": "rectangular_prism",
+          "dimensions_mm": {
+            "length": 24.2,
+            "width": 5.5,
+            "height": 15.1
+          }
+        },
+        {
+          "component_id": "component_5",
+          "quantity": 1,
+          "name": "Scoring Marker",
+          "shape": "cylinder",
+          "dimensions_mm": {
+            "length": 14.7,
+            "width": 14.7,
+            "height": 13.3
+          }
+        }
+      ]
+    },
+    {
+      "name": "Player 2 Bus Set (17 buses + 1 Scoring Marker)",
+      "reason": "Same rationale as Player 1 set. Each player's coloured buses and matching scoring marker are stored together for quick setup.",
+      "storage_style": "loose",
+      "members": [
+        {
+          "component_id": "component_2",
+          "quantity": 17,
+          "name": "Plastic Bus piece",
+          "shape": "rectangular_prism",
+          "dimensions_mm": {
+            "length": 24.2,
+            "width": 5.5,
+            "height": 15.1
+          }
+        },
+        {
+          "component_id": "component_5",
+          "quantity": 1,
+          "name": "Scoring Marker",
+          "shape": "cylinder",
+          "dimensions_mm": {
+            "length": 14.7,
+            "width": 14.7,
+            "height": 13.3
+          }
+        }
+      ]
+    },
+    {
+      "name": "Player 3 Bus Set (17 buses + 1 Scoring Marker)",
+      "reason": "Same rationale as Player 1 set.",
+      "storage_style": "loose",
+      "members": [
+        {
+          "component_id": "component_2",
+          "quantity": 17,
+          "name": "Plastic Bus piece",
+          "shape": "rectangular_prism",
+          "dimensions_mm": {
+            "length": 24.2,
+            "width": 5.5,
+            "height": 15.1
+          }
+        },
+        {
+          "component_id": "component_5",
+          "quantity": 1,
+          "name": "Scoring Marker",
+          "shape": "cylinder",
+          "dimensions_mm": {
+            "length": 14.7,
+            "width": 14.7,
+            "height": 13.3
+          }
+        }
+      ]
+    },
+    {
+      "name": "Player 4 Bus Set (17 buses + 1 Scoring Marker)",
+      "reason": "Same rationale as Player 1 set.",
+      "storage_style": "loose",
+      "members": [
+        {
+          "component_id": "component_2",
+          "quantity": 17,
+          "name": "Plastic Bus piece",
+          "shape": "rectangular_prism",
+          "dimensions_mm": {
+            "length": 24.2,
+            "width": 5.5,
+            "height": 15.1
+          }
+        },
+        {
+          "component_id": "component_5",
+          "quantity": 1,
+          "name": "Scoring Marker",
+          "shape": "cylinder",
+          "dimensions_mm": {
+            "length": 14.7,
+            "width": 14.7,
+            "height": 13.3
+          }
+        }
+      ]
+    },
+    {
+      "name": "Transportation Card Deck",
+      "reason": "44 Transportation cards form an independently drawn communal deck and must be kept separate from Destination Ticket cards. Card dimensions (67.7 \u00d7 44.1 mm) are compatible for a card_stack slot.",
+      "storage_style": "card_stack",
+      "members": [
+        {
+          "component_id": "component_3",
+          "quantity": 44,
+          "name": "Transportation card",
+          "shape": "rectangular_prism",
+          "dimensions_mm": {
+            "length": 67.7,
+            "width": 44.1,
+            "height": 0.4
+          }
+        }
+      ]
+    },
+    {
+      "name": "Destination Ticket Card Deck",
+      "reason": "20 Destination Ticket cards form a separate independently drawn communal deck. Card dimensions (69.0 \u00d7 43.5 mm) are nearly identical to Transportation cards but must never be mixed with them per gameplay rules. Stored in its own card_stack slot.",
+      "storage_style": "card_stack",
+      "members": [
+        {
+          "component_id": "component_4",
+          "quantity": 20,
+          "name": "Destination Ticket card",
+          "shape": "rectangular_prism",
+          "dimensions_mm": {
+            "length": 69.0,
+            "width": 43.5,
+            "height": 0.4
+          }
+        }
+      ]
+    }
+  ],
+  "excluded": [
+    {
+      "component_id": "component_1",
+      "quantity": 1,
+      "reason": "Large flat board map (236.6 \u00d7 168.9 \u00d7 4.0 mm); too large for a compartment and placed directly in the box base or under other components, not in a subdivided slot.",
+      "name": "Board map of the London transportation network",
+      "shape": "rectangular_prism",
+      "dimensions_mm": {
+        "length": 236.6,
+        "width": 168.9,
+        "height": 4.0
+      }
+    },
+    {
+      "component_id": "component_6",
+      "quantity": 1,
+      "reason": "Rule leaflet/rulebook (214.7 \u00d7 102.3 \u00d7 12.1 mm); oversized reference document stored flat in the box, not in a subdivided compartment.",
+      "name": "Rule leaflet (rulebook)",
+      "shape": "rectangular_prism",
+      "dimensions_mm": {
+        "length": 214.7,
+        "width": 102.3,
+        "height": 12.1
+      }
+    }
+  ],
+  "warnings": [
+    "Bus pieces are split across four player sets by colour inferred from gameplay rules (17 buses per player \u00d7 4 players = 68 total). The inventory does not explicitly enumerate colours; this split assumes four distinct colours as confirmed by the rulebook.",
+    "Scoring Markers are cylinders (\u220514.7 \u00d7 H13.3 mm); stack storage would require matching cylindrical slots and is not practical when combined with bus pieces, so loose storage is used for each player kit.",
+    "Transportation cards (67.7 \u00d7 44.1 mm) and Destination Ticket cards (69.0 \u00d7 43.5 mm) have nearly identical dimensions. Physical separation into distinct labelled compartments is essential to prevent mixing at setup.",
+    "Estimated internal box dimensions (226 \u00d7 226 \u00d7 44 mm) are approximations derived from BGG external dimensions for the 2019 English edition (230 \u00d7 230 \u00d7 47 mm) using a standard 4 mm/3 mm wall assumption. Actual internal clearance may differ. No measured internal dimensions were found.",
+    "A 2021 English edition exists at a different box size (200 \u00d7 200 \u00d7 47 mm external). The dimensions and component groupings here apply only to the 2019 edition (product code 720061).",
+    "The board map (236.6 mm long) slightly exceeds the estimated internal box length (226 mm), suggesting the board may be stored diagonally or the internal estimate is slightly off. This should be verified against the actual box."
+  ],
+  "research_notes": "Here are the concise research notes for **Ticket to Ride: London** (Days of Wonder, 2019 English edition):\n\n---\n\n## Research Notes: Ticket to Ride: London (Days of Wonder, 2019)\n\n---\n\n### 1. Edition Identity\n\n\nThe English edition 2019 was published by Days of Wonder, with product code 720061, released July 2019.\n \nThe game was designed by Alan R. Moon, supports 2\u20134 players, and plays in 10\u201315 minutes.\n\n\n---\n\n### 2. Box Dimensions\n\n**Internal dimensions: NOT FOUND.** No measured internal dimensions were located in any source.\n\n**External dimensions (BGG versions page):** \nBGG lists the English edition 2019 (product code 720061) at **9.06 \u00d7 9.06 \u00d7 1.85 inches** (approximately **230 \u00d7 230 \u00d7 47 mm**).\n These are **external** dimensions reported by BGG and should not be treated as internal dimensions. No third-party measured internal dimensions were found. \u26a0\ufe0f Do not invent internal clearance from these figures.\n\n> **Note on other editions:** \nA 2021 English edition exists at a different size: 7.87 \u00d7 7.87 \u00d7 1.85 inches (200 \u00d7 200 \u00d7 47 mm).\n The user's specified edition is the 2019 release; use the 230 \u00d7 230 \u00d7 47 mm external figure for that edition only.\n\n---\n\n### 3. Component Inventory (as supplied \u2014 not modified)\n\n| ID | Component | Qty | Dimensions (L \u00d7 W \u00d7 H mm) |\n|---|---|---|---|\n| component_1 | Board map | 1 | 236.6 \u00d7 168.9 \u00d7 4.0 |\n| component_2 | Plastic Bus piece | 68 | 24.2 \u00d7 5.5 \u00d7 15.1 |\n| component_3 | Transportation card | 44 | 67.7 \u00d7 44.1 \u00d7 0.4 |\n| component_4 | Destination Ticket card | 20 | 69.0 \u00d7 43.5 \u00d7 0.4 |\n| component_5 | Scoring Marker | 4 | \u230014.7 \u00d7 H13.3 (cylinder) |\n| component_6 | Rule leaflet | 1 | 214.7 \u00d7 102.3 \u00d7 12.1 |\n\n> **Cross-check against rulebook:** \nThe official rulebook confirms the box contains: 44 Transportation cards (8 multi-coloured Bus cards and 6 cards each of blue, green, black, pink, yellow, and orange), 20 Destination Ticket cards, 4 Scoring Markers, plastic Buses, and the rule leaflet.\n The supplied inventory matches.\n\n---\n\n### 4. Component Ownership (Player-Assigned vs. Shared)\n\n**Player-owned (assigned at setup, kept separate per player):**\n- **Plastic Bus pieces:** \nEach player starts with a supply of 17 double-decker buses.\n With 68 total buses and up to 4 players, all 68 buses are pre-divided by colour into 4 player sets of 17. Each set belongs exclusively to one player throughout the game. *(Inference: buses must be separable by colour for setup and storage.)*\n- **Scoring Markers:** One per player. \nEach player takes a set of coloured plastic buses along with its matching Scoring Marker.\n Each Scoring Marker is paired with and owned by its player.\n- **Destination Ticket cards (hand):** \nPlayers must keep their Destination Ticket cards secret until the end of the game.\n Cards in hand are privately held by each player during play.\n\n**Shared / common pool:**\n- **Board map:** Placed centrally, shared by all.\n- **Transportation cards:** \nTransportation cards are shuffled and two are dealt to each player as a starting hand; the remaining deck is placed near the board with five cards flipped face up.\n The deck and face-up display are a shared communal draw pool.\n- **Destination Ticket cards (deck):** \nThe Destination Ticket deck is placed next to the board\n as a shared draw pile.\n\n---\n\n### 5. Setup Distribution\n\n\nEach player starts with a supply of 17 double-decker buses, two transportation cards in hand, and one or two destination tickets.\n\n\nSpecifically at setup:\n- Each player receives their **17 coloured Bus pieces** and their **matching Scoring Marker**.\n- \nTransportation cards are shuffled and two are dealt to each player as a starting hand.\n\n- \nThe Destination Ticket cards are shuffled and two are dealt to each player.\n \nIf a player chooses to keep only one, the returned card is placed on the bottom of the Destination Ticket deck.\n\n- The remaining Transportation card deck and Destination Ticket deck both sit beside the board.\n\n---\n\n### 6. Gameplay Roles & Turn Actions\n\n\nOn a turn, a player either: (a) draws two transportation cards from the deck or the display of five face-up cards (or takes one face-up multi-coloured Bus card, which counts as all six colours); (b) claims a route on the board by discarding cards that match the colour of the route (with any matching set allowed for grey routes); or (c) draws two Destination Ticket cards and keeps at least one.\n\n\n\nTicket to Ride: London introduces Districts, which are represented on the board by numbers between each route.\n \nA district consists of 2\u20134 locations, and a player scores 1\u20135 points for a district if they link all of its locations to one another with their buses.\n\n\nAll players share **identical roles** \u2014 there are no asymmetric player roles or special powers. This is a symmetric competitive game.\n\n---\n\n### 7. Deck Separation Requirements\n\nThere are **two distinct decks that must remain separate** at all times:\n\n| Deck | Cards | Must Stay Separate From |\n|---|---|---|\n| **Transportation cards** | 44 cards | Destination Ticket cards |\n| **Destination Ticket cards** | 20 cards | Transportation cards |\n\n**Evidence:** \nThe Transportation card deck is placed near the board with five cards flipped face up.\n \nThe Destination Ticket deck is placed separately next to the board.\n These two decks serve entirely different draw mechanics and must never be combined. Card dimensions are nearly identical (Transportation: 67.7 \u00d7 44.1 mm; Destination Ticket: 69.0 \u00d7 43.5 mm), so physical separation in storage is essential to prevent mixing.\n\n> **Storage design implication:** These two decks should be stored in clearly separated compartments or bags, despite the cards being nearly the same size.\n\n---\n\n### 8. Simultaneous Independent Access Requirements\n\n| Component | Simultaneous Access Needed? | Reasoning |\n|---|---|---|\n| Plastic Buses (by colour) | **Yes** \u2014 each player accesses their own colour independently | Players place buses from their personal supply on their turn; each set must be accessible without disturbing others |\n| Scoring Markers | **No** \u2014 placed on track at start, not repeatedly drawn from storage | Set out once at game start |\n| Transportation card deck | **No** \u2014 one player draws per turn | Sequential, not simultaneous |\n| Destination Ticket deck | **No** \u2014 one player draws per turn | Sequential, not simultaneous |\n| Board map | **No** \u2014 shared, placed centrally | Single shared component |\n\n**Key storage inference:** Bus pieces by colour need to be individually accessible (4 distinct colour sets). No component type demands simultaneous multi-player access from a central supply mid-game, beyond each player reaching their own bus stash.\n\n---\n\n### 9. Source URLs\n\n- **Official London Rulebook PDF (Days of Wonder CDN):** `https://ncdn0.daysofwonder.com/tickettoride/fr/img/tt_ln_en_rules_2019-04.pdf`\n- **Mirrored Rulebook PDF:** `https://cdn.1j1ju.com/medias/c7/f5/c0-ticket-to-ride-london-rulebook.pdf`\n- **BGG Version Page (English 2019):** `https://boardgamegeek.com/boardgameversion/451831/english-edition-2019`\n- **BGG Versions List:** `https://boardgamegeek.com/boardgame/276894/ticket-to-ride-london/versions`\n- **Sleeve Your Games (component confirmation):** `https://www.sleeveyourgames.com/sleeves/6052/ticket-to-ride-london`\n\n---\n\n### 10. Known Facts vs. Inferences\n\n| Item | Status |\n|---|---|\n| Component list and quantities | \u2705 **Known** \u2014 confirmed against official rulebook |\n| External box dimensions (230 \u00d7 230 \u00d7 47 mm) | \u2705 **Known** \u2014 BGG versions page, cited as external |\n| Internal box dimensions | \u274c **Not found** \u2014 no measured internal data located |\n| Two decks must be separate | \u2705 **Known** \u2014 confirmed by rulebook setup instructions |\n| 17 buses per player, 4 players | \u2705 **Known** \u2014 rulebook and multiple reviews confirm |\n| Bus sets stored separately by colour | \u26a0\ufe0f **Inference** \u2014 logical from player ownership; not explicitly stated as a storage rule |\n| No simultaneous shared supply access mid-game | \u26a0\ufe0f **Inference** \u2014 from turn structure (one action per turn, sequential) |\n",
+  "sources": {
+    "https://opinionatedgamers.com/2026/08/05/dale-yu-review-of-ticket-to-ride-london/": "Dale Yu: Review of Ticket to Ride: London",
+    "https://breakoutcon.com/index.php/boardgame-library/ticket-to-ride-london": "Ticket to Ride: London",
+    "https://www.boardgamebliss.com/products/ticket-to-ride-london": "Ticket to Ride: London",
+    "https://www.nerdly.co.uk/2019/07/12/ticket-to-ride-london-board-game-review/": "'Ticket to Ride London' Board Game Review",
+    "https://www.boardseyeview.net/post/2019/06/18/ticket-to-ride-london": "Ticket to Ride: London",
+    "https://www.sleeveyourgames.com/sleeves/6052/ticket-to-ride-london": "Ticket to Ride: London Card Sleeve Sizes",
+    "https://cdn.1j1ju.com/medias/2c/f9/7f-ticket-to-ride-rulebook.pdf": "Ticket to Ride Rulebook",
+    "https://boardgeekgirl.com/2019/08/15/review-ticket-ride-london/": "Review",
+    "https://www.ebay.de/itm/186647628633": "Zug um Zug LONDON von Alan Moon Days of Wonder Abenteuer Brettspiel 2019-",
+    "https://boardgamegeek.com/boardgame/276894/ticket-to-ride-london/versions": "Ticket to Ride: London",
+    "https://boardgamegeek.com/thread/2262962/ticket-to-ride-upgrades-need-some-dimensions-help": "Ticket to Ride Upgrades / Need Some Dimensions Help",
+    "https://boardgamegeek.com/boardgameversion/451831/english-edition-2019": "Ticket to Ride: London (English edition 2019)",
+    "https://boardgamegeek.com/thread/1306296/box-dimensions": "Box dimensions?",
+    "https://boardgamegeek.com/boardgameversion/389907/english-edition": "Ticket to Ride: Europe",
+    "https://boardgamegeek.com/thread/1891127/box-dimensions": "Box Dimensions?",
+    "https://en.wikipedia.org/wiki/Ticket_to_Ride_(board_game)": "Ticket to Ride (board game)",
+    "https://greatescapeadventures.com/shop/tabletop_games/ticket-to-ride-london/": "Ticket to Ride London - Great Escape Adventures ~ Hobby Shop, Board Games, & Collectibles",
+    "https://www.ebay.de/itm/197316202960": "Zug um Zug: London Brettspiel von Days of Wonder Brandneu in Box-",
+    "https://hexagamers.com/ticket-to-ride-europe-rules-pdf/": "Ticket to Ride Europe Rules PDF \u2014 Official Download + Full Rules Summary",
+    "https://ncdn0.daysofwonder.com/tickettoride/fr/img/tt_ln_en_rules_2019-04.pdf": "A B C D You can claim any open Route on the board, even if it is not connected",
+    "https://www.scribd.com/document/971863117/Ticket-to-Ride-Rules": "Ticket to Ride Game Rules Guide",
+    "https://cdn.1j1ju.com/medias/c7/f5/c0-ticket-to-ride-london-rulebook.pdf": "A B C D You can claim any open Route on the board, even if it is not connected",
+    "https://cdn.svc.asmodee.net/staging-daysofwonder/uploads/2024/07/720128-T2RMC6-Rules-OldWest-EN-2019-1.pdf": "Welcome to Ticket to Ride\u00ae Old West. In this ...",
+    "https://cdn1.daysofwonder.com/tickettoride/en/img/tm_rules_en.pdf": "\u2022 2-5 players \u2022 Ages 8 and up \u2022 30-60 minutes",
+    "https://cdn.1j1ju.com/medias/b2/51/fd-ticket-to-ride-10th-anniversary-rulebook.pdf": "Components \u25c61 Board map of North American train routes \u25c6240 Colored Train Cars",
+    "https://www.ebay.de/itm/334646949025": "Zug um Zug London Brettspiel BRANDNEU VERSIEGELT Days of Wonder -",
+    "https://www.printables.com/model/123338-ticket-to-ride-game-organization-boxes-and-mounts": "Ticket To Ride Game Organization Boxes and Mounts for Art Box by NRTHRNLIGHTS",
+    "https://makerworld.com/en/models/1410707-ticket-to-ride-train-storage-box-card-holder-v2": "Ticket to Ride Train Storage Box & Card Holder V2 - Free 3D Print Model - MakerWorld",
+    "https://www.etsy.com/listing/1885772723/ticket-to-ride-usa-board-game-storage": "Ticket to Ride USA Board Game Storage Box (with Optional Train Tray/storage) - Etsy",
+    "https://www.rpg.net/reviews/archive/18/18702.phtml": "Review of e-Raptor Insert Ticket to Ride - RPGnet RPG Game Index",
+    "https://magicmadhouse.co.uk/e-raptor-box-insert-ticket-to-ride": "Box Insert",
+    "https://www.etsy.com/listing/511770971/ticket-to-ride-storage-box-designed-and": "Ticket to Ride Storage Box: Wooden Organizer for the Base Game, 6 Maps, Cards and Trains - Etsy",
+    "https://3dgo.app/models/printables/123338": "Ticket To Ride Game Organization Boxes and Mounts for Art Box - 3D Printer File",
+    "https://www.printables.com/model/989623-ticket-to-ride-europe-insert-organizer": "Ticket to Ride Europe Insert / Organizer"
+  }
+}

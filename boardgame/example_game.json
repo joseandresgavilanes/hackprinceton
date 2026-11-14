@@ -1,0 +1,14 @@
+{
+  "game": "Hypothetical Battle Game",
+  "edition": null,
+  "internal_box_mm": {"length": 250, "width": 250, "height": 65},
+  "components": [
+    {"id":"red_pawns","name":"Red player pawns","quantity":6,"shape":"cylinder","dimensions_mm":{"length":15,"width":15,"height":25}},
+    {"id":"red_markers","name":"Red player point markers","quantity":3,"shape":"rectangular_prism","dimensions_mm":{"length":10,"width":10,"height":10}},
+    {"id":"blue_pawns","name":"Blue player pawns","quantity":6,"shape":"cylinder","dimensions_mm":{"length":15,"width":15,"height":25}},
+    {"id":"blue_markers","name":"Blue player point markers","quantity":3,"shape":"rectangular_prism","dimensions_mm":{"length":10,"width":10,"height":10}},
+    {"id":"dice","name":"Shared dice","quantity":4,"shape":"rectangular_prism","dimensions_mm":{"length":16,"width":16,"height":16}},
+    {"id":"battle_tokens","name":"Shared battle tokens","quantity":20,"shape":"cylinder","dimensions_mm":{"length":20,"width":20,"height":2}},
+    {"id":"board","name":"Folded game board","quantity":1,"shape":"rectangular_prism","dimensions_mm":{"length":245,"width":245,"height":8}}
+  ]
+}

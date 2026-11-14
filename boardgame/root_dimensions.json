@@ -1,0 +1,529 @@
+{
+  "game": "Root",
+  "edition_assumed": "Base game (Leder Games), counts per the Law of Root rulebook appendix",
+  "units": "mm",
+  "method": "Relative sizes from photos showing several components together (joint robust least-squares), scaled by the user's real measurement(s).",
+  "user_measurements": [
+    {
+      "component": "Marquise de Cat warrior",
+      "dimension": "longest side (or diameter)",
+      "value_mm": 22.0
+    }
+  ],
+  "photos_analysed": 25,
+  "components": [
+    {
+      "index": 1,
+      "name": "Game board (double-sided, Fall/Winter)",
+      "quantity": 1,
+      "shape": "rectangular_prism",
+      "dimensions_mm": null,
+      "confidence": "none",
+      "notes": "Never clearly visible in the photos analysed."
+    },
+    {
+      "index": 2,
+      "name": "Faction board",
+      "quantity": 4,
+      "shape": "rectangular_prism",
+      "dimensions_mm": {
+        "length": 306.7,
+        "width": 218.9
+      },
+      "confidence": "high",
+      "notes": "Height/thickness not measurable from the photos (needs a side-on photo).",
+      "measurement": {
+        "photos_used": 3,
+        "relative_spread": 0.023
+      }
+    },
+    {
+      "index": 3,
+      "name": "Shared deck card",
+      "quantity": 54,
+      "shape": "rectangular_prism",
+      "dimensions_mm": {
+        "length": 101.7,
+        "width": 71.0
+      },
+      "confidence": "medium",
+      "notes": "Height/thickness not measurable from the photos (needs a side-on photo).",
+      "measurement": {
+        "photos_used": 2,
+        "relative_spread": 0.026
+      }
+    },
+    {
+      "index": 4,
+      "name": "Faction Overview card",
+      "quantity": 16,
+      "shape": "rectangular_prism",
+      "dimensions_mm": null,
+      "confidence": "none",
+      "notes": "Never clearly visible in the photos analysed."
+    },
+    {
+      "index": 5,
+      "name": "Eyrie Leader card",
+      "quantity": 4,
+      "shape": "rectangular_prism",
+      "dimensions_mm": null,
+      "confidence": "none",
+      "notes": "Never clearly visible in the photos analysed."
+    },
+    {
+      "index": 6,
+      "name": "Loyal Vizier card",
+      "quantity": 2,
+      "shape": "rectangular_prism",
+      "dimensions_mm": null,
+      "confidence": "none",
+      "notes": "Never clearly visible in the photos analysed."
+    },
+    {
+      "index": 7,
+      "name": "Vagabond Character card",
+      "quantity": 3,
+      "shape": "rectangular_prism",
+      "dimensions_mm": {
+        "length": 105.4,
+        "width": 76.1
+      },
+      "confidence": "low",
+      "notes": "Height/thickness not measurable from the photos (needs a side-on photo).",
+      "measurement": {
+        "photos_used": 1,
+        "relative_spread": 0.0
+      }
+    },
+    {
+      "index": 8,
+      "name": "Quest card",
+      "quantity": 15,
+      "shape": "rectangular_prism",
+      "dimensions_mm": {
+        "length": 90.4,
+        "width": 69.9
+      },
+      "confidence": "low",
+      "notes": "Height/thickness not measurable from the photos (needs a side-on photo).",
+      "measurement": {
+        "photos_used": 1,
+        "relative_spread": 0.063
+      }
+    },
+    {
+      "index": 9,
+      "name": "Walkthrough card",
+      "quantity": 4,
+      "shape": "rectangular_prism",
+      "dimensions_mm": {
+        "length": 216.4,
+        "width": 169.1
+      },
+      "confidence": "low",
+      "notes": "Height/thickness not measurable from the photos (needs a side-on photo).",
+      "measurement": {
+        "photos_used": 1,
+        "relative_spread": 0.0
+      }
+    },
+    {
+      "index": 10,
+      "name": "Custom twelve-sided battle die",
+      "quantity": 2,
+      "shape": "cube",
+      "dimensions_mm": {
+        "length": 29.9,
+        "width": 29.9,
+        "height": 29.9
+      },
+      "confidence": "medium",
+      "notes": "Height/thickness not measurable from the photos (needs a side-on photo).",
+      "measurement": {
+        "photos_used": 2,
+        "relative_spread": 0.043
+      }
+    },
+    {
+      "index": 11,
+      "name": "Marquise de Cat warrior",
+      "quantity": 25,
+      "shape": "rectangular_prism",
+      "dimensions_mm": {
+        "length": 22.0,
+        "width": 16.6
+      },
+      "confidence": "medium",
+      "notes": "Height/thickness not measurable from the photos (needs a side-on photo).",
+      "measurement": {
+        "photos_used": 2,
+        "relative_spread": 0.027
+      }
+    },
+    {
+      "index": 12,
+      "name": "Eyrie Dynasties warrior",
+      "quantity": 20,
+      "shape": "cylinder",
+      "dimensions_mm": null,
+      "confidence": "none",
+      "notes": "Never clearly visible in the photos analysed."
+    },
+    {
+      "index": 13,
+      "name": "Woodland Alliance warrior",
+      "quantity": 10,
+      "shape": "cylinder",
+      "dimensions_mm": null,
+      "confidence": "none",
+      "notes": "Never clearly visible in the photos analysed."
+    },
+    {
+      "index": 14,
+      "name": "Vagabond pawn",
+      "quantity": 1,
+      "shape": "cylinder",
+      "dimensions_mm": null,
+      "confidence": "none",
+      "notes": "Never clearly visible in the photos analysed."
+    },
+    {
+      "index": 15,
+      "name": "Roost",
+      "quantity": 7,
+      "shape": "rectangular_prism",
+      "dimensions_mm": {
+        "length": 25.4,
+        "width": 25.0
+      },
+      "confidence": "low",
+      "notes": "Height/thickness not measurable from the photos (needs a side-on photo).",
+      "measurement": {
+        "photos_used": 1,
+        "relative_spread": 0.0
+      }
+    },
+    {
+      "index": 16,
+      "name": "Sawmill",
+      "quantity": 6,
+      "shape": "rectangular_prism",
+      "dimensions_mm": {
+        "length": 21.4,
+        "width": 18.7
+      },
+      "confidence": "low",
+      "notes": "Height/thickness not measurable from the photos (needs a side-on photo).",
+      "measurement": {
+        "photos_used": 1,
+        "relative_spread": 0.0
+      }
+    },
+    {
+      "index": 17,
+      "name": "Recruiter",
+      "quantity": 6,
+      "shape": "rectangular_prism",
+      "dimensions_mm": {
+        "length": 25.7,
+        "width": 20.2
+      },
+      "confidence": "low",
+      "notes": "Height/thickness not measurable from the photos (needs a side-on photo).",
+      "measurement": {
+        "photos_used": 1,
+        "relative_spread": 0.0
+      }
+    },
+    {
+      "index": 18,
+      "name": "Workshop",
+      "quantity": 6,
+      "shape": "rectangular_prism",
+      "dimensions_mm": {
+        "length": 19.8,
+        "width": 19.4
+      },
+      "confidence": "low",
+      "notes": "Height/thickness not measurable from the photos (needs a side-on photo).",
+      "measurement": {
+        "photos_used": 1,
+        "relative_spread": 0.0
+      }
+    },
+    {
+      "index": 19,
+      "name": "Base",
+      "quantity": 3,
+      "shape": "rectangular_prism",
+      "dimensions_mm": {
+        "length": 28.0,
+        "width": 22.9
+      },
+      "confidence": "low",
+      "notes": "Height/thickness not measurable from the photos (needs a side-on photo).",
+      "measurement": {
+        "photos_used": 1,
+        "relative_spread": 0.0
+      }
+    },
+    {
+      "index": 20,
+      "name": "Sympathy token",
+      "quantity": 10,
+      "shape": "cylinder",
+      "dimensions_mm": {
+        "diameter": 27.4
+      },
+      "confidence": "low",
+      "notes": "Height/thickness not measurable from the photos (needs a side-on photo).",
+      "measurement": {
+        "photos_used": 1,
+        "relative_spread": 0.0
+      }
+    },
+    {
+      "index": 21,
+      "name": "Wood token",
+      "quantity": 8,
+      "shape": "cylinder",
+      "dimensions_mm": {
+        "diameter": 20.5
+      },
+      "confidence": "low",
+      "notes": "Height/thickness not measurable from the photos (needs a side-on photo).",
+      "measurement": {
+        "photos_used": 3,
+        "relative_spread": 0.08
+      }
+    },
+    {
+      "index": 22,
+      "name": "Keep token",
+      "quantity": 1,
+      "shape": "rectangular_prism",
+      "dimensions_mm": {
+        "length": 23.2,
+        "width": 21.2
+      },
+      "confidence": "medium",
+      "notes": "Height/thickness not measurable from the photos (needs a side-on photo).",
+      "measurement": {
+        "photos_used": 2,
+        "relative_spread": 0.008
+      }
+    },
+    {
+      "index": 23,
+      "name": "Rabbit clearing marker",
+      "quantity": 4,
+      "shape": "rectangular_prism",
+      "dimensions_mm": {
+        "length": 27.7,
+        "width": 25.5
+      },
+      "confidence": "high",
+      "notes": "Height/thickness not measurable from the photos (needs a side-on photo).",
+      "measurement": {
+        "photos_used": 3,
+        "relative_spread": 0.032
+      }
+    },
+    {
+      "index": 24,
+      "name": "Fox clearing marker",
+      "quantity": 4,
+      "shape": "rectangular_prism",
+      "dimensions_mm": {
+        "length": 28.0,
+        "width": 27.0
+      },
+      "confidence": "low",
+      "notes": "Height/thickness not measurable from the photos (needs a side-on photo).",
+      "measurement": {
+        "photos_used": 1,
+        "relative_spread": 0.0
+      }
+    },
+    {
+      "index": 25,
+      "name": "Mouse clearing marker",
+      "quantity": 4,
+      "shape": "rectangular_prism",
+      "dimensions_mm": {
+        "length": 28.4,
+        "width": 26.4
+      },
+      "confidence": "medium",
+      "notes": "Height/thickness not measurable from the photos (needs a side-on photo).",
+      "measurement": {
+        "photos_used": 2,
+        "relative_spread": 0.001
+      }
+    },
+    {
+      "index": 26,
+      "name": "Ruins",
+      "quantity": 4,
+      "shape": "rectangular_prism",
+      "dimensions_mm": {
+        "length": 23.3,
+        "width": 19.8
+      },
+      "confidence": "low",
+      "notes": "Height/thickness not measurable from the photos (needs a side-on photo).",
+      "measurement": {
+        "photos_used": 1,
+        "relative_spread": 0.0
+      }
+    },
+    {
+      "index": 27,
+      "name": "Victory Point (score) marker",
+      "quantity": 4,
+      "shape": "cylinder",
+      "dimensions_mm": null,
+      "confidence": "none",
+      "notes": "Never clearly visible in the photos analysed."
+    },
+    {
+      "index": 28,
+      "name": "Relationship marker",
+      "quantity": 3,
+      "shape": "cylinder",
+      "dimensions_mm": null,
+      "confidence": "none",
+      "notes": "Never clearly visible in the photos analysed."
+    },
+    {
+      "index": 29,
+      "name": "Boots item",
+      "quantity": 4,
+      "shape": "rectangular_prism",
+      "dimensions_mm": null,
+      "confidence": "none",
+      "notes": "Never clearly visible in the photos analysed."
+    },
+    {
+      "index": 30,
+      "name": "Sword item",
+      "quantity": 4,
+      "shape": "rectangular_prism",
+      "dimensions_mm": null,
+      "confidence": "none",
+      "notes": "Never clearly visible in the photos analysed."
+    },
+    {
+      "index": 31,
+      "name": "Bag item",
+      "quantity": 4,
+      "shape": "rectangular_prism",
+      "dimensions_mm": null,
+      "confidence": "none",
+      "notes": "Never clearly visible in the photos analysed."
+    },
+    {
+      "index": 32,
+      "name": "Hammer item",
+      "quantity": 3,
+      "shape": "rectangular_prism",
+      "dimensions_mm": {
+        "length": 17.9,
+        "width": 17.5
+      },
+      "confidence": "low",
+      "notes": "Height/thickness not measurable from the photos (needs a side-on photo).",
+      "measurement": {
+        "photos_used": 1,
+        "relative_spread": 0.0
+      }
+    },
+    {
+      "index": 33,
+      "name": "Tea item",
+      "quantity": 3,
+      "shape": "rectangular_prism",
+      "dimensions_mm": null,
+      "confidence": "none",
+      "notes": "Never clearly visible in the photos analysed."
+    },
+    {
+      "index": 34,
+      "name": "Coin item",
+      "quantity": 2,
+      "shape": "rectangular_prism",
+      "dimensions_mm": {
+        "length": 17.5,
+        "width": 17.3
+      },
+      "confidence": "low",
+      "notes": "Height/thickness not measurable from the photos (needs a side-on photo).",
+      "measurement": {
+        "photos_used": 1,
+        "relative_spread": 0.0
+      }
+    },
+    {
+      "index": 35,
+      "name": "Crossbow item",
+      "quantity": 2,
+      "shape": "rectangular_prism",
+      "dimensions_mm": null,
+      "confidence": "none",
+      "notes": "Never clearly visible in the photos analysed."
+    },
+    {
+      "index": 36,
+      "name": "Torch item",
+      "quantity": 1,
+      "shape": "rectangular_prism",
+      "dimensions_mm": null,
+      "confidence": "none",
+      "notes": "Never clearly visible in the photos analysed."
+    },
+    {
+      "index": 37,
+      "name": "The Law of Root (reference rulebook)",
+      "quantity": 1,
+      "shape": "rectangular_prism",
+      "dimensions_mm": {
+        "length": 625.7,
+        "width": 602.2
+      },
+      "confidence": "low",
+      "notes": "Height/thickness not measurable from the photos (needs a side-on photo).",
+      "measurement": {
+        "photos_used": 1,
+        "relative_spread": 0.0
+      }
+    },
+    {
+      "index": 38,
+      "name": "Learning to Play booklet",
+      "quantity": 1,
+      "shape": "rectangular_prism",
+      "dimensions_mm": null,
+      "confidence": "none",
+      "notes": "Never clearly visible in the photos analysed."
+    },
+    {
+      "index": 39,
+      "name": "Learn-to-Play Walkthrough sheet",
+      "quantity": 1,
+      "shape": "rectangular_prism",
+      "dimensions_mm": null,
+      "confidence": "none",
+      "notes": "Never clearly visible in the photos analysed."
+    },
+    {
+      "index": 40,
+      "name": "Game box (with custom insert)",
+      "quantity": 1,
+      "shape": "rectangular_prism",
+      "dimensions_mm": null,
+      "confidence": "none",
+      "notes": "Never clearly visible in the photos analysed."
+    }
+  ]
+}

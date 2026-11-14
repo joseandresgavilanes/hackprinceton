@@ -1,0 +1,201 @@
+{
+  "game": "Excape",
+  "edition_assumed": "Rapido (Game Factory, 2022)",
+  "units": "mm",
+  "method": "User photos (one of each piece + ruler); perspective corrected from the ruler rectangle; scale from ruler tick marks / numbers / assumed length; photos combined by inverse-variance weighting.",
+  "assumed_ruler_length_mm": 310.0,
+  "photos": [
+    {
+      "file": "IMG_4141.jpg",
+      "status": "used",
+      "reason": "ok: 1 component(s) measured (flat); 19 visible object(s) not measured/identified",
+      "mode": "scalar",
+      "scale_source": "ticks",
+      "tilt_deg": null,
+      "focal_source": null,
+      "tick_strength": 0.57,
+      "tick_uniformity": null,
+      "note": "angle NOT corrected (ruler corners not fully visible)",
+      "components_found": [
+        "Player pieces (pawns)"
+      ],
+      "components_not_found": [
+        "Game board (folding, stepped movement track and dice field ranking chart)",
+        "Dice (two per color in six colors; one of each pair shows 1-2-3-4-7-X, the other 1-2-3-5-6-X)",
+        "Colored markers",
+        "Rulebook (multilingual: German, French, English, Italian)",
+        "Box"
+      ]
+    },
+    {
+      "file": "IMG_4142.jpg",
+      "status": "rejected",
+      "reason": "nothing_measured: no component could be outlined; Ruler and pieces lie flat on a table: a rulebook card, a jigsaw board piece, 12 dice and 6 cross-shaped pawns.",
+      "mode": "rectified",
+      "scale_source": "ticks",
+      "tilt_deg": 46.1,
+      "focal_source": "exif",
+      "tick_strength": 0.83,
+      "tick_uniformity": 1.028,
+      "note": null,
+      "components_found": [],
+      "components_not_found": [
+        "Game board (folding, stepped movement track and dice field ranking chart)",
+        "Dice (two per color in six colors; one of each pair shows 1-2-3-4-7-X, the other 1-2-3-5-6-X)",
+        "Player pieces (pawns)",
+        "Colored markers",
+        "Rulebook (multilingual: German, French, English, Italian)",
+        "Box"
+      ]
+    },
+    {
+      "file": "IMG_4143.jpg",
+      "status": "rejected",
+      "reason": "nothing_measured: no component could be outlined; Pieces lie flat beside a ruler: a rulebook card, a board piece, six pawns and 12 dice (only one die box allowed per name).",
+      "mode": "rectified",
+      "scale_source": "ticks",
+      "tilt_deg": 33.4,
+      "focal_source": "exif",
+      "tick_strength": 0.87,
+      "tick_uniformity": 1.002,
+      "note": null,
+      "components_found": [],
+      "components_not_found": [
+        "Game board (folding, stepped movement track and dice field ranking chart)",
+        "Dice (two per color in six colors; one of each pair shows 1-2-3-4-7-X, the other 1-2-3-5-6-X)",
+        "Player pieces (pawns)",
+        "Colored markers",
+        "Rulebook (multilingual: German, French, English, Italian)",
+        "Box"
+      ]
+    },
+    {
+      "file": "IMG_4144.jpg",
+      "status": "rejected",
+      "reason": "nothing_measured: no component could be outlined; Flat photo with a ruler, a jigsaw-style board, 12 dice, 6 X-shaped wooden pawns and a rulebook booklet.",
+      "mode": "rectified",
+      "scale_source": "ticks",
+      "tilt_deg": 57.3,
+      "focal_source": "exif",
+      "tick_strength": 0.81,
+      "tick_uniformity": 1.158,
+      "note": "rectification uncertain",
+      "components_found": [],
+      "components_not_found": [
+        "Game board (folding, stepped movement track and dice field ranking chart)",
+        "Dice (two per color in six colors; one of each pair shows 1-2-3-4-7-X, the other 1-2-3-5-6-X)",
+        "Player pieces (pawns)",
+        "Colored markers",
+        "Rulebook (multilingual: German, French, English, Italian)",
+        "Box"
+      ]
+    },
+    {
+      "file": "IMG_4145.jpg",
+      "status": "used",
+      "reason": "ok: 1 component(s) measured (flat); 19 visible object(s) not measured/identified",
+      "mode": "rectified",
+      "scale_source": "ticks",
+      "tilt_deg": 8.1,
+      "focal_source": "exif",
+      "tick_strength": 0.82,
+      "tick_uniformity": 1.004,
+      "note": null,
+      "components_found": [
+        "Player pieces (pawns)"
+      ],
+      "components_not_found": [
+        "Game board (folding, stepped movement track and dice field ranking chart)",
+        "Dice (two per color in six colors; one of each pair shows 1-2-3-4-7-X, the other 1-2-3-5-6-X)",
+        "Colored markers",
+        "Rulebook (multilingual: German, French, English, Italian)",
+        "Box"
+      ]
+    }
+  ],
+  "components": [
+    {
+      "index": 1,
+      "name": "Game board (folding, stepped movement track and dice field ranking chart)",
+      "quantity": 1,
+      "shape": "rectangular_prism",
+      "dimensions_mm": null,
+      "confidence": "none",
+      "estimated_error_pct": null,
+      "measurement_method": null,
+      "notes": "Not found/measurable in the supplied photos."
+    },
+    {
+      "index": 2,
+      "name": "Dice (two per color in six colors; one of each pair shows 1-2-3-4-7-X, the other 1-2-3-5-6-X)",
+      "quantity": 12,
+      "shape": "cube",
+      "dimensions_mm": null,
+      "confidence": "none",
+      "estimated_error_pct": null,
+      "measurement_method": null,
+      "notes": "Not found/measurable in the supplied photos."
+    },
+    {
+      "index": 3,
+      "name": "Player pieces (pawns)",
+      "quantity": 6,
+      "shape": "cylinder",
+      "dimensions_mm": {
+        "diameter": 23.9,
+        "height": 34.6
+      },
+      "confidence": "low",
+      "estimated_error_pct": 11.0,
+      "estimated_error_mm": {
+        "long": 1.6,
+        "short": 2.6
+      },
+      "measurement_method": "photos",
+      "notes": "Height/thickness not measured (needs an 'upright' photo with a ruler); tall pieces photographed from above look somewhat larger than they are (roughly height / camera distance, ~2-7%).",
+      "measurement": {
+        "n_photos": 2,
+        "photos": [
+          "IMG_4141.jpg",
+          "IMG_4145.jpg"
+        ]
+      }
+    },
+    {
+      "index": 4,
+      "name": "Colored markers",
+      "quantity": 6,
+      "shape": "cylinder",
+      "dimensions_mm": null,
+      "confidence": "none",
+      "estimated_error_pct": null,
+      "measurement_method": null,
+      "notes": "Not found/measurable in the supplied photos."
+    },
+    {
+      "index": 5,
+      "name": "Rulebook (multilingual: German, French, English, Italian)",
+      "quantity": 1,
+      "shape": "rectangular_prism",
+      "dimensions_mm": null,
+      "confidence": "none",
+      "estimated_error_pct": null,
+      "measurement_method": null,
+      "notes": "Not found/measurable in the supplied photos."
+    },
+    {
+      "index": 6,
+      "name": "Box",
+      "quantity": 1,
+      "shape": "rectangular_prism",
+      "dimensions_mm": null,
+      "confidence": "none",
+      "estimated_error_pct": null,
+      "measurement_method": null,
+      "notes": "Not found/measurable in the supplied photos."
+    }
+  ],
+  "type_groups": [],
+  "same_type_decisions": [],
+  "unresolved_same_type_candidates": []
+}

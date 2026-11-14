@@ -1,0 +1,376 @@
+{
+  "game": "Ticket to Ride: London",
+  "edition_assumed": "Days of Wonder, 2019",
+  "units": "mm",
+  "method": "User photos (one of each piece + ruler); perspective corrected from the ruler rectangle; scale from ruler tick marks / numbers / assumed length; photos combined by inverse-variance weighting; heights estimated using calibrated multi-angle silhouettes or upright-ruler photos; unresolved heights use labeled component-type defaults. Game packaging excluded.",
+  "assumed_ruler_length_mm": 310.0,
+  "photos": [
+    {
+      "file": "IMG_4136.jpg",
+      "status": "used",
+      "reason": "ok: 6 component(s) measured (flat); 6 visible object(s) not measured/identified",
+      "mode": "rectified",
+      "scale_source": "ticks",
+      "tilt_deg": 27.4,
+      "focal_source": "default_guess",
+      "tick_strength": 0.79,
+      "tick_uniformity": 1.003,
+      "note": null,
+      "components_found": [
+        "Board map of the London transportation network",
+        "Destination Ticket card",
+        "Plastic Bus piece",
+        "Rule leaflet (rulebook)",
+        "Scoring Marker",
+        "Transportation card"
+      ],
+      "components_not_found": []
+    },
+    {
+      "file": "IMG_4137.jpg",
+      "status": "used",
+      "reason": "ok: 6 component(s) measured (flat); 7 visible object(s) not measured/identified",
+      "mode": "rectified",
+      "scale_source": "ticks",
+      "tilt_deg": 38.6,
+      "focal_source": "vanishing_points+prior",
+      "tick_strength": 0.65,
+      "tick_uniformity": 1.136,
+      "note": "rectification uncertain",
+      "components_found": [
+        "Board map of the London transportation network",
+        "Destination Ticket card",
+        "Plastic Bus piece",
+        "Rule leaflet (rulebook)",
+        "Scoring Marker",
+        "Transportation card"
+      ],
+      "components_not_found": []
+    },
+    {
+      "file": "IMG_4138.jpg",
+      "status": "used",
+      "reason": "ok: 6 component(s) measured (flat); 7 visible object(s) not measured/identified",
+      "mode": "rectified",
+      "scale_source": "ticks",
+      "tilt_deg": 31.3,
+      "focal_source": "default_guess",
+      "tick_strength": 0.87,
+      "tick_uniformity": 1.014,
+      "note": null,
+      "components_found": [
+        "Board map of the London transportation network",
+        "Destination Ticket card",
+        "Plastic Bus piece",
+        "Rule leaflet (rulebook)",
+        "Scoring Marker",
+        "Transportation card"
+      ],
+      "components_not_found": []
+    },
+    {
+      "file": "IMG_4139.jpg",
+      "status": "used",
+      "reason": "ok: 6 component(s) measured (flat); 6 visible object(s) not measured/identified",
+      "mode": "rectified",
+      "scale_source": "ticks",
+      "tilt_deg": 27.4,
+      "focal_source": "default_guess",
+      "tick_strength": 0.83,
+      "tick_uniformity": 1.002,
+      "note": null,
+      "components_found": [
+        "Board map of the London transportation network",
+        "Destination Ticket card",
+        "Plastic Bus piece",
+        "Rule leaflet (rulebook)",
+        "Scoring Marker",
+        "Transportation card"
+      ],
+      "components_not_found": []
+    },
+    {
+      "file": "IMG_4140.jpg",
+      "status": "used",
+      "reason": "ok: 6 component(s) measured (flat); 8 visible object(s) not measured/identified",
+      "mode": "rectified",
+      "scale_source": "ticks",
+      "tilt_deg": 7.3,
+      "focal_source": "default_guess",
+      "tick_strength": 0.82,
+      "tick_uniformity": 1.001,
+      "note": null,
+      "components_found": [
+        "Board map of the London transportation network",
+        "Destination Ticket card",
+        "Plastic Bus piece",
+        "Rule leaflet (rulebook)",
+        "Scoring Marker",
+        "Transportation card"
+      ],
+      "components_not_found": []
+    }
+  ],
+  "components": [
+    {
+      "index": 1,
+      "name": "Board map of the London transportation network",
+      "quantity": 1,
+      "shape": "rectangular_prism",
+      "dimensions_mm": {
+        "length": 236.6,
+        "width": 168.9,
+        "height": 4.0
+      },
+      "confidence": "low",
+      "estimated_error_pct": null,
+      "estimated_error_mm": {
+        "long": 26.6,
+        "short": 11.3
+      },
+      "measurement_method": "photos",
+      "notes": "Height unresolved; assumed 4 mm thickness for board_or_cardboard. Footprint may be inflated by height; assumed dimensions have no measured uncertainty.",
+      "measurement": {
+        "n_photos": 5,
+        "photos": [
+          "IMG_4136.jpg",
+          "IMG_4137.jpg",
+          "IMG_4138.jpg",
+          "IMG_4139.jpg",
+          "IMG_4140.jpg"
+        ],
+        "height_method": "assumed_4mm_thickness",
+        "height_assumed": true,
+        "multi_angle_fit": null
+      }
+    },
+    {
+      "index": 2,
+      "name": "Plastic Bus piece",
+      "quantity": 68,
+      "shape": "rectangular_prism",
+      "dimensions_mm": {
+        "length": 24.2,
+        "width": 5.5,
+        "height": 15.1
+      },
+      "confidence": "low",
+      "estimated_error_pct": 33.3,
+      "estimated_error_mm": {
+        "long": 8.1,
+        "short": 1.8,
+        "height": 2.3
+      },
+      "measurement_method": "photos",
+      "notes": "Footprint refined with calibrated multi-angle silhouette fitting. Height estimated from flat-ruler photos using an approximate 3-D solid.",
+      "measurement": {
+        "n_photos": 5,
+        "photos": [
+          "IMG_4136.jpg",
+          "IMG_4137.jpg",
+          "IMG_4138.jpg",
+          "IMG_4139.jpg",
+          "IMG_4140.jpg"
+        ],
+        "height_method": "multi_angle_silhouette",
+        "height_assumed": false,
+        "multi_angle_fit": {
+          "photos": [
+            "IMG_4140.jpg",
+            "IMG_4137.jpg",
+            "IMG_4136.jpg",
+            "IMG_4138.jpg",
+            "IMG_4139.jpg"
+          ],
+          "angles_deg": [
+            19.3,
+            24.0,
+            32.8,
+            42.0,
+            47.2
+          ],
+          "silhouette_rmse_mm": 1.7,
+          "height_mm": 15.1,
+          "height_sigma_mm": 2.26,
+          "table_normal_height_mm": 15.1,
+          "mode": "free_scene",
+          "direction_baseline": 1.564
+        }
+      }
+    },
+    {
+      "index": 3,
+      "name": "Transportation card",
+      "quantity": 44,
+      "shape": "rectangular_prism",
+      "dimensions_mm": {
+        "length": 67.7,
+        "width": 44.1,
+        "height": 0.4
+      },
+      "confidence": "low",
+      "estimated_error_pct": null,
+      "estimated_error_mm": {
+        "long": 3.0,
+        "short": 4.9
+      },
+      "measurement_method": "photos",
+      "notes": "Height unresolved; assumed 0.4 mm thickness for card. Footprint may be inflated by height; assumed dimensions have no measured uncertainty.",
+      "measurement": {
+        "n_photos": 5,
+        "photos": [
+          "IMG_4136.jpg",
+          "IMG_4137.jpg",
+          "IMG_4138.jpg",
+          "IMG_4139.jpg",
+          "IMG_4140.jpg"
+        ],
+        "height_method": "assumed_card_thickness",
+        "height_assumed": true,
+        "multi_angle_fit": null
+      }
+    },
+    {
+      "index": 4,
+      "name": "Destination Ticket card",
+      "quantity": 20,
+      "shape": "rectangular_prism",
+      "dimensions_mm": {
+        "length": 69.0,
+        "width": 43.5,
+        "height": 0.4
+      },
+      "confidence": "low",
+      "estimated_error_pct": null,
+      "estimated_error_mm": {
+        "long": 3.0,
+        "short": 3.1
+      },
+      "measurement_method": "photos",
+      "notes": "Height unresolved; assumed 0.4 mm thickness for card. Footprint may be inflated by height; assumed dimensions have no measured uncertainty.",
+      "measurement": {
+        "n_photos": 5,
+        "photos": [
+          "IMG_4136.jpg",
+          "IMG_4137.jpg",
+          "IMG_4138.jpg",
+          "IMG_4139.jpg",
+          "IMG_4140.jpg"
+        ],
+        "height_method": "assumed_card_thickness",
+        "height_assumed": true,
+        "multi_angle_fit": null
+      }
+    },
+    {
+      "index": 5,
+      "name": "Scoring Marker",
+      "quantity": 4,
+      "shape": "cylinder",
+      "dimensions_mm": {
+        "diameter": 14.7,
+        "height": 13.3
+      },
+      "confidence": "low",
+      "estimated_error_pct": 15.0,
+      "estimated_error_mm": {
+        "long": 1.3,
+        "short": 1.1,
+        "height": 2.0
+      },
+      "measurement_method": "photos",
+      "notes": "Footprint refined with calibrated multi-angle silhouette fitting. Height estimated from flat-ruler photos using an approximate 3-D solid.",
+      "measurement": {
+        "n_photos": 5,
+        "photos": [
+          "IMG_4136.jpg",
+          "IMG_4137.jpg",
+          "IMG_4138.jpg",
+          "IMG_4139.jpg",
+          "IMG_4140.jpg"
+        ],
+        "height_method": "multi_angle_silhouette",
+        "height_assumed": false,
+        "multi_angle_fit": {
+          "photos": [
+            "IMG_4140.jpg",
+            "IMG_4136.jpg",
+            "IMG_4137.jpg",
+            "IMG_4138.jpg",
+            "IMG_4139.jpg"
+          ],
+          "angles_deg": [
+            22.3,
+            24.7,
+            25.3,
+            48.2,
+            49.0
+          ],
+          "silhouette_rmse_mm": 1.23,
+          "height_mm": 13.26,
+          "height_sigma_mm": 1.99,
+          "table_normal_height_mm": 13.26,
+          "mode": "free_scene",
+          "direction_baseline": 1.507
+        }
+      }
+    },
+    {
+      "index": 6,
+      "name": "Rule leaflet (rulebook)",
+      "quantity": 1,
+      "shape": "rectangular_prism",
+      "dimensions_mm": {
+        "length": 214.7,
+        "width": 102.3,
+        "height": 12.1
+      },
+      "confidence": "low",
+      "estimated_error_pct": 66.9,
+      "estimated_error_mm": {
+        "long": 16.4,
+        "short": 7.8,
+        "height": 8.1
+      },
+      "measurement_method": "photos",
+      "notes": "Footprint refined with calibrated multi-angle silhouette fitting. Height estimated from flat-ruler photos using an approximate 3-D solid.",
+      "measurement": {
+        "n_photos": 5,
+        "photos": [
+          "IMG_4136.jpg",
+          "IMG_4137.jpg",
+          "IMG_4138.jpg",
+          "IMG_4139.jpg",
+          "IMG_4140.jpg"
+        ],
+        "height_method": "multi_angle_silhouette",
+        "height_assumed": false,
+        "multi_angle_fit": {
+          "photos": [
+            "IMG_4139.jpg",
+            "IMG_4140.jpg",
+            "IMG_4138.jpg",
+            "IMG_4136.jpg",
+            "IMG_4137.jpg"
+          ],
+          "angles_deg": [
+            18.5,
+            20.6,
+            37.9,
+            40.1,
+            50.4
+          ],
+          "silhouette_rmse_mm": 12.36,
+          "height_mm": 12.14,
+          "height_sigma_mm": 8.13,
+          "table_normal_height_mm": 12.14,
+          "mode": "free_scene",
+          "direction_baseline": 1.869
+        }
+      }
+    }
+  ],
+  "type_groups": [],
+  "same_type_decisions": [],
+  "unresolved_same_type_candidates": []
+}
