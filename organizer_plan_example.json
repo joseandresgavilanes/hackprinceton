@@ -1,0 +1,21 @@
+{
+  "game": "GameFit demo (illustrative dimensions — not verified for a particular game)",
+  "box_inner_mm": {"width": 210, "length": 210, "height": 50},
+  "printer_bed_mm": {"width": 220, "length": 220},
+  "settings": {
+    "wall_mm": 2.4,
+    "floor_mm": 2.0,
+    "clearance_mm": 1.0,
+    "tray_gap_mm": 1.5,
+    "box_margin_mm": 1.5
+  },
+  "compartments": [
+    {"name": "Playing cards", "required_mm": {"width": 66, "length": 92, "height": 26}},
+    {"name": "Square tiles", "required_mm": {"width": 52, "length": 52, "height": 31}},
+    {"name": "Red meeples", "required_mm": {"width": 34, "length": 48, "height": 22}},
+    {"name": "Blue meeples", "required_mm": {"width": 34, "length": 48, "height": 22}},
+    {"name": "Green meeples", "required_mm": {"width": 34, "length": 48, "height": 22}},
+    {"name": "Yellow meeples", "required_mm": {"width": 34, "length": 48, "height": 22}},
+    {"name": "Dice and tokens", "required_mm": {"width": 56, "length": 40, "height": 28}}
+  ]
+}
