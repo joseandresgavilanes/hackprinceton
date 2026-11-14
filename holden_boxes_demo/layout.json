@@ -4,7 +4,7 @@
   "status": "ok",
   "game": "Hypothetical Battle Game",
   "units": "mm",
-  "method": "maxrects_bssf/area",
+  "method": "rectpack_MaxRectsBlsf + fill_box",
   "box_inner_mm": {
     "width": 250.0,
     "length": 250.0,
@@ -49,8 +49,8 @@
     "divider_mm": 1.6,
     "min_feature_mm": 1.2,
     "headroom_mm": 0.0,
-    "fill_height": false,
-    "fill_box": false,
+    "fill_height": true,
+    "fill_box": true,
     "max_layers": 1
   },
   "coordinate_system": {
@@ -74,8 +74,8 @@
   "stats": {
     "trays": 4,
     "layers": 1,
-    "floor_coverage": 0.108,
-    "tray_volume_fraction": 0.052,
+    "floor_coverage": 0.905,
+    "tray_volume_fraction": 0.905,
     "min_floor_area_needed_mm2": 7105
   },
   "notes": [
@@ -116,18 +116,18 @@
       },
       "rotation_degrees": 0,
       "outer_mm": {
-        "width": 36.8,
-        "length": 61.8,
-        "height": 28.0
+        "width": 77.61,
+        "length": 239.0,
+        "height": 57.0
       },
       "footprint_in_box_mm": {
-        "width": 36.8,
-        "length": 61.8
+        "width": 77.61,
+        "length": 239.0
       },
       "cavity_mm": {
-        "width": 32.0,
-        "length": 57.0,
-        "depth": 26.0
+        "width": 72.81,
+        "length": 234.2,
+        "depth": 55.0
       },
       "id": 1,
       "type": "set",
@@ -139,8 +139,8 @@
       "layer": 0,
       "column": 0,
       "center_mm": {
-        "x": 23.9,
-        "y": 36.4,
+        "x": 44.31,
+        "y": 125.0,
         "z": 8.0
       },
       "transform_mm": [
@@ -148,13 +148,13 @@
           1.0,
           -0.0,
           0.0,
-          23.9
+          44.307
         ],
         [
           0.0,
           1.0,
           0.0,
-          36.4
+          125.0
         ],
         [
           0.0,
@@ -170,13 +170,13 @@
         ]
       ],
       "assembled_position_mm": [
-        23.9,
-        36.4,
+        44.31,
+        125.0,
         8.0
       ],
       "exploded_position_mm": [
-        -11.48,
-        5.39,
+        16.06,
+        125.0,
         103.0
       ],
       "assembly_order": 0,
@@ -196,9 +196,9 @@
             0.0
           ],
           "cavity_mm": {
-            "width": 32.0,
-            "length": 57.0,
-            "depth": 26.0
+            "width": 72.81,
+            "length": 234.2,
+            "depth": 55.0
           },
           "floor_thickness_mm": 2.0,
           "grows_to_fill": true,
@@ -303,13 +303,13 @@
           "kind": "cavity",
           "cell": "Red Player Kit",
           "size_mm": [
-            32.0,
-            57.0,
-            26.0
+            72.81,
+            234.2,
+            55.0
           ]
         }
       ],
-      "solid_volume_cm3": 16.231,
+      "solid_volume_cm3": 119.369,
       "mesh_validation": {
         "triangles": 284,
         "watertight": true,
@@ -321,37 +321,37 @@
         "degenerate_triangles": 0,
         "shells": 1,
         "euler_characteristic": 2,
-        "volume_mm3": 16230.54,
+        "volume_mm3": 119368.86,
         "outward_normals": true,
         "bbox_mm": [
-          36.8,
-          61.8,
-          28.0
+          77.614,
+          239.0,
+          57.0
         ],
         "bbox_deviation_mm": 0.0,
-        "volume_vs_cad": 1e-05,
+        "volume_vs_cad": 0.0,
         "min_thickness": {
           "x": {
             "min_mm": 2.4,
             "at_mm": [
-              -18.4,
-              -28.35,
-              2.52
+              -38.81,
+              -115.97,
+              3.59
             ]
           },
           "y": {
             "min_mm": 2.4,
             "at_mm": [
-              -15.83,
-              -30.9,
-              2.52
+              -35.44,
+              -119.5,
+              2.01
             ]
           },
           "z": {
             "min_mm": 2.0,
             "at_mm": [
-              -15.83,
-              -28.34,
+              -34.63,
+              -115.4,
               0.0
             ]
           },
@@ -361,8 +361,8 @@
         "ok": true,
         "single_open_cavity": {
           "ok": true,
-          "cavity_points": 1736,
-          "rim_points": 278,
+          "cavity_points": 16543,
+          "rim_points": 932,
           "cavity_points_not_on_floor": 0,
           "rim_points_below_top": 0,
           "cavity_floor_z_mm": 2.0
@@ -373,24 +373,24 @@
       "name": "Blue Player Kit",
       "stl": "02_blue_player_kit.stl",
       "position_mm": {
-        "x": 5.5,
-        "y": 68.3,
+        "x": 84.11,
+        "y": 5.5,
         "z": 8.0
       },
       "rotation_degrees": 0,
       "outer_mm": {
-        "width": 36.8,
-        "length": 61.8,
-        "height": 28.0
+        "width": 77.61,
+        "length": 239.0,
+        "height": 57.0
       },
       "footprint_in_box_mm": {
-        "width": 36.8,
-        "length": 61.8
+        "width": 77.61,
+        "length": 239.0
       },
       "cavity_mm": {
-        "width": 32.0,
-        "length": 57.0,
-        "depth": 26.0
+        "width": 72.81,
+        "length": 234.2,
+        "depth": 55.0
       },
       "id": 2,
       "type": "set",
@@ -402,8 +402,8 @@
       "layer": 0,
       "column": 1,
       "center_mm": {
-        "x": 23.9,
-        "y": 99.2,
+        "x": 122.92,
+        "y": 125.0,
         "z": 8.0
       },
       "transform_mm": [
@@ -411,13 +411,13 @@
           1.0,
           -0.0,
           0.0,
-          23.9
+          122.92
         ],
         [
           0.0,
           1.0,
           0.0,
-          99.2
+          125.0
         ],
         [
           0.0,
@@ -433,13 +433,13 @@
         ]
       ],
       "assembled_position_mm": [
-        23.9,
-        99.2,
+        122.92,
+        125.0,
         8.0
       ],
       "exploded_position_mm": [
-        -11.48,
-        90.17,
+        122.19,
+        125.0,
         103.0
       ],
       "assembly_order": 1,
@@ -459,9 +459,9 @@
             0.0
           ],
           "cavity_mm": {
-            "width": 32.0,
-            "length": 57.0,
-            "depth": 26.0
+            "width": 72.81,
+            "length": 234.2,
+            "depth": 55.0
           },
           "floor_thickness_mm": 2.0,
           "grows_to_fill": true,
@@ -566,13 +566,13 @@
           "kind": "cavity",
           "cell": "Blue Player Kit",
           "size_mm": [
-            32.0,
-            57.0,
-            26.0
+            72.81,
+            234.2,
+            55.0
           ]
         }
       ],
-      "solid_volume_cm3": 16.231,
+      "solid_volume_cm3": 119.369,
       "mesh_validation": {
         "triangles": 284,
         "watertight": true,
@@ -584,37 +584,37 @@
         "degenerate_triangles": 0,
         "shells": 1,
         "euler_characteristic": 2,
-        "volume_mm3": 16230.54,
+        "volume_mm3": 119368.86,
         "outward_normals": true,
         "bbox_mm": [
-          36.8,
-          61.8,
-          28.0
+          77.614,
+          239.0,
+          57.0
         ],
         "bbox_deviation_mm": 0.0,
-        "volume_vs_cad": 1e-05,
+        "volume_vs_cad": 0.0,
         "min_thickness": {
           "x": {
             "min_mm": 2.4,
             "at_mm": [
-              -18.4,
-              -28.35,
-              2.52
+              -38.81,
+              -115.97,
+              3.59
             ]
           },
           "y": {
             "min_mm": 2.4,
             "at_mm": [
-              -15.83,
-              -30.9,
-              2.52
+              -35.44,
+              -119.5,
+              2.01
             ]
           },
           "z": {
             "min_mm": 2.0,
             "at_mm": [
-              -15.83,
-              -28.34,
+              -34.63,
+              -115.4,
               0.0
             ]
           },
@@ -624,8 +624,8 @@
         "ok": true,
         "single_open_cavity": {
           "ok": true,
-          "cavity_points": 1736,
-          "rim_points": 278,
+          "cavity_points": 16543,
+          "rim_points": 932,
           "cavity_points_not_on_floor": 0,
           "rim_points_below_top": 0,
           "cavity_floor_z_mm": 2.0
@@ -636,24 +636,24 @@
       "name": "Shared Supply: Dice",
       "stl": "03_shared_supply_dice.stl",
       "position_mm": {
-        "x": 5.5,
-        "y": 131.1,
+        "x": 162.73,
+        "y": 5.5,
         "z": 8.0
       },
       "rotation_degrees": 0,
       "outer_mm": {
-        "width": 38.8,
-        "length": 38.8,
-        "height": 19.0
+        "width": 81.77,
+        "length": 140.3,
+        "height": 57.0
       },
       "footprint_in_box_mm": {
-        "width": 38.8,
-        "length": 38.8
+        "width": 81.77,
+        "length": 140.3
       },
       "cavity_mm": {
-        "width": 34.0,
-        "length": 34.0,
-        "depth": 17.0
+        "width": 76.97,
+        "length": 135.5,
+        "depth": 55.0
       },
       "id": 3,
       "type": "set",
@@ -665,8 +665,8 @@
       "layer": 0,
       "column": 2,
       "center_mm": {
-        "x": 24.9,
-        "y": 150.5,
+        "x": 203.61,
+        "y": 75.65,
         "z": 8.0
       },
       "transform_mm": [
@@ -674,13 +674,13 @@
           1.0,
           -0.0,
           0.0,
-          24.9
+          203.614
         ],
         [
           0.0,
           1.0,
           0.0,
-          150.5
+          75.651
         ],
         [
           0.0,
@@ -696,13 +696,13 @@
         ]
       ],
       "assembled_position_mm": [
-        24.9,
-        150.5,
+        203.61,
+        75.65,
         8.0
       ],
       "exploded_position_mm": [
-        -10.13,
-        159.43,
+        231.13,
+        58.38,
         103.0
       ],
       "assembly_order": 2,
@@ -722,9 +722,9 @@
             0.0
           ],
           "cavity_mm": {
-            "width": 34.0,
-            "length": 34.0,
-            "depth": 17.0
+            "width": 76.97,
+            "length": 135.5,
+            "depth": 55.0
           },
           "floor_thickness_mm": 2.0,
           "grows_to_fill": true,
@@ -783,13 +783,13 @@
           "kind": "cavity",
           "cell": "Shared Supply: Dice",
           "size_mm": [
-            34.0,
-            34.0,
-            17.0
+            76.97,
+            135.5,
+            55.0
           ]
         }
       ],
-      "solid_volume_cm3": 8.935,
+      "solid_volume_cm3": 80.257,
       "mesh_validation": {
         "triangles": 284,
         "watertight": true,
@@ -801,37 +801,37 @@
         "degenerate_triangles": 0,
         "shells": 1,
         "euler_characteristic": 2,
-        "volume_mm3": 8934.95,
+        "volume_mm3": 80257.13,
         "outward_normals": true,
         "bbox_mm": [
-          38.8,
-          38.8,
-          19.0
+          81.773,
+          140.302,
+          57.0
         ],
         "bbox_deviation_mm": 0.0,
-        "volume_vs_cad": 1e-05,
+        "volume_vs_cad": 0.0,
         "min_thickness": {
           "x": {
             "min_mm": 2.4,
             "at_mm": [
-              -19.4,
-              -16.83,
-              2.52
+              -40.89,
+              -67.44,
+              2.78
             ]
           },
           "y": {
             "min_mm": 2.4,
             "at_mm": [
-              -16.83,
-              -19.4,
-              2.52
+              -37.4,
+              -70.15,
+              2.11
             ]
           },
           "z": {
             "min_mm": 2.0,
             "at_mm": [
-              -16.83,
-              -16.82,
+              -37.64,
+              -66.89,
               0.0
             ]
           },
@@ -841,8 +841,8 @@
         "ok": true,
         "single_open_cavity": {
           "ok": true,
-          "cavity_points": 1089,
-          "rim_points": 215,
+          "cavity_points": 10184,
+          "rim_points": 728,
           "cavity_points_not_on_floor": 0,
           "rim_points_below_top": 0,
           "cavity_floor_z_mm": 2.0
@@ -853,24 +853,24 @@
       "name": "Shared Supply: Battle Tokens",
       "stl": "04_shared_supply_battle_tokens.stl",
       "position_mm": {
-        "x": 5.5,
-        "y": 170.9,
+        "x": 162.73,
+        "y": 146.8,
         "z": 8.0
       },
       "rotation_degrees": 0,
       "outer_mm": {
-        "width": 26.8,
-        "length": 26.8,
-        "height": 43.0
+        "width": 81.77,
+        "length": 97.7,
+        "height": 57.0
       },
       "footprint_in_box_mm": {
-        "width": 26.8,
-        "length": 26.8
+        "width": 81.77,
+        "length": 97.7
       },
       "cavity_mm": {
-        "width": 22.0,
-        "length": 22.0,
-        "depth": 41.0
+        "width": 76.97,
+        "length": 92.9,
+        "depth": 55.0
       },
       "id": 4,
       "type": "set",
@@ -882,8 +882,8 @@
       "layer": 0,
       "column": 3,
       "center_mm": {
-        "x": 18.9,
-        "y": 184.3,
+        "x": 203.61,
+        "y": 195.65,
         "z": 8.0
       },
       "transform_mm": [
@@ -891,13 +891,13 @@
           1.0,
           -0.0,
           0.0,
-          18.9
+          203.614
         ],
         [
           0.0,
           1.0,
           0.0,
-          184.3
+          195.651
         ],
         [
           0.0,
@@ -913,13 +913,13 @@
         ]
       ],
       "assembled_position_mm": [
-        18.9,
-        184.3,
+        203.61,
+        195.65,
         8.0
       ],
       "exploded_position_mm": [
-        -18.23,
-        205.05,
+        231.13,
+        220.38,
         103.0
       ],
       "assembly_order": 3,
@@ -939,9 +939,9 @@
             0.0
           ],
           "cavity_mm": {
-            "width": 22.0,
-            "length": 22.0,
-            "depth": 41.0
+            "width": 76.97,
+            "length": 92.9,
+            "depth": 55.0
           },
           "floor_thickness_mm": 2.0,
           "grows_to_fill": true,
@@ -970,13 +970,13 @@
           "kind": "cavity",
           "cell": "Shared Supply: Battle Tokens",
           "size_mm": [
-            22.0,
-            22.0,
-            41.0
+            76.97,
+            92.9,
+            55.0
           ]
         }
       ],
-      "solid_volume_cm3": 11.003,
+      "solid_volume_cm3": 62.042,
       "mesh_validation": {
         "triangles": 284,
         "watertight": true,
@@ -988,37 +988,37 @@
         "degenerate_triangles": 0,
         "shells": 1,
         "euler_characteristic": 2,
-        "volume_mm3": 11003.19,
+        "volume_mm3": 62042.15,
         "outward_normals": true,
         "bbox_mm": [
-          26.8,
-          26.8,
-          43.0
+          81.773,
+          97.698,
+          57.0
         ],
         "bbox_deviation_mm": 0.0,
-        "volume_vs_cad": 2e-05,
+        "volume_vs_cad": 0.0,
         "min_thickness": {
           "x": {
             "min_mm": 2.4,
             "at_mm": [
-              -13.4,
-              -10.81,
-              2.52
+              -40.89,
+              -45.07,
+              2.27
             ]
           },
           "y": {
             "min_mm": 2.4,
             "at_mm": [
-              -10.81,
-              -13.4,
-              2.52
+              -37.4,
+              -48.85,
+              2.11
             ]
           },
           "z": {
             "min_mm": 2.0,
             "at_mm": [
-              -10.81,
-              -10.8,
+              -38.14,
+              -46.11,
               0.0
             ]
           },
@@ -1028,8 +1028,8 @@
         "ok": true,
         "single_open_cavity": {
           "ok": true,
-          "cavity_points": 441,
-          "rim_points": 143,
+          "cavity_points": 6992,
+          "rim_points": 521,
           "cavity_points_not_on_floor": 0,
           "rim_points_below_top": 0,
           "cavity_floor_z_mm": 2.0

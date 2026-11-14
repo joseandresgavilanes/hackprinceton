@@ -26,6 +26,7 @@ class Cell:
     l: float = 0.0                     # cavity size along local y
     depth: float = 0.0                 # cavity depth below the rim
     growable: bool = False             # bins: cavity may grow with the tray (fill_box)
+    deepens: bool = False              # cavity deepens with a taller tray (floor stays floor_mm)
     scoop_r: float = 0.0               # radius of the rounded bottom edges
     notch: str = "none"                # "deep" (both long walls) | "shallow" (one wall) | "none"
     wells: list = field(default_factory=list)      # [(u, v)] well centres relative to the cavity centre
@@ -321,7 +322,7 @@ def _set_box(comp: Compartment, s: Settings, max_depth: float, issues: Issues, l
     """Exactly one rectangular open cavity for all members of a set (no dividers or shaped cutouts)."""
     d = comp.data
     c = s.clearance_mm
-    plain = dict(name=comp.name, component=comp.name, type="set", growable=True)
+    plain = dict(name=comp.name, component=comp.name, type="set", growable=True, deepens=True)
     if d.get("members") is None and "required_mm" in d:
         req = dims(d.get("required_mm"), "required_mm", ("width", "length", "height"), issues, comp.name)
         if req is None:

@@ -214,9 +214,10 @@ _SETTING_RULES = {
 def parse_settings(raw: Any, issues: Issues, mode: str = "trays") -> Settings:
     s = Settings()
     if mode == "boxes":
-        # Simple removable boxes: sized to their contents, no raised floors, no growing into
-        # free floor space, no stacking unless the plan asks for it.
-        s.fill_height, s.fill_box, s.max_layers = False, False, 1
+        # Simple removable boxes that together fit the game box: all the same height (flush with
+        # the lid), grown to cover the floor, one layer. Set fill_height / fill_box to false for
+        # compact boxes sized only to their contents.
+        s.fill_height, s.fill_box, s.max_layers = True, True, 1
     if raw is None:
         raw = {}
     if not isinstance(raw, dict):

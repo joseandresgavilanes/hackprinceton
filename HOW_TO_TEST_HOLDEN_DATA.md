@@ -37,6 +37,7 @@ The STL files will be in `holden_boxes_demo/`, along with `organizer.glb` and `l
 - The folded board is 245 x 245 x 8 mm, excluded from tray cavities.
 - The board becomes the plan's `bottom_layer`: the boxes rest on top of it (z = 8 mm),
   57 mm remain for them, and the GLB preview draws the board as a non-printed slab.
+- All four boxes are 57 mm tall (flush with the lid) and together cover the board area.
   It is not treated as headroom under the lid.
 - The printer bed set to 256 x 256 x 256 mm is an illustrative setting, NOT
   a verified printer specification.

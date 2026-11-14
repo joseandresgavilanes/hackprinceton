@@ -88,23 +88,38 @@ def test_divider_mode_still_converts():
 # ---------------------------------------------------------------------------
 # Engine (no CAD)
 # ---------------------------------------------------------------------------
-def test_four_plain_boxes_on_the_board(boxes_plan):
+def test_four_plain_boxes_fit_the_game_box(boxes_plan):
+    """Default: all boxes the same height (flush with the lid) and together covering the board."""
     plan, designs, packing = plan_layout(boxes_plan)
     assert plan.mode == "boxes" and plan.floor_z == 8 and plan.usable_height == 57
     assert [d.name for d in designs] == SETS and len(packing.trays) == 4
     x0, y0, x1, y1 = plan.support_rect
+    covered = 0.0
     for p in packing.trays:
         geoms = place_cells(p.design, p.w, p.l, p.h, plan.settings)
         assert len(geoms) == 1
         g = geoms[0]
         assert g.kind == "rect" and g.notch == "none" and g.scoop_r == 0 and not g.wells
-        # compact: no growing to fill the box, no raised floor
-        assert (p.w, p.l, p.h) == pytest.approx((p.design.min_w, p.design.min_l, p.design.min_h))
-        assert p.h - g.depth == pytest.approx(plan.settings.floor_mm)
-        assert p.z == pytest.approx(8.0) and p.z + p.h <= 65 + 1e-9
+        assert p.z == pytest.approx(8.0) and p.z + p.h == pytest.approx(65.0)   # same height, flush
+        assert p.h - g.depth == pytest.approx(plan.settings.floor_mm)            # deeper cavity, no solid fill
+        assert p.w >= p.design.min_w - 1e-6 and p.l >= p.design.min_l - 1e-6     # still holds its contents
         fw, fl = p.footprint
         assert x0 - 1e-6 <= p.x and p.x + fw <= x1 + 1e-6 and y0 - 1e-6 <= p.y and p.y + fl <= y1 + 1e-6
         assert max(p.w, p.l) <= 256 and p.h <= 256
+        covered += fw * fl
+    # every gap between boxes is just the tray gap: the boxes fill the area the board supports
+    gap = plan.settings.tray_gap_mm
+    assert covered >= (x1 - x0 - 2 * gap) * (y1 - y0 - 2 * gap) * 0.95
+
+
+def test_compact_boxes_on_request(boxes_plan):
+    boxes_plan["settings"].update(fill_height=False, fill_box=False)
+    plan, designs, packing = plan_layout(boxes_plan)
+    for p in packing.trays:
+        g = place_cells(p.design, p.w, p.l, p.h, plan.settings)[0]
+        assert (p.w, p.l, p.h) == pytest.approx((p.design.min_w, p.design.min_l, p.design.min_h))
+        assert p.h - g.depth == pytest.approx(plan.settings.floor_mm)
+        assert p.z + p.h <= 65 + 1e-9
 
 
 def test_box_sizes_follow_contents(boxes_plan):

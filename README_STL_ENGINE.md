@@ -108,8 +108,10 @@ grouping decided upstream is used as-is:
   overlap (one layer, more only if one layer can't fit), + clearance. The arrangement is written to
   `layout.json` (`cells[].contents.arrangement_mm`). Pieces poured in at random may need settling, so
   physical fit is reported as not verified;
-- defaults change to `fill_height: false`, `fill_box: false`, `max_layers: 1`: boxes stay compact with a
-  plain `floor_mm` floor and unused box space stays empty;
+- the boxes together fit the game box: by default (`fill_height`/`fill_box` true, `max_layers: 1`) every box
+  is the full usable height (flush with the lid) and the boxes grow to cover the floor area. Each box's single
+  cavity grows and deepens with it, so the floor stays `floor_mm` thick (no solid fill). Set
+  `"fill_height": false, "fill_box": false` for compact boxes sized only to their contents;
 - after export, vertical rays over each STL prove there is exactly one open rectangular cavity
   (`mesh_validation.single_open_cavity`).
 

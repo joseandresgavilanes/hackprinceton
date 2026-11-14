@@ -218,13 +218,14 @@ def place_cells(design: TrayDesign, W: float, L: float, H: float, s: Settings) -
                 sides.add("-x")
             if j == len(row) - 1:
                 sides.add("+x")
-            out.append(_cell_geom(cells[i], rot, (x, y, x + widths[j], y + row_h[k]), sides))
+            out.append(_cell_geom(cells[i], rot, (x, y, x + widths[j], y + row_h[k]), sides,
+                                  H - design.floor))
             x += widths[j] + div
         y += row_h[k] + div
     return out
 
 
-def _cell_geom(cell: Cell, rot: bool, slot: tuple, sides: set) -> CellGeom:
+def _cell_geom(cell: Cell, rot: bool, slot: tuple, sides: set, max_depth: float) -> CellGeom:
     x0, y0, x1, y1 = slot
     cw, cl = _cell_dims(cell, rot)
     cx, cy = (x0 + x1) / 2, (y0 + y1) / 2
@@ -233,7 +234,8 @@ def _cell_geom(cell: Cell, rot: bool, slot: tuple, sides: set) -> CellGeom:
     # wall around it. No extra pockets or dividers are ever added here.
     w, l = (x1 - x0, y1 - y0) if cell.growable else (cw, cl)
     g = CellGeom(name=cell.name, component=cell.component, type=cell.type, kind=cell.kind, slot=slot,
-                 cx=cx, cy=cy, w=w, l=l, depth=cell.depth, rot=rot, sides=set(sides), scoop_r=cell.scoop_r,
+                 cx=cx, cy=cy, w=w, l=l, depth=max(cell.depth, max_depth) if cell.deepens else cell.depth,
+                 rot=rot, sides=set(sides), scoop_r=cell.scoop_r,
                  notch=cell.notch, growable=cell.growable, contents=cell.contents)
 
     # finger access decisions (geometry is cut in cad.py)
