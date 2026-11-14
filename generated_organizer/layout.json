@@ -1,0 +1,197 @@
+{
+  "game": "GameFit demo (illustrative dimensions \u2014 not verified for a particular game)",
+  "units": "mm",
+  "method": "rectpack_maxrects_bssf",
+  "box_inner_mm": {
+    "width": 210.0,
+    "length": 210.0,
+    "height": 50.0
+  },
+  "printer_bed_mm": {
+    "width": 220.0,
+    "length": 220.0
+  },
+  "constraints": {
+    "wall_mm": 2.4,
+    "floor_mm": 2.0,
+    "clearance_mm": 1.0,
+    "tray_gap_mm": 1.5,
+    "box_margin_mm": 1.5
+  },
+  "notes": [
+    "Single flat layer of separate trays, not a stacked system.",
+    "Each required_mm specifies the total stored group size, not one piece.",
+    "Print each STL flat-side-down; verify slicer checks and a physical fit before production.",
+    "Packing heuristic is not guaranteed optimal."
+  ],
+  "trays": [
+    {
+      "name": "Playing cards",
+      "stl": "01_playing_cards.stl",
+      "position_mm": {
+        "x": 2.25,
+        "y": 2.25,
+        "z": 0
+      },
+      "rotation_degrees": 0,
+      "outer_mm": {
+        "width": 72.8,
+        "length": 98.8,
+        "height": 29.0
+      },
+      "footprint_in_box_mm": {
+        "width": 72.8,
+        "length": 98.8
+      },
+      "cavity_mm": {
+        "width": 68.0,
+        "length": 94.0,
+        "depth": 27.0
+      }
+    },
+    {
+      "name": "Square tiles",
+      "stl": "02_square_tiles.stl",
+      "position_mm": {
+        "x": 2.25,
+        "y": 102.55,
+        "z": 0
+      },
+      "rotation_degrees": 0,
+      "outer_mm": {
+        "width": 58.8,
+        "length": 58.8,
+        "height": 34.0
+      },
+      "footprint_in_box_mm": {
+        "width": 58.8,
+        "length": 58.8
+      },
+      "cavity_mm": {
+        "width": 54.0,
+        "length": 54.0,
+        "depth": 32.0
+      }
+    },
+    {
+      "name": "Red meeples",
+      "stl": "03_red_meeples.stl",
+      "position_mm": {
+        "x": 2.25,
+        "y": 166.85,
+        "z": 0
+      },
+      "rotation_degrees": 90,
+      "outer_mm": {
+        "width": 40.8,
+        "length": 54.8,
+        "height": 25.0
+      },
+      "footprint_in_box_mm": {
+        "width": 54.8,
+        "length": 40.8
+      },
+      "cavity_mm": {
+        "width": 36.0,
+        "length": 50.0,
+        "depth": 23.0
+      }
+    },
+    {
+      "name": "Blue meeples",
+      "stl": "04_blue_meeples.stl",
+      "position_mm": {
+        "x": 58.55,
+        "y": 166.85,
+        "z": 0
+      },
+      "rotation_degrees": 90,
+      "outer_mm": {
+        "width": 40.8,
+        "length": 54.8,
+        "height": 25.0
+      },
+      "footprint_in_box_mm": {
+        "width": 54.8,
+        "length": 40.8
+      },
+      "cavity_mm": {
+        "width": 36.0,
+        "length": 50.0,
+        "depth": 23.0
+      }
+    },
+    {
+      "name": "Green meeples",
+      "stl": "05_green_meeples.stl",
+      "position_mm": {
+        "x": 114.85,
+        "y": 2.25,
+        "z": 0
+      },
+      "rotation_degrees": 90,
+      "outer_mm": {
+        "width": 40.8,
+        "length": 54.8,
+        "height": 25.0
+      },
+      "footprint_in_box_mm": {
+        "width": 54.8,
+        "length": 40.8
+      },
+      "cavity_mm": {
+        "width": 36.0,
+        "length": 50.0,
+        "depth": 23.0
+      }
+    },
+    {
+      "name": "Yellow meeples",
+      "stl": "06_yellow_meeples.stl",
+      "position_mm": {
+        "x": 76.55,
+        "y": 44.55,
+        "z": 0
+      },
+      "rotation_degrees": 0,
+      "outer_mm": {
+        "width": 40.8,
+        "length": 54.8,
+        "height": 25.0
+      },
+      "footprint_in_box_mm": {
+        "width": 40.8,
+        "length": 54.8
+      },
+      "cavity_mm": {
+        "width": 36.0,
+        "length": 50.0,
+        "depth": 23.0
+      }
+    },
+    {
+      "name": "Dice and tokens",
+      "stl": "07_dice_and_tokens.stl",
+      "position_mm": {
+        "x": 62.55,
+        "y": 102.55,
+        "z": 0
+      },
+      "rotation_degrees": 90,
+      "outer_mm": {
+        "width": 62.8,
+        "length": 46.8,
+        "height": 31.0
+      },
+      "footprint_in_box_mm": {
+        "width": 46.8,
+        "length": 62.8
+      },
+      "cavity_mm": {
+        "width": 58.0,
+        "length": 42.0,
+        "depth": 29.0
+      }
+    }
+  ]
+}
