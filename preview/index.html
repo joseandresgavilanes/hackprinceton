@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Organizer Preview</title>
+<link rel="icon" href="data:,">
+<style>
+  :root { --bg:#f4f1ec; --panel:#ffffffee; --ink:#2b2622; --muted:#6f665e; --line:#ddd5cb; --accent:#c4572e; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#1d1b19; --panel:#2a2724ee; --ink:#f1ebe4; --muted:#b2a89d; --line:#433d37; --accent:#e8794f; }
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display:none !important; }
+  html, body { margin:0; height:100%; background:var(--bg); color:var(--ink);
+               font:14px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  #view { position:fixed; inset:0; }
+  #view canvas { display:block; }
+  #panel { position:fixed; top:12px; left:12px; width:300px; max-height:calc(100% - 24px); overflow:auto;
+           background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:14px; }
+  h1 { font-size:16px; margin:0 0 2px; }
+  .sub { color:var(--muted); font-size:12px; margin-bottom:12px; }
+  label { display:flex; align-items:center; gap:8px; margin:8px 0; }
+  input[type=range] { flex:1; }
+  button { background:var(--accent); color:#fff; border:0; border-radius:6px; padding:7px 12px; cursor:pointer; font:inherit; }
+  button:disabled { opacity:.5; cursor:default; }
+  ul { list-style:none; padding:0; margin:10px 0 0; border-top:1px solid var(--line); }
+  li { display:flex; align-items:center; gap:8px; padding:6px 4px; border-bottom:1px solid var(--line); cursor:pointer; }
+  li.sel { background:color-mix(in srgb, var(--accent) 15%, transparent); }
+  .sw { width:12px; height:12px; border-radius:3px; flex:none; }
+  .meta { color:var(--muted); font-size:12px; margin-left:auto; white-space:nowrap; }
+  #info { margin-top:10px; font-size:12px; color:var(--muted); white-space:pre-wrap; }
+  #err { color:var(--accent); font-size:12px; }
+  @media (max-width: 600px) { #panel { width:auto; right:12px; max-height:45%; } }
+</style>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+</head>
+<body>
+<div id="view"></div>
+<div id="panel">
+  <h1>Inside the Box</h1>
+  <div class="sub" id="sub">Loading organizer…</div>
+  <label>Explode <input id="explode" type="range" min="0" max="1" step="0.01" value="0"></label>
+  <label><input id="showBox" type="checkbox" checked> Show game box</label>
+  <label id="boardRow" hidden><input id="showBoard" type="checkbox" checked> Show board (not printed)</label>
+  <button id="play">Play assembly</button>
+  <ul id="list"></ul>
+  <div id="info"></div>
+  <div id="err"></div>
+</div>
+<script type="module">
+import * as THREE from "three";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+
+const params = new URLSearchParams(location.search);
+const glbUrl = params.get("glb") || "../generated_organizer/organizer.glb";
+const view = document.getElementById("view");
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+view.appendChild(renderer.domElement);
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(40, 1, 0.001, 100);
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+scene.add(new THREE.HemisphereLight(0xffffff, 0x8a7f74, 1.6));
+const sun = new THREE.DirectionalLight(0xffffff, 1.8);
+sun.position.set(0.6, 1.2, 0.8);
+scene.add(sun);
+
+const trays = [];       // { obj, a: Vector3, e: Vector3, order, data }
+let boxObj = null, explode = 0, anim = null, selected = null;
+const boardObjs = [];   // non-printed items the trays rest on (e.g. folded board)
+
+function resize() {
+  const w = view.clientWidth, h = view.clientHeight;
+  renderer.setSize(w, h);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+}
+addEventListener("resize", resize);
+resize();
+
+const ease = t => t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+function applyExplode(globalT) {
+  for (const t of trays) {
+    const k = typeof globalT === "function" ? globalT(t) : globalT;
+    t.obj.position.lerpVectors(t.a, t.e, k);
+  }
+}
+
+new GLTFLoader().load(glbUrl, gltf => {
+  const root = gltf.scene;
+  scene.add(root);
+  root.traverse(o => {
+    const d = o.userData || {};
+    if (d.printable === false) (d.kind === "bottom_layer" ? boardObjs.push(o) : (boxObj = o));
+    if (d.assembled_translation_mm) {
+      trays.push({ obj: o, a: new THREE.Vector3(...d.assembled_translation_mm),
+                   e: new THREE.Vector3(...d.exploded_translation_mm), order: d.assembly_order, data: d });
+    }
+  });
+  trays.sort((p, q) => p.order - q.order);
+  const sceneExtras = gltf.parser.json.scenes?.[0]?.extras || {};
+  const b = sceneExtras.box_inner_mm;
+  document.getElementById("sub").textContent =
+    `${trays.length} printable trays` + (b ? ` · box ${b[0]}×${b[1]}×${b[2]} mm` : "") + " · drag to orbit";
+  // fit camera to the assembled organizer
+  // frame both the assembled and the fully exploded layout
+  applyExplode(1);
+  root.updateMatrixWorld(true);
+  const bounds = new THREE.Box3().setFromObject(root);
+  applyExplode(0);
+  root.updateMatrixWorld(true);
+  bounds.union(new THREE.Box3().setFromObject(root));
+  const c = bounds.getCenter(new THREE.Vector3()), r = bounds.getSize(new THREE.Vector3()).length();
+  camera.position.set(c.x + r * 0.55, c.y + r * 0.85, c.z + r * 0.75);
+  camera.near = r / 100; camera.far = r * 20; camera.updateProjectionMatrix();
+  controls.target.copy(c);
+  document.getElementById("boardRow").hidden = boardObjs.length === 0;
+  buildList();
+}, undefined, e => {
+  document.getElementById("sub").textContent = "Could not load the organizer.";
+  document.getElementById("err").textContent =
+    `Failed to load ${glbUrl}. Serve the repository over HTTP (python -m http.server) and open /preview/. ${e.message || e}`;
+});
+
+function buildList() {
+  const ul = document.getElementById("list");
+  for (const t of trays) {
+    const li = document.createElement("li");
+    const col = t.obj.material?.color?.getHexString?.() || "999999";
+    const o = t.data.outer_mm || [];
+    li.innerHTML = `<span class="sw" style="background:#${col}"></span><span></span>` +
+                   `<span class="meta">L${t.data.layer} · ${o.map(v => Math.round(v)).join("×")}</span>`;
+    li.children[1].textContent = t.data.name || t.obj.name;
+    li.onclick = () => select(t);
+    t.li = li;
+    ul.appendChild(li);
+  }
+}
+
+function select(t) {
+  for (const u of trays) {
+    u.li.classList.toggle("sel", u === t);
+    if (u.obj.material?.emissive) u.obj.material.emissive.setHex(u === t ? 0x3a2a1a : 0x000000);
+  }
+  selected = t;
+  const d = t.data;
+  document.getElementById("info").textContent =
+    `${d.name || t.obj.name}\nSTL: ${d.stl}\ntype: ${d.type} · layer ${d.layer} · rotated ${d.rotation_degrees}°\n` +
+    `outer: ${(d.outer_mm || []).join(" × ")} mm\n` +
+    (d.contents ? `holds: ${d.contents}${d.storage_style ? ` (${d.storage_style})` : ""}\n` : "") +
+    `assembled at: ${d.assembled_translation_mm.join(", ")} mm`;
+}
+
+const ray = new THREE.Raycaster(), ptr = new THREE.Vector2();
+renderer.domElement.addEventListener("click", ev => {
+  const r = renderer.domElement.getBoundingClientRect();
+  ptr.set(((ev.clientX - r.left) / r.width) * 2 - 1, -((ev.clientY - r.top) / r.height) * 2 + 1);
+  ray.setFromCamera(ptr, camera);
+  const hit = ray.intersectObjects(trays.map(t => t.obj), false)[0];
+  if (hit) select(trays.find(t => t.obj === hit.object));
+});
+
+const slider = document.getElementById("explode");
+slider.oninput = () => { anim = null; explode = +slider.value; applyExplode(explode); };
+document.getElementById("showBox").onchange = e => { if (boxObj) boxObj.visible = e.target.checked; };
+document.getElementById("showBoard").onchange = e => { for (const b of boardObjs) b.visible = e.target.checked; };
+document.getElementById("play").onclick = () => { anim = { start: performance.now() }; };
+
+function frame(now) {
+  if (anim) {
+    const per = 700, stagger = 260, total = per + stagger * Math.max(trays.length - 1, 0);
+    const T = now - anim.start;
+    applyExplode(t => 1 - ease(Math.min(Math.max((T - t.order * stagger) / per, 0), 1)));
+    slider.value = String(Math.max(0, 1 - T / total));
+    if (T > total) { anim = null; slider.value = "0"; }
+  }
+  controls.update();
+  renderer.render(scene, camera);
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
