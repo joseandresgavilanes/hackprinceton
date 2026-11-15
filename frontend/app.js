@@ -274,8 +274,9 @@ async function setupViewer() {
     const footprint = tray.footprint_in_box_mm || { width: outer.width, length: outer.length };
     const pos = tray.position_mm || { x: (index % 3) * 65, y: Math.floor(index / 3) * 65 };
     // STL files are z-up. After rotateX, y is vertical and the backend's y becomes -z.
+    // position_mm.z is the tray's base height: > 0 for trays stacked on other trays.
     mesh.rotation.y = THREE.MathUtils.degToRad(tray.rotation_degrees || 0);
-    mesh.position.set(pos.x + footprint.width / 2 - box.width / 2, outer.height / 2, -(pos.y + footprint.length / 2 - box.length / 2));
+    mesh.position.set(pos.x + footprint.width / 2 - box.width / 2, (pos.z || 0) + outer.height / 2, -(pos.y + footprint.length / 2 - box.length / 2));
     mesh.name = tray.name; scene.add(mesh); trayMeshes[index] = mesh;
   }));
   window.addEventListener('resize', resizeViewer); $('#reset-view').addEventListener('click', () => { camera.position.set(180, 175, 240); controls.target.set(0, 0, 0); });

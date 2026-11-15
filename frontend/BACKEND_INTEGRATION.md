@@ -152,12 +152,13 @@ The 3D viewer needs both the STL file URL and the associated layout tray. All di
 | `box_inner_mm.width`, `box_inner_mm.length` | Yes | Centers the packed organizer in the 3D view. |
 | `trays[].name` | Yes | Download label and file pairing. |
 | `trays[].position_mm.x`, `trays[].position_mm.y` | Yes | Bottom-left position of the tray footprint in the box. |
+| `trays[].position_mm.z` | Yes | Height of the tray's base above the box floor: `0` on the floor, greater for a tray stacked on other trays. |
 | `trays[].rotation_degrees` | Yes | `0` or `90`; rotates the tray around its vertical axis. |
 | `trays[].outer_mm.width`, `length`, `height` | Yes | Places the STL on the floor rather than through it. |
 | `trays[].footprint_in_box_mm.width`, `length` | Yes | Finds the footprint center after the possible rotation. |
 | `files[].stl_url` | Yes | Browser-accessible URL for the corresponding STL mesh and download link. |
 
-STL geometry must use z-up coordinates, with its base at `z = 0`. The frontend converts it to Three.js y-up coordinates, raises it by half of `outer_mm.height`, applies `rotation_degrees`, and places it from the footprint center. Do not pre-translate the mesh to the box location inside the STL itself.
+STL geometry must use z-up coordinates, with its base at `z = 0`. The frontend converts it to Three.js y-up coordinates, raises it to `position_mm.z` plus half of `outer_mm.height`, applies `rotation_degrees`, and places it from the footprint center. Do not pre-translate the mesh to the box location inside the STL itself.
 
 ## 5. Intermediate AI/CV planner result
 
