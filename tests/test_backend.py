@@ -248,6 +248,22 @@ def test_scale_question_and_answer(make_client, tmp_path):
 
 
 @needs_cad
+def test_finished_files_stay_downloadable_after_a_restart(make_client, tmp_path):
+    client = make_client(**test_fixtures(tmp_path))
+    job_id = start(client, "Test Game").json()["job_id"]
+    body = wait(client, job_id).json()
+    assert body["status"] == "complete"
+    urls = [path_of(f["stl_url"]) for f in body["files"]] + [path_of(body["glb_url"]), path_of(body["layout_url"])]
+    restarted = make_client(**test_fixtures(tmp_path))          # new process state, same jobs folder
+    assert restarted.get(f"/api/organizer-jobs/{job_id}").status_code == 404   # status is in memory only
+    for url in urls:
+        r = restarted.get(url)
+        assert r.status_code == 200 and r.content == client.get(url).content, url
+    assert restarted.get(f"/files/{job_id}/plan.json").status_code == 404     # still only the listed files
+    assert restarted.get(f"/files/{job_id}/..%2Fjob.json").status_code == 404
+
+
+@needs_cad
 def test_an_organizer_that_cannot_fit_is_reported(make_client, tmp_path):
     grouping = grouping_json(box=(100.0, 100.0, 20.0), second_deck=True)   # two 12 mm decks: no floor, no stack
     client = make_client(**test_fixtures(tmp_path, grouping=grouping))

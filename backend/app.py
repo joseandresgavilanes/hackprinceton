@@ -196,13 +196,25 @@ def create_app(config: Config | None = None) -> FastAPI:
         store.submit(job)
         return job_response(request, job)
 
+    def finished_files(job_id: str) -> set:
+        """Files a finished job may serve: from memory, or from its job.json after a server restart."""
+        job = store.get(job_id)
+        if job is not None:
+            with store.lock:
+                return {f["stl"] for f in job.files} | {"organizer.glb", "layout.json"} \
+                    if job.status == "complete" else set()
+        try:
+            record = json.loads((config.jobs_dir / job_id / "job.json").read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            return set()
+        if record.get("status") != "complete":
+            return set()
+        return {f["stl"] for f in record.get("files", [])} | {"organizer.glb", "layout.json"}
+
     @app.get("/files/{job_id}/{name}")
     def job_file(job_id: str, name: str):
-        job = store.get(job_id) if JOB_ID.match(job_id) else None
-        with store.lock:
-            allowed = {f["stl"] for f in job.files} | {"organizer.glb", "layout.json"} \
-                if job is not None and job.status == "complete" else set()
-        path = job.output_dir / name if name in allowed else None
+        allowed = finished_files(job_id) if JOB_ID.match(job_id) else set()
+        path = config.jobs_dir / job_id / "output" / name if name in allowed else None
         if path is None or not path.is_file():
             return error(404, "No such file for this job.", "not_found")
         return FileResponse(path, media_type=MEDIA_TYPES.get(path.suffix, "application/octet-stream"),

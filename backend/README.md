@@ -66,13 +66,31 @@ After the measurement stage (`backend/measurement.py`):
 | `invalid_geometry` | 500 | generated meshes failed validation; nothing is offered for download |
 | `measurement_failed` / `grouping_failed` / `…_timeout` | 502 / 504 | a live-mode stage script failed or timed out (last error line in the message, full log in the job folder) |
 
+### Live-mode environment problems seen so far
+
+- `measurement_failed: … AnthropicConnectionError: Connection error.` with `TypeError: process() takes no
+  keyword arguments` in `measurement.log`: an old `Brotli` (1.0.x, e.g. Anaconda's) cannot decode the API's
+  compressed responses for `anthropic` 2.x. The request still reaches the API (and is billed, with retries).
+  `pip install -U "brotli>=1.2.0"` (now in `requirements-live.txt`).
+- `ImportError: numpy.core.multiarray failed to import` from `scipy.optimize`: a conda `scipy` built for NumPy
+  1.x next to a pip NumPy 2. Reinstall the same `scipy` version from PyPI (`pip install --force-reinstall
+  --no-deps scipy==<version>`).
+- Check the key, model access and response decoding for free (no tokens) before a paid run:
+  `python -c "import anthropic; print(anthropic.Anthropic().models.retrieve('claude-sonnet-5-5').id)"` with
+  `ANTHROPIC_API_KEY` exported.
+
 ## Jobs on disk
 
 `organizer_jobs/<job_id>/` (git-ignored, `ITB_JOBS_DIR` to move it): `job.json` (status, stage, question,
 answer, error), `photos/`, `dimensions.json` (+ `dimensions_corrected.json`), `grouping.json`,
 `measurement.log` / `grouping.log` (live mode), and `output/` with `plan.json`, the STL files,
 `organizer.glb` and `layout.json` (or `report.json` on failure). Jobs run one at a time; their status is kept
-in memory, so restarting the server forgets them (the folders stay).
+in memory, so a restarted server no longer reports old jobs, but a finished job's files stay downloadable at
+the same `/files/{id}/{name}` URLs (read from its `job.json`).
+
+To reuse a paid live run without paying again, point a fixtures file at its outputs and run fixtures mode:
+`{"my game": {"title": "My Game", "dimensions": "organizer_jobs/<id>/dimensions.json", "grouping":
+"organizer_jobs/<id>/grouping.json"}}` saved at the repository root, then `python -m backend --fixtures <file>`.
 
 ## Configuration
 
