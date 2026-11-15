@@ -7,7 +7,7 @@ The frontend is deliberately limited to the interaction layer. It expects one jo
 `POST /api/organizer-jobs` uses `multipart/form-data`:
 
 - `game_name` (required string)
-- `reference_photos[]` (four images of components alongside a ruler)
+- `reference_photos[]` (2–6 images of components alongside a ruler)
 
 The backend uses the game name to retrieve the relevant rulebook/component roster, then uses it as context for CV classification of the submitted ruler photos. If image scale or a component match is low confidence, it returns a measurement question; otherwise it returns a job to poll:
 

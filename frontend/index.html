@@ -8,8 +8,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="./styles.css" />
-    <link rel="stylesheet" href="./tabletop-tuning.css" />
+    <link rel="stylesheet" href="./styles.css?v=2" />
+    <link rel="stylesheet" href="./tabletop-tuning.css?v=7" />
+    <link rel="stylesheet" href="./viewer/organizer-viewer.css?v=2" />
     <script type="importmap">
       {
         "imports": {
@@ -39,25 +40,25 @@
               <label class="table-upload" id="drop-zone" for="photos"><input id="photos" type="file" accept="image/*" multiple /><span class="upload-mark">+</span><span><strong>Add photos</strong><small>Drop them anywhere on the table</small></span></label>
               <button class="table-submit" type="submit">Build my box <span>→</span></button>
             </div>
-            <p class="table-hint">Photograph your components with a ruler in the frame. Add up to four views.</p>
+            <p class="table-hint">Photograph your components with a ruler in the frame. Add 2–6 views.</p>
           </form>
 
           <div class="tabletop-photos" id="photo-grid" aria-live="polite" aria-label="Photos on the table"></div>
-          <div class="table-count" id="photo-count">0 / 4 pieces on table</div>
-          <div class="table-note">TIP: one overhead + three angles</div>
+          <div class="table-count" id="photo-count">0 / 6 photos · add at least 2</div>
+          <div class="table-note">TIP: one overhead + a few angles</div>
         </div>
       </section>
 
       <section class="screen screen-review hidden" id="review-screen" aria-labelledby="review-title">
         <div class="section-heading"><div><p class="eyebrow">ONE QUICK CHECK</p><h2 id="review-title">Confirm the reference size</h2></div><button class="text-button" id="back-to-input" type="button">← Edit photos</button></div>
-        <div class="review-content"><div class="measure-card"><span class="measure-icon">↔</span><h3>We found a possible match</h3><p>Our scan identified cards and tokens, but needs one measurement to scale the organizer correctly.</p><div class="measure-fields"><label>Object<input id="reference-object" placeholder="e.g. Standard playing card" required /></label><label>Width (mm)<input id="reference-width" type="text" inputmode="decimal" placeholder="e.g. 63" required /></label></div><small>Enter the width as a number in millimetres.</small></div><div class="review-visual"><div class="ruler"><b>0</b><b>10</b><b>20</b><b>30</b><b>40</b><b>50</b><b>60</b></div><div class="card-stack"><span></span><span></span><span></span></div><p>Reference object detected</p></div></div>
+        <div class="review-content"><div class="measure-card"><span class="measure-icon">↔</span><h3>We found a possible match</h3><p>Our scan identified cards and tokens, but needs one measurement to scale the organizer correctly.</p><div class="measure-fields"><label>Object<input id="reference-object" placeholder="e.g. Standard playing card" required /></label><label>Width (mm)<input id="reference-width" type="text" inputmode="decimal" placeholder="e.g. 63" required /></label></div><small>Enter the width as a number in millimetres.</small></div><div class="review-visual" id="review-visual" aria-label="Your photos and the piece to measure"></div></div>
         <div class="form-footer"><p>Only confirm measurements you can verify. A small error can affect fit.</p><button class="primary" id="generate-button" type="button">Generate my organizer <span>→</span></button></div>
       </section>
 
       <section class="screen screen-results hidden" id="results-screen" aria-labelledby="results-title">
         <div class="results-scene">
           <h2 class="sr-only" id="results-title">Your organizer is ready</h2>
-          <div class="viewer-card summit-viewer"><div class="viewer-toolbar"><span><i></i> 3D preview</span><div class="viewer-actions"><button id="reset-view" type="button">Reset</button></div></div><div id="viewer" aria-label="Interactive preview of the generated organizer"></div><p class="viewer-caption">Drag to rotate · scroll to zoom</p></div>
+          <div class="viewer-card summit-viewer"><div class="viewer-toolbar"><span><i></i> 3D preview</span><div class="viewer-actions"><button id="reset-view" type="button" title="Reset the 3D view">↺ Reset</button><button id="open-studio" type="button" title="Open the full-screen 3D studio"><span class="label-long">Open studio</span><span class="label-short">Studio</span> ⤢</button></div></div><div id="viewer" aria-label="Interactive preview of the generated organizer"></div><p class="viewer-caption">Drag to rotate · click a box · open the studio to explore</p></div>
           <div class="downloads summit-downloads"><div class="download-intro"><p class="summit-kicker">SUMMIT SUPPLIES</p><h3>Printable files</h3><p class="results-subtitle" id="result-game">Demo organizer · 7 printable trays</p><a class="download-all" id="download-all" href="../generated_organizer/01_playing_cards.stl" download>↓ Download all <small>(7 STL)</small></a></div><div id="file-list" class="file-list"></div></div>
           <button class="results-reset" id="start-over" type="button">+ Start another game</button>
         </div>
@@ -70,6 +71,6 @@
       </div>
     </div>
     <script src="./config.js"></script>
-    <script type="module" src="./app.js?v=5"></script>
+    <script type="module" src="./app.js?v=7"></script>
   </body>
 </html>

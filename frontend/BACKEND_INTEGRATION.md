@@ -30,7 +30,7 @@ Content type: `multipart/form-data` (the browser sets its boundary; do not manua
 | Field | Type | Required | Rule |
 | --- | --- | --- | --- |
 | `game_name` | string | Yes | Non-empty board-game name. `Bypass` is a local demo-only special case and is never sent. |
-| `reference_photos[]` | file[] | Yes | Exactly 4 image files. Each should show components and a ruler. |
+| `reference_photos[]` | file[] | Yes | 2–6 image files (the backend's `config.js` sends the limits as `photos: {min, max}`). Each should show components and a ruler. |
 
 The backend flow is expected to use `game_name` to find rulebook/component information and use that information to classify the submitted images. It can ask for one verified measurement when image scale or classification is uncertain.
 
@@ -103,7 +103,7 @@ The current frontend shows its generic measurement card after receiving this sta
 
 ## 2a. Long-running jobs and the illustrated loading screen
 
-The loading screen is now a first-class job state. As soon as the user submits four photos, the frontend opens the illustrated plate scene and makes the submitted photos orbit on the plate. Do not return `needs_measurement` until the backend has actually completed its initial analysis and determined that a measurement is necessary.
+The loading screen is now a first-class job state. As soon as the user submits their photos, the frontend opens the illustrated plate scene and makes the submitted photos orbit on the plate. Do not return `needs_measurement` until the backend has actually completed its initial analysis and determined that a measurement is necessary.
 
 For a job that takes longer than the original upload request, return immediately with HTTP `202`:
 
@@ -167,7 +167,7 @@ The supplied `exoutput.json` is a valid **intermediate backend result**. It is n
 
 ### Producer: research/CV + organizer-selection stage
 
-This stage receives the game name, four photos, and any confirmed fallback measurement. It returns the following values to the **packing/STL stage**:
+This stage receives the game name, the 2–6 photos, and any confirmed fallback measurement. It returns the following values to the **packing/STL stage**:
 
 | JSON value | Required | Consumer use |
 | --- | --- | --- |
@@ -220,6 +220,6 @@ After STL generation, the backend converts the generated `layout.json` and STL p
 2. Object: `Bypass`
 3. Width: `Bypass`
 
-This never calls the backend and displays only the repository's sample STLs. Normal submissions require four photos and show STL files only from a backend `complete` response.
+This never calls the backend and displays only the repository's sample STLs. Normal submissions require 2–6 photos and show STL files only from a backend `complete` response.
 
 For loading-screen-only visual testing, enter `Loading` as the game name. This is another local-only test mode: it opens the plate animation immediately, uses any photos currently selected as the orbiting cards, waits for the demo duration, then opens the sample results screen. It never calls the backend.

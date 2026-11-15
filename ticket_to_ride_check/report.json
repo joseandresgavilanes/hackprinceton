@@ -1,0 +1,12 @@
+{
+  "status": "failed",
+  "errors": [
+    {
+      "severity": "error",
+      "code": "too_large",
+      "message": "bottom layer 'Board map of the London transportation network' (236.6 × 168.9 mm) does not fit the box interior"
+    }
+  ],
+  "missing_measurements": [],
+  "warnings": []
+}

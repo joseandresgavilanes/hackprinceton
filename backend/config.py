@@ -85,7 +85,8 @@ class Config:
     grouping_command: list = field(default_factory=lambda: _script(
         "ITB_GROUPING_SCRIPT", ROOT / "Final stuff" / "organize_game_boxes.py"))
     stage_timeout_s: float = 1800.0
-    photo_count: int = 4
+    min_photos: int = 2                  # reference photos per job (the web UI reads these limits)
+    max_photos: int = 6
     max_photo_bytes: int = 25 * 1024 * 1024
     cors_origins: list = field(default_factory=lambda: ["http://localhost:8000", "http://127.0.0.1:8000"])
     workers: int = 1

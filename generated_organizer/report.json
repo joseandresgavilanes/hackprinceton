@@ -1,0 +1,12 @@
+{
+  "status": "failed",
+  "errors": [
+    {
+      "severity": "error",
+      "code": "does_not_fit",
+      "message": "The trays cannot fit in the 250 × 250 × 67 mm box: they need at least 532 cm² of floor (after stacking up to 2 high within 59.0 mm) but the box floor offers 615 cm². Largest trays: Monster Kits (All Players) 200×197×18, Status & Special Tokens 101×83×23, Power Card Deck 74×96×29. Options: a larger box, smaller clearance/walls, fewer components per box, more settings.max_layers, or less headroom_mm."
+    }
+  ],
+  "missing_measurements": [],
+  "warnings": []
+}

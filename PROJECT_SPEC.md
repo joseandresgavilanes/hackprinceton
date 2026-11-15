@@ -12,7 +12,7 @@
 Inside the Box (a HackPrinceton project) designs **3D-printable organizers for board games**:
 
 ```
-game name + 4 ruler photos ──► CV measurement ──► grouping into sets ──► converter ──► CAD engine ──► STL + GLB + layout.json ──► web UI / 3D preview
+game name + 2–6 ruler photos ─► CV measurement ──► grouping into sets ──► converter ──► CAD engine ──► STL + GLB + layout.json ──► web UI / 3D preview
  (frontend/)                    (…ruler_v7.py,      (organize_game_       (convert_      (organizer/)                               (frontend/, preview/)
                                  Claude + OpenCV)    boxes.py, Claude)     grouping_
                                                                            output.py)
@@ -25,8 +25,8 @@ game name + 4 ruler photos ──► CV measurement ──► grouping into sets
 3. **Convert** the grouping JSON into an engine *plan* (§4).
 4. **Generate** one simple open-top storage box per set, packed to fill the game box. The parametric
    CadQuery engine writes one STL per box, an assembled `organizer.glb` and `layout.json`.
-5. **Show** the result: the web UI (`frontend/`) for the user flow and downloads, and a small three.js
-   page (`preview/`) with an exploded view and an assembly animation.
+5. **Show** the result: the web UI (`frontend/`) for the user flow and downloads, with a full-screen 3D
+   studio, and the same viewer as a standalone page (`preview/`).
 
 The backend (`backend/`, `python -m backend`) runs the five stages as one job behind the web UI's API; each
 stage also still works as its own command-line script (§10).
@@ -36,7 +36,7 @@ stage also still works as its own command-line script (§10).
 | Path | Role |
 |---|---|
 | `backend/` | FastAPI server for the whole journey (`python -m backend`, see `backend/README.md`): serves the web UI and the job API of `frontend/BACKEND_CONTRACT.md`, and runs measure → group → convert → generate as a background job per upload, in `organizer_jobs/<id>/`. **fixtures** mode (default) reads committed CV/grouping JSON (no paid calls); **live** mode runs the `Final stuff/` scripts with the server's `ANTHROPIC_API_KEY`. The converter and CAD engine always run for real. |
-| `frontend/` | "GameFit" web UI (PR #2): game name + 4 ruler photos → loading scene with the job's stage → optional measurement question → STL downloads + three.js viewer. `config.js` points it at the backend's API when the backend serves it; served statically, it stays in demo mode and shows `generated_organizer/`. |
+| `frontend/` | "GameFit" web UI (PR #2): game name + 2–6 ruler photos → loading scene with the job's stage → optional measurement question → STL downloads + three.js viewer. `config.js` points it at the backend's API when the backend serves it; served statically, it stays in demo mode and shows `generated_organizer/`. |
 | `Final stuff/` | The folder the team started for the final pipeline: `boardgame_dimensions_ruler_v7.py` (CV, identical to `boardgame/`'s copy) and `organize_game_boxes.py` (newest grouping script; always writes `organizer: "boxes"`). |
 | `boardgame/` | Pipeline workspace. CV scripts (`boardgame_dimensions_ruler.py`, `_relative.py`, `_cv.py`, `_ruler_v7.py`), grouping scripts (`organize_game.py`, `_compatible.py`, `_shapes.py`), sample dimensions JSONs (`ticket_to_ride_london_dimensions.json`, `root_dimensions.json`, `excape_dimensions.json`, `example_game.json`), grouping outputs, and test photos (`photos/`). |
 | `boardgame_dimensions_ruler.py`, `boardgame_dimensions_relative.py` (root) | Earlier CV versions; they differ from the `boardgame/` copies. Ruler: perspective from the ruler's 4 corners (homography), GrabCut outlines, Claude marks ruler and pieces. Relative: one least-squares log-scale solve across photos plus one real measurement as anchor. **Do not modify unless absolutely necessary.** |
@@ -51,8 +51,9 @@ stage also still works as its own command-line script (§10).
 | `organizer/gltf.py` | Writes the GLB from the exact STL triangles. |
 | `organizer/pipeline.py` | Orchestration (`plan_layout`, `generate`), layout validation (incl. rim support), `layout.json`, failure `report.json`. |
 | `organizer/cv_adapter.py` | CV dimensions JSON → draft *tray-mode* plan (bypasses grouping). Never fills gaps. |
-| `preview/index.html` | three.js 0.160 viewer (`?glb=` URL parameter). Renders stacked layers correctly. |
-| `tests/` | pytest suite (120 tests): engine, converter and backend API. Nothing tests the CV or grouping scripts or the frontend's JavaScript. |
+| `frontend/viewer/` | Shared three.js 0.160 viewer: `organizer-viewer.js` draws each STL placed by `layout.json` (stacked boxes keep their height) with selection, details panel + STL download, isolate/hide, dimension lines, Iso/Top/Front, fit/reset, explode + assembly, game box toggle, filament colours; `contents.js` computes approximate non-printed stand-ins for the stored pieces (tested in `tests/js/`). Visual only. |
+| `preview/index.html` | Standalone page around that viewer: `?layout=` or `?glb=` (reads the folder's `layout.json` + STLs), plus deep links (`view`, `explode`, `contents`, `select`, `filament`, `box`). |
+| `tests/` | pytest suite (121 tests, one of them runs the viewer's JS tests with Node): engine, converter, backend API and the viewer's contents module. Nothing tests the CV or grouping scripts or the web UI's interaction code (checked by hand in a browser). |
 | `examples/` | Sample plans, Holden's grouping JSONs (`holden_boxes_grouping.json` = 4 sets, `ttr_london_grouping.json` = Ticket to Ride: London). |
 | `exoutput.json`, `ttrloutput.json`, `kotoutput.json` | Holden's grouping outputs: 3 sets ("divider"), TTR London with 6 sets, King of Tokyo with 5 sets. |
 | `holden_final/` | **Current** generated results for every grouping JSON (§7), plus a compact TTR variant. |
@@ -345,7 +346,7 @@ python convert_grouping_output.py kotoutput.json --bed 256 256 256 -o holden_fin
 python generate_organizer_stl.py holden_final/king_of_tokyo_5_boxes/plan.json -o holden_final/king_of_tokyo_5_boxes
 python generate_organizer_stl.py <plan.json> --check          # validate + pack only, no CAD
 python generate_organizer_stl.py --from-cv dims.json --box W L H --bed W L H -o out   # tray mode straight from CV output
-python -m pytest tests -q    # 120 tests, ~35 s with CadQuery
+python -m pytest tests -q    # 121 tests, ~38 s with CadQuery (Node runs tests/js)
 ```
 
 The whole journey in the browser (no terminal steps after this one):
@@ -389,7 +390,7 @@ Other CLI flags: `--allow-partial` (skip broken compartments), `--no-glb`, `--no
 
 ## 12. Current state
 
-**Works and is tested (120 tests):**
+**Works and is tested (121 tests):**
 - Holden's grouping JSON → converter → one plain open box per set → packed, validated STL + GLB +
   `layout.json`, for all four committed grouping outputs (3, 4, 6 and 5 sets), default and `--compact`.
 - One-layer, column and bridge layouts; same-size twins and similar-name groups; full-floor filling;
@@ -397,13 +398,13 @@ Other CLI flags: `--allow-partial` (skip broken compartments), `--no-glb`, `--no
 - All four storage styles the grouping script writes (`loose`, `stack`, `card_stack`, `tight_pack`) convert
   and generate; a test fails if the grouping script ever adds a style the converter doesn't know.
 - **The user journey, in fixtures mode** (`backend/`, 18 integration tests, also run in a browser): upload a
-  game name and 4 photos → stage-by-stage loading screen → (if a photo's scale was estimated) one width
+  game name and 2–6 photos → stage-by-stage loading screen → (if a photo's scale was estimated) one width
   measurement that rescales every photo measurement → 3D preview and STL downloads of files generated for
   that job. Upload checks, missing-measurement, conversion, `does_not_fit` and stage-failure errors reach the
   user with the backend's message. Fixture games: King of Tokyo, Ticket to Ride: London, Hypothetical Battle
   Game (more with `--fixtures FILE`).
-- The 3D preview (`preview/`) and the web UI viewer render every output, including stacked layers, and the
-  web UI viewer swaps models when the user starts another game.
+- The shared 3D viewer (web UI studio and `preview/`) renders every output, including stacked layers;
+  checked in a browser on Ticket to Ride: London and King of Tokyo, desktop and phone width.
 
 **Live mode, run once against the real API (2026-11-14):**
 - Ticket to Ride: London, 4 real ruler photos, through the web UI: 6 sets → 6 validated boxes in one layer,

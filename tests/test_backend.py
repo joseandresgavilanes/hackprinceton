@@ -113,6 +113,7 @@ def test_frontend_is_served_and_pointed_at_the_api(make_client, monkeypatch):
     assert page.status_code == 200 and 'src="./config.js"' in page.text
     cfg = client.get("/frontend/config.js")
     assert '"apiUrl": "/api/organizer-jobs"' in cfg.text and cfg.headers["cache-control"] == "no-store"
+    assert '"photos": {"min": 2, "max": 6}' in cfg.text
     health = client.get("/api/health").json()
     assert health["mode"] == "fixtures" and "King of Tokyo" in health["fixtures"]
     for r in (page, cfg, client.get("/api/health"), client.get("/frontend/app.js")):
@@ -121,8 +122,8 @@ def test_frontend_is_served_and_pointed_at_the_api(make_client, monkeypatch):
 
 @pytest.mark.parametrize("case, kwargs, status, code", [
     ("no game name", {"data": {"game_name": "  "}, "files": photos()}, 400, "missing_game_name"),
-    ("three photos", {"data": {"game_name": "King of Tokyo"}, "files": photos(3)}, 400, "wrong_photo_count"),
-    ("five photos", {"data": {"game_name": "King of Tokyo"}, "files": photos(5)}, 400, "wrong_photo_count"),
+    ("one photo", {"data": {"game_name": "King of Tokyo"}, "files": photos(1)}, 400, "wrong_photo_count"),
+    ("seven photos", {"data": {"game_name": "King of Tokyo"}, "files": photos(7)}, 400, "wrong_photo_count"),
     ("not an image", {"data": {"game_name": "King of Tokyo"}, "files": photos(data=b"%PDF-1.7 not a photo")},
      400, "invalid_photo"),
     ("empty file", {"data": {"game_name": "King of Tokyo"}, "files": photos(data=b"")}, 400, "invalid_photo"),
@@ -245,6 +246,17 @@ def test_scale_question_and_answer(make_client, tmp_path):
     assert any("scaled by 1.0500" in w for w in body["warnings"])
     assert "Low-confidence measurement: Wooden cube (±12%)" in body["warnings"]
     assert "Grouping: Test warning from the grouping step." in body["warnings"]
+
+
+@needs_cad
+@pytest.mark.parametrize("n", [2, 6])
+def test_two_to_six_photos_make_a_job(make_client, tmp_path, n):
+    client = make_client(**test_fixtures(tmp_path))
+    r = start(client, "Test Game", files=photos(n))
+    assert r.status_code == 202, r.json()
+    job_id = r.json()["job_id"]
+    assert len(list((tmp_path / "jobs" / job_id / "photos").iterdir())) == n
+    assert wait(client, job_id).json()["status"] == "complete"
 
 
 @needs_cad

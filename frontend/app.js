@@ -1,6 +1,8 @@
 // The backend endpoint comes from config.js (served by `python -m backend`). Empty keeps the static demo mode.
 const ORGANIZER_API_URL = (window.INSIDE_THE_BOX_CONFIG?.apiUrl || '').replace(/\/$/, '');
 const DEMO_PROCESSING_MS = 4200;
+// How many reference photos a job takes; the backend's config.js sets them (2–6 by default).
+const PHOTO_LIMITS = { min: 2, max: 6, ...(window.INSIDE_THE_BOX_CONFIG?.photos || {}) };
 const ASSET_ROOT = '../generated_organizer/';
 const FALLBACK_TRAYS = [
   ['Playing cards', '01_playing_cards.stl'], ['Square tiles', '02_square_tiles.stl'],
@@ -24,23 +26,47 @@ const photos = $('#photos'); const photoGrid = $('#photo-grid'); const photoCoun
 let bypassFlow = false; let loadingDemoFlow = false; let currentJob = null; let completedTrays = null; let completedLayout = null; let activeLayout = null;
 let loadingAnimationFrame = null; let loadingOrbitStartedAt = 0; let loadingFinishing = false; let loadingExitScheduled = false; let loadingFinishedCallback = null;
 
+// One preview URL per file, released when the photo is removed.
+const photoUrls = new Map();
+function photoUrl(file) { if (!photoUrls.has(file)) photoUrls.set(file, URL.createObjectURL(file)); return photoUrls.get(file); }
+// Browsers cannot draw every photo format (e.g. iPhone HEIC in Chrome): show a neat card instead of a broken image.
+// The file itself is still uploaded unchanged.
+function photoFallback(file) {
+  const box = document.createElement('div'); box.className = 'photo-fallback';
+  box.title = `${file.name}: no preview in this browser, but the photo is uploaded as is.`;
+  const kind = document.createElement('b'); kind.textContent = (file.name.includes('.') ? file.name.split('.').pop() : 'photo').toUpperCase().slice(0, 5);
+  const note = document.createElement('small'); note.textContent = 'no preview';
+  box.append(kind, note); return box;
+}
+function photoImage(file, alt) {
+  const image = document.createElement('img'); image.alt = alt; image.decoding = 'async';
+  image.addEventListener('error', () => image.replaceWith(photoFallback(file)), { once: true });
+  image.src = photoUrl(file); return image;
+}
+function updatePhotoCount(note = '') {
+  const count = selectedFiles.length; const { min, max } = PHOTO_LIMITS;
+  photoCount.textContent = note || (count < min ? `${count} / ${max} photos · add at least ${min}` : `${count} / ${max} photos`);
+}
 function renderPhotos() {
   photoGrid.innerHTML = '';
+  photoGrid.classList.toggle('many', selectedFiles.length > 4);
   selectedFiles.forEach((file, index) => {
     const card = document.createElement('div'); card.className = 'photo-thumb';
-    const image = document.createElement('img'); image.src = URL.createObjectURL(file); image.alt = `Component photo ${index + 1}`;
     const remove = document.createElement('button'); remove.type = 'button'; remove.textContent = '×'; remove.setAttribute('aria-label', `Remove ${file.name}`);
-    remove.onclick = () => { selectedFiles.splice(index, 1); renderPhotos(selectedFiles); };
+    remove.onclick = () => { selectedFiles.splice(index, 1); URL.revokeObjectURL(photoUrls.get(file)); photoUrls.delete(file); renderPhotos(); };
     const name = document.createElement('span'); name.className = 'photo-name'; name.textContent = `Image ${index + 1} · ${file.name}`;
-    card.append(image, remove, name); photoGrid.append(card);
+    card.append(photoImage(file, `Component photo ${index + 1}`), remove, name); photoGrid.append(card);
   });
-  photoCount.textContent = `${selectedFiles.length} / 4 added`;
+  updatePhotoCount();
 }
 function addPhotos(files) {
-  const remainingSlots = 4 - selectedFiles.length;
-  if (remainingSlots <= 0) return;
-  selectedFiles.push(...[...files].slice(0, remainingSlots));
+  const all = [...files];
+  const images = all.filter((file) => file.type.startsWith('image/') || /\.(hei[cf]|jpe?g|png|webp)$/i.test(file.name));
+  const room = Math.max(0, PHOTO_LIMITS.max - selectedFiles.length);
+  selectedFiles.push(...images.slice(0, room));
   renderPhotos();
+  if (images.length > room) updatePhotoCount(`${selectedFiles.length} / ${PHOTO_LIMITS.max} photos · that's the maximum`);
+  else if (images.length < all.length) updatePhotoCount(`${selectedFiles.length} / ${PHOTO_LIMITS.max} photos · skipped files that are not images`);
 }
 photos.addEventListener('change', (event) => {
   addPhotos(event.target.files);
@@ -60,10 +86,7 @@ function showLoading(message) {
     const photo = document.createElement('div');
     photo.className = 'loading-photo';
     photo.dataset.orbitIndex = String(index);
-    const image = document.createElement('img');
-    image.src = URL.createObjectURL(file);
-    image.alt = '';
-    photo.append(image); loadingPhotos.append(photo);
+    photo.append(photoImage(file, '')); loadingPhotos.append(photo);
   });
   $('#loading-copy').textContent = message;
   $('#loading').classList.remove('hidden');
@@ -156,9 +179,9 @@ $('#organizer-form').addEventListener('submit', async (event) => {
   const name = $('#game-name').value.trim(); if (!name) return $('#game-name').focus();
   bypassFlow = !ORGANIZER_API_URL && name.toLowerCase() === 'bypass';
   loadingDemoFlow = !ORGANIZER_API_URL && name.toLowerCase() === 'loading';
-  if (bypassFlow) { showScreen(reviewScreen); return; }
+  if (bypassFlow) { renderReviewVisual(null); showScreen(reviewScreen); return; }
   if (loadingDemoFlow) { showLoading('Planning your organizer…'); await pause(DEMO_PROCESSING_MS); finishLoading(() => showResults()); return; }
-  if (selectedFiles.length !== 4) { alert('Upload all four component photos before continuing.'); return; }
+  if (selectedFiles.length < PHOTO_LIMITS.min || selectedFiles.length > PHOTO_LIMITS.max) { alert(`Add ${PHOTO_LIMITS.min} to ${PHOTO_LIMITS.max} photos of the components next to a ruler (you have ${selectedFiles.length}).`); return; }
   showLoading(ORGANIZER_API_URL ? 'Uploading your photos…' : 'Analyzing your components…');
   try {
     const job = await submitOrganizerJob(name);
@@ -177,10 +200,37 @@ function serviceError(error, fallback) {
   return error instanceof TypeError || !error?.message ? fallback : error.message;
 }
 function askMeasurement(question) {
-  if (!question) return;
-  $('#reference-object').value = question.object || '';
-  $('#reference-width').value = '';
-  if (question.suggested_value) $('#reference-width').placeholder = `e.g. ${question.suggested_value}`;
+  if (question) {
+    $('#reference-object').value = question.object || '';
+    $('#reference-width').value = '';
+    if (question.suggested_value) $('#reference-width').placeholder = `e.g. ${question.suggested_value}`;
+  }
+  renderReviewVisual(question);
+}
+// The measurement check shows the user's own photos and a ruler marking what to measure.
+function renderReviewVisual(question) {
+  const visual = $('#review-visual'); visual.replaceChildren();
+  if (selectedFiles.length) {
+    const stack = document.createElement('div'); stack.className = 'review-photos';
+    selectedFiles.slice(0, 3).forEach((file, index) => {
+      const tile = document.createElement('div'); tile.className = 'review-photo'; tile.append(photoImage(file, `Your photo ${index + 1}`)); stack.append(tile);
+    });
+    visual.append(stack);
+  }
+  const width = Number(question?.suggested_value) || 0;
+  const span = Math.max(100, Math.ceil(width / 50) * 50);                 // ruler length in mm
+  const ruler = document.createElement('div'); ruler.className = 'review-ruler';
+  for (let i = 0; i <= 10; i += 1) {
+    const mark = document.createElement('span'); mark.style.left = `${i * 10}%`; mark.textContent = String((span / 10) * i / 10); ruler.append(mark);
+  }
+  if (width) {
+    const bar = document.createElement('i'); bar.className = 'review-measure'; bar.style.width = `${(width / span) * 100}%`;
+    bar.dataset.label = `≈ ${width} mm in the photos`; ruler.append(bar);
+  }
+  const caption = document.createElement('p'); caption.className = 'review-caption';
+  const what = document.createElement('b'); what.textContent = question?.object || 'Your reference piece';
+  caption.append('Measure the width of ', what, ' with a ruler (cm).');
+  visual.append(ruler, caption);
 }
 $('#back-to-input').addEventListener('click', () => showScreen(inputScreen));
 $('#generate-button').addEventListener('click', async () => {
@@ -200,8 +250,7 @@ $('#generate-button').addEventListener('click', async () => {
 });
 $('#start-over').addEventListener('click', () => showScreen(inputScreen));
 
-let viewerReady = false; let renderer; let camera; let controls; let scene; let trayMeshes = []; let currentTray = null;
-let THREE; let OrbitControls; let STLLoader;
+let viewer = null; let viewerModule = null; let studio = null;
 async function trayData() {
   if (completedTrays) {
     if (completedLayout?.trays) {
@@ -259,57 +308,33 @@ $('#download-all').addEventListener('click', async (event) => {
 });
 async function setupViewer() {
   const trays = await trayData(); renderFileList(trays);
-  if (viewerReady) { if (scene) showTrays(trays); return; }
-  viewerReady = true;
-  try {
-    const modules = await Promise.all([
-      import('three'),
-      import('three/addons/controls/OrbitControls.js'),
-      import('three/addons/loaders/STLLoader.js')
-    ]);
-    THREE = modules[0]; ({ OrbitControls } = modules[1]); ({ STLLoader } = modules[2]);
-  } catch (error) {
-    $('#viewer').textContent = '3D preview is unavailable offline. Download the STL files to inspect them in your slicer.';
-    return;
-  }
-  const mount = $('#viewer'); scene = new THREE.Scene(); scene.background = new THREE.Color('#10172b');
-  camera = new THREE.PerspectiveCamera(38, mount.clientWidth / mount.clientHeight, .1, 1000); camera.position.set(180, 175, 240);
-  renderer = new THREE.WebGLRenderer({ antialias: true }); renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); renderer.setSize(mount.clientWidth, mount.clientHeight); mount.append(renderer.domElement);
-  controls = new OrbitControls(camera, renderer.domElement); controls.target.set(0, 0, 0); controls.enableDamping = true; controls.minDistance = 70; controls.maxDistance = 500;
-  scene.add(new THREE.HemisphereLight('#f3f1ff', '#38435b', 2.8)); const light = new THREE.DirectionalLight('#ffffff', 2.8); light.position.set(100, 140, 90); scene.add(light);
-  showTrays(trays);
-  window.addEventListener('resize', resizeViewer); $('#reset-view').addEventListener('click', () => { camera.position.set(180, 175, 240); controls.target.set(0, 0, 0); });
-  (function animate() { requestAnimationFrame(animate); controls.update(); renderer.render(scene, camera); })();
+  try { viewerModule ??= await import('./viewer/organizer-viewer.js'); }
+  catch (error) { $('#viewer').textContent = '3D preview is unavailable offline. Download the STL files to inspect them in your slicer.'; return; }
+  if (!viewer) viewer = new viewerModule.OrganizerViewer($('#viewer'), { compact: true, onSelect: markFile, onClose: closeStudio });
+  const layout = completedLayout || activeLayout || { trays };
+  await viewer.load({ layout, trays, title: $('#game-name').value.trim() || layout.game || 'Demo organizer',
+    stlUrl: (tray) => tray.stl_url || tray.url || `${ASSET_ROOT}${tray.stl}` });
 }
-// Replaces the previous organizer's meshes, so "Start another game" shows the new job's trays.
-let viewerGeneration = 0; let viewerGrid = null;
-function showTrays(trays) {
-  const generation = ++viewerGeneration;
-  trayMeshes.forEach((mesh) => { if (mesh) { scene.remove(mesh); mesh.geometry.dispose(); mesh.material.dispose(); } });
-  trayMeshes = []; if (viewerGrid) scene.remove(viewerGrid);
-  const box = completedLayout?.box_inner_mm || activeLayout?.box_inner_mm || { width: 210, length: 210 };
-  viewerGrid = new THREE.GridHelper(Math.max(box.width, box.length) + 50, 13, '#4d5a75', '#263149'); scene.add(viewerGrid);
-  const loader = new STLLoader(); const colors = ['#a6f2cf','#b3a8ff','#ffb26b','#7bdff2','#f5a4bc','#fae68d','#b9c3da'];
-  trays.forEach((tray, index) => loader.load(tray.stl_url || `${ASSET_ROOT}${tray.stl}`, (geometry) => {
-    if (generation !== viewerGeneration) { geometry.dispose(); return; }   // a newer organizer replaced this one
-    geometry.center(); geometry.rotateX(-Math.PI / 2);
-    const mesh = new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({ color: colors[index % colors.length], roughness: .55, metalness: .04 }));
-    const outer = tray.outer_mm || { width: 55, length: 55, height: 25 };
-    const footprint = tray.footprint_in_box_mm || { width: outer.width, length: outer.length };
-    const pos = tray.position_mm || { x: (index % 3) * 65, y: Math.floor(index / 3) * 65 };
-    // STL files are z-up. After rotateX, y is vertical and the backend's y becomes -z.
-    // position_mm.z is the tray's base height: > 0 for trays stacked on other trays.
-    mesh.rotation.y = THREE.MathUtils.degToRad(tray.rotation_degrees || 0);
-    mesh.position.set(pos.x + footprint.width / 2 - box.width / 2, (pos.z || 0) + outer.height / 2, -(pos.y + footprint.length / 2 - box.length / 2));
-    mesh.name = tray.name; scene.add(mesh); trayMeshes[index] = mesh;
-  }));
+// The card keeps a live preview; "Open studio" moves the same viewer into a full-screen configurator.
+function openStudio() {
+  if (!viewer || studio) return;
+  studio = document.createElement('div'); studio.className = 'itb-studio';
+  studio.setAttribute('role', 'dialog'); studio.setAttribute('aria-modal', 'true'); studio.setAttribute('aria-label', '3D organizer studio');
+  document.body.append(studio); studio.append(viewer.el); document.body.style.overflow = 'hidden';
+  viewer.setCompact(false); viewer.el.focus({ preventScroll: true }); requestAnimationFrame(() => viewer.fitView());
 }
-function resizeViewer() { const mount = $('#viewer'); if (!renderer || !mount) return; camera.aspect = mount.clientWidth / mount.clientHeight; camera.updateProjectionMatrix(); renderer.setSize(mount.clientWidth, mount.clientHeight); }
+function closeStudio() {
+  if (!viewer || !studio) return;
+  $('#viewer').append(viewer.el); viewer.setCompact(true); studio.remove(); studio = null; document.body.style.overflow = '';
+  requestAnimationFrame(() => viewer.fitView());
+}
+$('#open-studio').addEventListener('click', openStudio);
+$('#reset-view').addEventListener('click', () => viewer?.resetView());
+function markFile(index) { document.querySelectorAll('.file-item').forEach((row, i) => row.classList.toggle('selected', i === index)); }
 function renderFileList(trays) {
   const list = $('#file-list'); list.innerHTML = '';
-  trays.forEach((tray, index) => { const row = document.createElement('button'); row.className = `file-item ${index === 0 ? 'selected' : ''}`; const stlUrl = tray.stl_url || `${ASSET_ROOT}${tray.stl}`; row.innerHTML = `<span class="file-index">${String(index + 1).padStart(2, '0')}</span><span class="file-name">${tray.name}</span><span class="file-size">STL</span><a class="file-download" href="${stlUrl}" download aria-label="Download ${tray.name}">↓</a>`;
-    row.addEventListener('click', (event) => { if (event.target.closest('a')) return; document.querySelectorAll('.file-item').forEach((item) => item.classList.remove('selected')); row.classList.add('selected'); focusTray(index); }); list.append(row);
+  trays.forEach((tray, index) => { const row = document.createElement('button'); row.className = 'file-item'; const stlUrl = tray.stl_url || `${ASSET_ROOT}${tray.stl}`; row.innerHTML = `<span class="file-index">${String(index + 1).padStart(2, '0')}</span><span class="file-name">${tray.name}</span><span class="file-size">STL</span><a class="file-download" href="${stlUrl}" download aria-label="Download ${tray.name}">↓</a>`;
+    row.addEventListener('click', (event) => { if (event.target.closest('a')) return; markFile(index); focusTray(index); }); list.append(row);
   });
 }
-function focusTray(index) { const mesh = trayMeshes[index]; if (!mesh || !camera) return; currentTray = mesh; controls.target.copy(mesh.position); camera.position.copy(mesh.position).add(new THREE.Vector3(100, 105, 130)); controls.update(); }
-
+function focusTray(index) { viewer?.select(index, { frame: true, silent: true }); }

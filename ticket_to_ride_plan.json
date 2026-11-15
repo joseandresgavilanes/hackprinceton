@@ -1,0 +1,196 @@
+{
+  "game": "Ticket to Ride: London",
+  "organizer": "boxes",
+  "box_inner_mm": {
+    "width": 226.0,
+    "length": 226.0,
+    "height": 44.0
+  },
+  "printer_bed_mm": {
+    "width": 256.0,
+    "length": 256.0,
+    "height": 256.0
+  },
+  "settings": {
+    "headroom_mm": 12.1
+  },
+  "bottom_layer": [
+    {
+      "name": "Board map of the London transportation network",
+      "component_id": "component_1",
+      "quantity": 1,
+      "dimensions_mm": {
+        "length": 236.6,
+        "width": 168.9,
+        "height": 4.0
+      }
+    }
+  ],
+  "compartments": [
+    {
+      "name": "Player 1 Bus Set (17 buses + 1 Scoring Marker)",
+      "type": "set",
+      "storage_style": "loose",
+      "members": [
+        {
+          "component_id": "component_2",
+          "name": "Plastic Bus piece",
+          "quantity": 17,
+          "shape": "rectangular_prism",
+          "dimensions_mm": {
+            "length": 24.2,
+            "width": 5.5,
+            "height": 15.1
+          }
+        },
+        {
+          "component_id": "component_5",
+          "name": "Scoring Marker",
+          "quantity": 1,
+          "shape": "cylinder",
+          "dimensions_mm": {
+            "length": 14.7,
+            "width": 14.7,
+            "height": 13.3
+          }
+        }
+      ]
+    },
+    {
+      "name": "Player 2 Bus Set (17 buses + 1 Scoring Marker)",
+      "type": "set",
+      "storage_style": "loose",
+      "members": [
+        {
+          "component_id": "component_2",
+          "name": "Plastic Bus piece",
+          "quantity": 17,
+          "shape": "rectangular_prism",
+          "dimensions_mm": {
+            "length": 24.2,
+            "width": 5.5,
+            "height": 15.1
+          }
+        },
+        {
+          "component_id": "component_5",
+          "name": "Scoring Marker",
+          "quantity": 1,
+          "shape": "cylinder",
+          "dimensions_mm": {
+            "length": 14.7,
+            "width": 14.7,
+            "height": 13.3
+          }
+        }
+      ]
+    },
+    {
+      "name": "Player 3 Bus Set (17 buses + 1 Scoring Marker)",
+      "type": "set",
+      "storage_style": "loose",
+      "members": [
+        {
+          "component_id": "component_2",
+          "name": "Plastic Bus piece",
+          "quantity": 17,
+          "shape": "rectangular_prism",
+          "dimensions_mm": {
+            "length": 24.2,
+            "width": 5.5,
+            "height": 15.1
+          }
+        },
+        {
+          "component_id": "component_5",
+          "name": "Scoring Marker",
+          "quantity": 1,
+          "shape": "cylinder",
+          "dimensions_mm": {
+            "length": 14.7,
+            "width": 14.7,
+            "height": 13.3
+          }
+        }
+      ]
+    },
+    {
+      "name": "Player 4 Bus Set (17 buses + 1 Scoring Marker)",
+      "type": "set",
+      "storage_style": "loose",
+      "members": [
+        {
+          "component_id": "component_2",
+          "name": "Plastic Bus piece",
+          "quantity": 17,
+          "shape": "rectangular_prism",
+          "dimensions_mm": {
+            "length": 24.2,
+            "width": 5.5,
+            "height": 15.1
+          }
+        },
+        {
+          "component_id": "component_5",
+          "name": "Scoring Marker",
+          "quantity": 1,
+          "shape": "cylinder",
+          "dimensions_mm": {
+            "length": 14.7,
+            "width": 14.7,
+            "height": 13.3
+          }
+        }
+      ]
+    },
+    {
+      "name": "Transportation Card Deck",
+      "type": "set",
+      "storage_style": "stack",
+      "members": [
+        {
+          "component_id": "component_3",
+          "name": "Transportation card",
+          "quantity": 44,
+          "shape": "rectangular_prism",
+          "dimensions_mm": {
+            "length": 67.7,
+            "width": 44.1,
+            "height": 0.4
+          }
+        }
+      ]
+    },
+    {
+      "name": "Destination Ticket Card Deck",
+      "type": "set",
+      "storage_style": "stack",
+      "members": [
+        {
+          "component_id": "component_4",
+          "name": "Destination Ticket card",
+          "quantity": 20,
+          "shape": "rectangular_prism",
+          "dimensions_mm": {
+            "length": 69.0,
+            "width": 43.5,
+            "height": 0.4
+          }
+        }
+      ]
+    }
+  ],
+  "source": {
+    "organizer": "boxes",
+    "set_count": 6,
+    "physical_fit_verified": false,
+    "edition": "Days of Wonder, 2019"
+  },
+  "conversion_notes": [
+    "box.dimensions_mm is used as the INSIDE size of the game box (the input does not label it inside/outside; basis: estimated_from_external).",
+    "'Board map of the London transportation network' (236.6 × 168.9 × 4 mm) lies on the box floor; the storage sits on top of it (not printed, not lid headroom).",
+    "AMBIGUOUS: the input does not say whether 'Rule leaflet (rulebook)' lies under or on top of the storage; treated as 'top'. Check this before printing.",
+    "'Rule leaflet (rulebook)' lies on top of the storage: 12.1 mm reserved as headroom.",
+    "Source says physical_fit_verified = false: this plan is for CAD, not a verified physical fit."
+  ]
+}

@@ -1,6 +1,6 @@
 # GameFit frontend demo
 
-This is a static frontend for the organizer flow: a board-game name plus ruler photos, rulebook-assisted component classification, a measurement check when image scale is uncertain, and generated STL downloads with an interactive Three.js preview.
+This is a static frontend for the organizer flow: a board-game name plus ruler photos, rulebook-assisted component classification, a measurement check when image scale is uncertain, and generated STL downloads with an interactive Three.js preview. The preview is the shared viewer in `viewer/` (`organizer-viewer.js`, `contents.js`): a live compact view in the results card, and **Open studio** for a full-screen configurator (box details and downloads, isolate/hide, dimension lines, camera presets, explode and assembly, approximate contents, filament colours). Selecting a box and its file row stay in sync.
 
 ## Run it
 
@@ -12,7 +12,7 @@ python -m http.server 8000
 
 Then open [http://localhost:8000/frontend/](http://localhost:8000/frontend/).
 
-The demo loads the existing files from `generated_organizer/`. Submitting four photos opens the illustrated loading scene for about four seconds, then sends the orbiting photo cards off the plate one at a time and opens the generated example layout.
+The demo loads the existing files from `generated_organizer/`. Photos the browser cannot preview (for example iPhone HEIC files in Chrome) show as a labelled card instead of a broken image; they are still uploaded unchanged. Submitting 2–6 photos opens the illustrated loading scene for about four seconds, then sends the orbiting photo cards off the plate one at a time and opens the generated example layout.
 
 ## Backend connection
 

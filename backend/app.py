@@ -1,6 +1,6 @@
 """HTTP API for the frontend (see frontend/BACKEND_CONTRACT.md) plus the frontend itself.
 
-POST /api/organizer-jobs                      multipart: game_name + 4 × reference_photos[] → 202 processing
+POST /api/organizer-jobs                      multipart: game_name + 2–6 × reference_photos[] → 202 processing
 GET  /api/organizer-jobs/{id}                 202 processing | 200 needs_measurement | 200 complete | 4xx/5xx error
 POST /api/organizer-jobs/{id}/measurements    JSON {object, width_mm} → 202 processing
 GET  /files/{id}/{name}                       the job's STL files, organizer.glb, layout.json
@@ -106,10 +106,10 @@ def create_app(config: Config | None = None) -> FastAPI:
     @app.post("/api/organizer-jobs")
     async def create_job(request: Request):
         if "multipart/form-data" not in request.headers.get("content-type", ""):
-            return error(400, f"Send multipart/form-data with game_name and {config.photo_count} reference_photos[] "
-                              "image files.", "bad_request")
+            return error(400, f"Send multipart/form-data with game_name and {config.min_photos}–{config.max_photos} "
+                              "reference_photos[] image files.", "bad_request")
         try:
-            form = await request.form(max_files=config.photo_count + 4, max_fields=20)
+            form = await request.form(max_files=config.max_photos + 4, max_fields=20)
         except Exception as e:
             return error(400, f"Could not read the upload: {e}", "bad_request")
         game = form.get("game_name")
@@ -121,9 +121,9 @@ def create_app(config: Config | None = None) -> FastAPI:
         uploads = form.getlist("reference_photos[]") + form.getlist("reference_photos")
         if any(not hasattr(u, "read") for u in uploads):
             return error(400, "reference_photos[] must be image files.", "invalid_photo")
-        if len(uploads) != config.photo_count:
-            return error(400, f"Upload exactly {config.photo_count} photos of the components next to a ruler "
-                              f"(got {len(uploads)}).", "wrong_photo_count")
+        if not config.min_photos <= len(uploads) <= config.max_photos:
+            return error(400, f"Upload {config.min_photos} to {config.max_photos} photos of the components next to "
+                              f"a ruler (got {len(uploads)}).", "wrong_photo_count")
         photos = []
         for k, up in enumerate(uploads, 1):
             label = f"Photo {k} ({up.filename or 'unnamed'})"
@@ -222,7 +222,9 @@ def create_app(config: Config | None = None) -> FastAPI:
 
     @app.get("/frontend/config.js")
     def frontend_config():
-        js = "window.INSIDE_THE_BOX_CONFIG = " + json.dumps({"apiUrl": "/api/organizer-jobs", "mode": config.mode}) + ";\n"
+        js = "window.INSIDE_THE_BOX_CONFIG = " + json.dumps({
+            "apiUrl": "/api/organizer-jobs", "mode": config.mode,
+            "photos": {"min": config.min_photos, "max": config.max_photos}}) + ";\n"
         return Response(js, media_type="application/javascript", headers={"Cache-Control": "no-store"})
 
     @app.get("/")

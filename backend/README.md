@@ -1,6 +1,6 @@
 # Inside the Box backend
 
-One local server for the whole user journey: the web UI uploads a game name and 4 ruler photos, the backend
+One local server for the whole user journey: the web UI uploads a game name and 2–6 ruler photos, the backend
 runs **CV measurement → grouping → converter → CAD engine** as a background job, and the UI shows the 3D
 preview and the printable STL downloads. It implements `frontend/BACKEND_CONTRACT.md`.
 
@@ -33,13 +33,13 @@ never sent to the browser, and it is removed from stage logs and error messages.
 
 | request | response |
 |---|---|
-| `POST /api/organizer-jobs` (multipart: `game_name`, 4 × `reference_photos[]`) | `202 {"status": "processing", "job_id", "stage", "stage_label", "stages": [...]}` |
+| `POST /api/organizer-jobs` (multipart: `game_name`, 2–6 × `reference_photos[]`) | `202 {"status": "processing", "job_id", "stage", "stage_label", "stages": [...]}` |
 | `GET /api/organizer-jobs/{id}` | `202` processing · `200 needs_measurement` with `question {object, dimension, suggested_value, reason}` · `200 complete` with `layout`, `files [{name, stl_url, size_bytes}]` (same order as `layout.trays`), `glb_url`, `layout_url`, `warnings`, `notes` · `4xx/5xx {"status": "error", "code", "message", "details"}` |
 | `POST /api/organizer-jobs/{id}/measurements` (JSON `{"object", "width_mm"}`) | `202` processing, or `400` (wrong object, not a positive number, more than 2× the photo measurement) / `409` (not waiting) |
 | `GET /files/{id}/{name}` | that job's `NN_<name>.stl`, `organizer.glb` or `layout.json` (only once complete) |
 | `GET /api/health` | mode, fixture games or whether live mode has its key (never the key) |
 
-Uploads are checked before a job starts: a game name (≤ 120 characters), exactly 4 files, each a real
+Uploads are checked before a job starts: a game name (≤ 120 characters), 2 to 6 files (`Config.min_photos` / `max_photos`, sent to the web UI in `config.js`), each a real
 JPEG/PNG/HEIC/WebP (by its bytes, not its name), ≤ 25 MB. Photos are saved as `photo_1…4.<ext>`.
 
 ### When the user is asked for a measurement

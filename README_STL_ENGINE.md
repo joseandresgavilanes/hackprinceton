@@ -227,8 +227,19 @@ three.js `GLTFLoader` exposes `extras` as `object.userData`.
 
 ### `preview/index.html`
 
-A single-file three.js viewer (CDN) with an explode slider, an animated assembly, box toggle and
-click-to-inspect. It reads `?glb=` (default `../generated_organizer/organizer.glb`).
+A thin page around the shared viewer in `frontend/viewer/` (also used by the web UI). It draws each box from
+its STL file, placed by `layout.json` (rotation, `center_mm`, so stacked boxes keep their height), next to
+`?layout=<folder>/layout.json` or, as before, `?glb=<folder>/organizer.glb` (default `generated_organizer/`).
+
+- Hover and click a box: outline, dimension lines, a panel with its contents, sizes and an STL download;
+  isolate or hide it. Boxes stacked on a selected box turn see-through.
+- Iso / Top / Front views, Fit, Reset; a smooth Explode slider and Assemble (in `assembly_order`).
+- Contents: approximate, non-printed stand-ins for the stored pieces (`frontend/viewer/contents.js`): the
+  arrangement the engine sized each `loose`/`tight_pack` box for, card decks lying flat, stacks; labelled
+  approximate. Game box outline toggle; filament colour previews.
+- Deep links: `&view=top|front|iso&explode=0..1.5&contents=1&select=<index>&filament=sage&box=0`.
+
+Nothing in the viewer changes a printable part.
 
 ## From Holden's grouping output
 
