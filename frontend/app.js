@@ -1,5 +1,5 @@
-// Set this to the backend endpoint when it is available. An empty value keeps the static demo mode.
-const ORGANIZER_API_URL = '';
+// The backend endpoint comes from config.js (served by `python -m backend`). Empty keeps the static demo mode.
+const ORGANIZER_API_URL = (window.INSIDE_THE_BOX_CONFIG?.apiUrl || '').replace(/\/$/, '');
 const DEMO_PROCESSING_MS = 4200;
 const ASSET_ROOT = '../generated_organizer/';
 const FALLBACK_TRAYS = [
@@ -120,6 +120,7 @@ async function waitForOrganizerJob(jobId) {
     const response = await fetch(`${ORGANIZER_API_URL}/${jobId}`);
     const job = await response.json();
     if (!response.ok || job.status === 'error') throw new Error(job.message || 'Organizer processing failed');
+    if (job.status === 'processing' && job.stage_label) $('#loading-copy').textContent = job.stage_label;
     if (job.status !== 'processing') return job;
   }
 }
@@ -137,8 +138,9 @@ async function submitOrganizerJob(gameName) {
   const payload = new FormData(); payload.append('game_name', gameName);
   selectedFiles.forEach((file) => payload.append('reference_photos[]', file, file.name));
   const response = await fetch(ORGANIZER_API_URL, { method: 'POST', body: payload });
-  if (!response.ok) throw new Error('Could not start organizer job');
-  return response.json();
+  const job = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(job.message || 'Could not start organizer job');
+  return job;
 }
 function showResults(files = null, layout = null) {
   completedTrays = files;
@@ -152,24 +154,34 @@ function showResults(files = null, layout = null) {
 $('#organizer-form').addEventListener('submit', async (event) => {
   event.preventDefault();
   const name = $('#game-name').value.trim(); if (!name) return $('#game-name').focus();
-  bypassFlow = name.toLowerCase() === 'bypass';
-  loadingDemoFlow = name.toLowerCase() === 'loading';
+  bypassFlow = !ORGANIZER_API_URL && name.toLowerCase() === 'bypass';
+  loadingDemoFlow = !ORGANIZER_API_URL && name.toLowerCase() === 'loading';
   if (bypassFlow) { showScreen(reviewScreen); return; }
   if (loadingDemoFlow) { showLoading('Planning your organizer…'); await pause(DEMO_PROCESSING_MS); finishLoading(() => showResults()); return; }
   if (selectedFiles.length !== 4) { alert('Upload all four component photos before continuing.'); return; }
-  showLoading('Analyzing your components…');
+  showLoading(ORGANIZER_API_URL ? 'Uploading your photos…' : 'Analyzing your components…');
   try {
     const job = await submitOrganizerJob(name);
     currentJob = job;
     if (job.status === 'demo') { await pause(DEMO_PROCESSING_MS); finishLoading(() => showResults()); }
     else {
       const completedJob = job.status === 'processing' ? await waitForOrganizerJob(job.job_id) : job;
-      if (completedJob.status === 'needs_measurement') { hideLoading(); showScreen(reviewScreen); }
+      if (completedJob.status === 'needs_measurement') { askMeasurement(completedJob.question); hideLoading(); showScreen(reviewScreen); }
       else if (completedJob.status === 'complete' && Array.isArray(completedJob.files)) finishLoading(() => showResults(completedJob.files, completedJob.layout));
       else throw new Error('Unexpected organizer job status');
     }
-  } catch (error) { hideLoading(); alert('Could not reach the organizer service. Please try again.'); }
+  } catch (error) { hideLoading(); alert(serviceError(error, 'Could not reach the organizer service. Please try again.')); }
 });
+function serviceError(error, fallback) {
+  // A TypeError means the request never reached the backend; anything else carries the backend's own message.
+  return error instanceof TypeError || !error?.message ? fallback : error.message;
+}
+function askMeasurement(question) {
+  if (!question) return;
+  $('#reference-object').value = question.object || '';
+  $('#reference-width').value = '';
+  if (question.suggested_value) $('#reference-width').placeholder = `e.g. ${question.suggested_value}`;
+}
 $('#back-to-input').addEventListener('click', () => showScreen(inputScreen));
 $('#generate-button').addEventListener('click', async () => {
   const object = $('#reference-object').value.trim(); const width = $('#reference-width').value.trim();
@@ -180,11 +192,11 @@ $('#generate-button').addEventListener('click', async () => {
   showLoading('Packing trays into your game box…');
   try {
     const response = await fetch(`${ORGANIZER_API_URL}/${currentJob.job_id}/measurements`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ object, width_mm: Number(width) }) });
-    let job = await response.json(); if (!response.ok) throw new Error('Organizer is not ready');
+    let job = await response.json().catch(() => ({})); if (!response.ok) throw new Error(job.message || 'Organizer is not ready');
     if (job.status === 'processing') job = await waitForOrganizerJob(job.job_id);
     if (job.status !== 'complete' || !Array.isArray(job.files)) throw new Error('Organizer is not ready');
     finishLoading(() => showResults(job.files, job.layout));
-  } catch (error) { hideLoading(); alert('The organizer is still processing. Try again when the backend returns its STL files.'); }
+  } catch (error) { hideLoading(); alert(serviceError(error, 'The organizer is still processing. Try again when the backend returns its STL files.')); }
 });
 $('#start-over').addEventListener('click', () => showScreen(inputScreen));
 
@@ -247,7 +259,8 @@ $('#download-all').addEventListener('click', async (event) => {
 });
 async function setupViewer() {
   const trays = await trayData(); renderFileList(trays);
-  if (viewerReady) return; viewerReady = true;
+  if (viewerReady) { if (scene) showTrays(trays); return; }
+  viewerReady = true;
   try {
     const modules = await Promise.all([
       import('three'),
@@ -264,22 +277,32 @@ async function setupViewer() {
   renderer = new THREE.WebGLRenderer({ antialias: true }); renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); renderer.setSize(mount.clientWidth, mount.clientHeight); mount.append(renderer.domElement);
   controls = new OrbitControls(camera, renderer.domElement); controls.target.set(0, 0, 0); controls.enableDamping = true; controls.minDistance = 70; controls.maxDistance = 500;
   scene.add(new THREE.HemisphereLight('#f3f1ff', '#38435b', 2.8)); const light = new THREE.DirectionalLight('#ffffff', 2.8); light.position.set(100, 140, 90); scene.add(light);
-  const box = activeLayout?.box_inner_mm || completedLayout?.box_inner_mm || { width: 210, length: 210 };
-  const grid = new THREE.GridHelper(Math.max(box.width, box.length) + 50, 13, '#4d5a75', '#263149'); scene.add(grid);
+  showTrays(trays);
+  window.addEventListener('resize', resizeViewer); $('#reset-view').addEventListener('click', () => { camera.position.set(180, 175, 240); controls.target.set(0, 0, 0); });
+  (function animate() { requestAnimationFrame(animate); controls.update(); renderer.render(scene, camera); })();
+}
+// Replaces the previous organizer's meshes, so "Start another game" shows the new job's trays.
+let viewerGeneration = 0; let viewerGrid = null;
+function showTrays(trays) {
+  const generation = ++viewerGeneration;
+  trayMeshes.forEach((mesh) => { if (mesh) { scene.remove(mesh); mesh.geometry.dispose(); mesh.material.dispose(); } });
+  trayMeshes = []; if (viewerGrid) scene.remove(viewerGrid);
+  const box = completedLayout?.box_inner_mm || activeLayout?.box_inner_mm || { width: 210, length: 210 };
+  viewerGrid = new THREE.GridHelper(Math.max(box.width, box.length) + 50, 13, '#4d5a75', '#263149'); scene.add(viewerGrid);
   const loader = new STLLoader(); const colors = ['#a6f2cf','#b3a8ff','#ffb26b','#7bdff2','#f5a4bc','#fae68d','#b9c3da'];
   trays.forEach((tray, index) => loader.load(tray.stl_url || `${ASSET_ROOT}${tray.stl}`, (geometry) => {
+    if (generation !== viewerGeneration) { geometry.dispose(); return; }   // a newer organizer replaced this one
     geometry.center(); geometry.rotateX(-Math.PI / 2);
     const mesh = new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({ color: colors[index % colors.length], roughness: .55, metalness: .04 }));
     const outer = tray.outer_mm || { width: 55, length: 55, height: 25 };
     const footprint = tray.footprint_in_box_mm || { width: outer.width, length: outer.length };
     const pos = tray.position_mm || { x: (index % 3) * 65, y: Math.floor(index / 3) * 65 };
     // STL files are z-up. After rotateX, y is vertical and the backend's y becomes -z.
+    // position_mm.z is the tray's base height: > 0 for trays stacked on other trays.
     mesh.rotation.y = THREE.MathUtils.degToRad(tray.rotation_degrees || 0);
-    mesh.position.set(pos.x + footprint.width / 2 - box.width / 2, outer.height / 2, -(pos.y + footprint.length / 2 - box.length / 2));
+    mesh.position.set(pos.x + footprint.width / 2 - box.width / 2, (pos.z || 0) + outer.height / 2, -(pos.y + footprint.length / 2 - box.length / 2));
     mesh.name = tray.name; scene.add(mesh); trayMeshes[index] = mesh;
   }));
-  window.addEventListener('resize', resizeViewer); $('#reset-view').addEventListener('click', () => { camera.position.set(180, 175, 240); controls.target.set(0, 0, 0); });
-  (function animate() { requestAnimationFrame(animate); controls.update(); renderer.render(scene, camera); })();
 }
 function resizeViewer() { const mount = $('#viewer'); if (!renderer || !mount) return; camera.aspect = mount.clientWidth / mount.clientHeight; camera.updateProjectionMatrix(); renderer.setSize(mount.clientWidth, mount.clientHeight); }
 function renderFileList(trays) {

@@ -1,0 +1,12 @@
+# Live mode only (ITB_PIPELINE_MODE=live): the CV and grouping stage scripts in "Final stuff/"
+anthropic
+langchain-anthropic
+langchain-core
+pydantic>=2
+opencv-python
+numpy
+scipy
+Pillow
+pillow-heif   # optional: iPhone HEIC photos
+brotli>=1.2.0 # anthropic 2.x (httpx2) decodes compressed API responses with it; Brotli 1.0.x fails every call
+              # with "Connection error" (TypeError: process() takes no keyword arguments)

@@ -547,3 +547,62 @@ def test_king_of_tokyo_five_printable_open_boxes(kot_output):
     for t in layout["trays"]:   # the four carry Monster Kits at 38 mm; it ends flush with the 8 mm headroom
         top_z = t["position_mm"]["z"] + t["outer_mm"]["height"]
         assert top_z == pytest.approx(59.0 if t["name"] == KOT_TOP else 38.0)
+
+
+# ---------------------------------------------------------------------------
+# tight_pack (written by the grouping step for block-like pieces)
+# ---------------------------------------------------------------------------
+def _with_style(grouping, set_name, style, shape=None):
+    g = copy.deepcopy(grouping)
+    s = next(s for s in g["sets"] if s["name"] == set_name)
+    s["storage_style"] = style
+    if shape:
+        for m in s["members"]:
+            m["shape"] = shape
+    return g
+
+
+def _cell(designs, name):
+    d = next(d for d in designs if d.name == name)
+    assert len(d.cells) == 1
+    return d, d.cells[0]
+
+
+def test_grouping_script_styles_are_all_supported():
+    """Every storage_style the grouping script can write must be accepted by the converter."""
+    import re
+    scripts = [p for p in ROOT.rglob("organize_game_boxes.py") if ".venv" not in p.parts]
+    assert scripts, "organize_game_boxes.py (the grouping step) not found"
+    for path in scripts:
+        literal = re.search(r"storage_style:\s*Literal\[([^\]]*)\]", path.read_text(encoding="utf-8"))
+        assert literal, path
+        styles = set(re.findall(r"'([a-z_]+)'", literal.group(1)))
+        assert styles and styles <= set(conv.BOX_STYLES), (path, styles - set(conv.BOX_STYLES))
+
+
+def test_tight_pack_is_a_compact_hand_placed_block(kot):
+    """50 energy cubes (10.1 × 10.1 × 14 mm): loose uses one wide layer, tight_pack a compact layered block."""
+    loose_plan, _ = conv.convert(kot, BED, compact=True)
+    tight_plan, _ = conv.convert(_with_style(kot, "Energy Cubes", "tight_pack", "rectangular_prism"), BED, compact=True)
+    assert next(c for c in tight_plan["compartments"] if c["name"] == "Energy Cubes")["storage_style"] == "tight_pack"
+    p, designs, packing = plan_layout(tight_plan)
+    _, loose = _cell(plan_layout(loose_plan)[1], "Energy Cubes")
+    d, tight = _cell(designs, "Energy Cubes")
+    assert tight.contents["storage_style"] == "tight_pack" and loose.contents["storage_style"] == "loose"
+    assert loose.contents["layers"] == 1 and tight.contents["layers"] > 1
+    assert tight.w * tight.l < loose.w * loose.l
+    # every cube has a place: identical layers × pieces per layer ≥ 50, each layer 14 mm + clearance on top
+    assert tight.contents["layers"] * len(tight.contents["arrangement_mm"]) >= 50
+    assert tight.depth == pytest.approx(tight.contents["layers"] * 14.0 + p.settings.clearance_mm)
+    assert d.min_h <= p.max_tray_height + 1e-9
+    assert any("tight_pack" in a and "placed by hand" in a for a in p.assumptions)
+    geoms = _geoms(p, packing.trays)
+    assert validate_layout(p, packing.trays, geoms)["ok"]
+
+
+def test_tight_pack_rejects_round_pieces(kot):
+    plan, _ = conv.convert(_with_style(kot, "Dice Pool", "tight_pack"), BED)   # dice are listed as cylinders
+    with pytest.raises(PlanError) as e:
+        plan_layout(plan)
+    err = e.value.issues.errors[0]
+    assert err.code == "invalid_value" and "tight_pack" in err.message and "cylinder" in err.message

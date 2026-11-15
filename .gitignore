@@ -3,3 +3,7 @@ __pycache__/
 *.pyc
 .DS_Store
 .pytest_cache/
+
+# Inside the Box backend
+organizer_jobs/
+.env

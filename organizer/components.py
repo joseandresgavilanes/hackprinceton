@@ -318,7 +318,8 @@ def _min_enclosing(rects: list, limits: list) -> tuple | None:
     return None if best is None else best[1:]
 
 
-SET_STYLES = ("loose", "stack", "card_stack")
+SET_STYLES = ("loose", "stack", "card_stack", "tight_pack")
+TIGHT_PACK_SHAPES = ("rectangular_prism", "square_prism", "cube")   # same rule as the grouping step
 
 
 def _set_box(comp: Compartment, s: Settings, max_depth: float, issues: Issues, limits=None) -> list[Cell]:
@@ -354,6 +355,14 @@ def _set_box(comp: Compartment, s: Settings, max_depth: float, issues: Issues, l
                            "shape": m.get("shape"), "dimensions_mm": md})
     if len(parsed) != len(members) or style not in SET_STYLES:
         return []
+    if style == "tight_pack":
+        odd = [p for p in parsed if p["shape"] not in TIGHT_PACK_SHAPES]
+        if odd:
+            issues.error("invalid_value", f"{comp.name}: storage_style 'tight_pack' needs rectangular prisms, square "
+                                          f"prisms or cubes, but " + ", ".join(f"'{p['name']}' is a {p['shape']}"
+                                                                               for p in odd)
+                                          + ". Use 'loose' for these pieces.", comp.name, "storage_style")
+            return []
     room = max_depth - c
 
     if style in ("stack", "card_stack"):
@@ -385,7 +394,9 @@ def _set_box(comp: Compartment, s: Settings, max_depth: float, issues: Issues, l
                      contents={"storage_style": style, "members": parsed, "stack_height_mm": round(total, 3),
                                "fit_basis": basis}, **plain)]
 
-    # loose: every piece's bounding box laid out in one arranged layer (or a few identical layers)
+    # loose: every piece's bounding box laid out in one arranged layer (or the fewest identical layers).
+    # tight_pack: block-like pieces placed by hand in identical grid layers; as many layers as give the
+    # smallest footprint (a compact block), since they are stacked on purpose rather than poured.
     pieces, notes = [], []
     for p in parsed:
         dl, dw, dh = p["dimensions_mm"]["length"], p["dimensions_mm"]["width"], p["dimensions_mm"]["height"]
@@ -399,7 +410,7 @@ def _set_box(comp: Compartment, s: Settings, max_depth: float, issues: Issues, l
         pieces.append((p, dl, dw, dh))
     h_layer = max(dh for _, _, _, dh in pieces)
     inner_limits = [(a - 2 * (c + s.wall_mm), b - 2 * (c + s.wall_mm)) for a, b in (limits or [])]
-    found = None
+    best = None
     for k in range(1, max(1, math.floor(room / h_layer + 1e-9)) + 1):
         rects, owners = [], []
         for p, dl, dw, _ in pieces:
@@ -407,21 +418,32 @@ def _set_box(comp: Compartment, s: Settings, max_depth: float, issues: Issues, l
             rects += [(dw, dl)] * n
             owners += [p["name"]] * n
         found = _min_enclosing(rects, inner_limits)
-        if found:
+        if not found:
+            continue
+        if best is None or found[0] * found[1] < best[1][0] * best[1][1] - 1e-6:
+            best = (k, found, owners)
+        if style == "loose":
             break
-    if not found:
+    if not best:
         issues.error("too_large", f"{comp.name}: the pieces cannot be laid out in a box that fits the game box "
                                   f"and printer bed", comp.name)
         return []
-    W, L, placed = found
+    k, (W, L, placed), owners = best
     arrangement = [{"member": owners[i], "x": round(x, 2), "y": round(y, 2), "w": round(w, 2), "l": round(l, 2)}
                    for i, x, y, w, l in placed]
-    comp.assumptions.append(
-        f"{comp.name}: loose box sized so every piece's bounding box fits in {k} arranged layer(s) of "
-        f"{W:.1f} × {L:.1f} mm; pieces poured in at random may need settling. Physical fit is not verified.")
+    if style == "tight_pack":
+        basis = f"bounding boxes arranged without overlap, {k} identical layer(s) placed by hand"
+        comp.assumptions.append(
+            f"{comp.name}: tight_pack box sized for the pieces placed by hand in {k} layer(s) of the arranged grid "
+            f"({W:.1f} × {L:.1f} mm per layer); poured in at random they may not fit. Physical fit is not verified.")
+    else:
+        basis = "bounding boxes arranged without overlap"
+        comp.assumptions.append(
+            f"{comp.name}: loose box sized so every piece's bounding box fits in {k} arranged layer(s) of "
+            f"{W:.1f} × {L:.1f} mm; pieces poured in at random may need settling. Physical fit is not verified.")
     return [Cell(w=W + 2 * c, l=L + 2 * c, depth=k * h_layer + c,
-                 contents={"storage_style": "loose", "members": parsed, "layers": k,
-                           "fit_basis": "bounding boxes arranged without overlap" + (f"; {'; '.join(notes)}" if notes else ""),
+                 contents={"storage_style": style, "members": parsed, "layers": k,
+                           "fit_basis": basis + (f"; {'; '.join(notes)}" if notes else ""),
                            "arrangement_mm": arrangement}, **plain)]
 
 

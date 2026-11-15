@@ -4,15 +4,16 @@ This document defines the data boundary between the GameFit frontend and the org
 
 ## 1. Frontend configuration
 
-In [`app.js`](./app.js), set `ORGANIZER_API_URL` to the create-job endpoint. Do **not** include a trailing slash.
+The backend in [`backend/`](../backend/README.md) implements this contract: `python -m backend` serves this page and
+a [`config.js`](./config.js) that sets `window.INSIDE_THE_BOX_CONFIG.apiUrl` to `/api/organizer-jobs`, which
+[`app.js`](./app.js) reads as `ORGANIZER_API_URL`. Served by a plain static server, `config.js` leaves it empty
+(demo mode).
 
-```js
-const ORGANIZER_API_URL = 'http://localhost:3000/api/organizer-jobs';
-```
+For a backend on another origin, set `apiUrl` to its full create-job URL (no trailing slash) and list the
+frontend origin in the backend's `ITB_CORS_ORIGINS` (default `http://localhost:8000`). The STL URLs the backend
+returns are absolute, so the browser can fetch them from either origin.
 
-For a separate frontend/backend origin, enable CORS for the frontend origin (for example, `http://localhost:8000`). The STL URLs returned by the backend must also be readable by the browser with CORS enabled.
-
-Keep the Claude key on the backend in `.env`:
+Keep the Claude key on the backend, in its environment or in `.env` at the repository root (git-ignored):
 
 ```env
 ANTHROPIC_API_KEY=your_key_here
@@ -152,12 +153,13 @@ The 3D viewer needs both the STL file URL and the associated layout tray. All di
 | `box_inner_mm.width`, `box_inner_mm.length` | Yes | Centers the packed organizer in the 3D view. |
 | `trays[].name` | Yes | Download label and file pairing. |
 | `trays[].position_mm.x`, `trays[].position_mm.y` | Yes | Bottom-left position of the tray footprint in the box. |
+| `trays[].position_mm.z` | Yes | Height of the tray's base above the box floor: `0` on the floor, greater for a tray stacked on other trays. |
 | `trays[].rotation_degrees` | Yes | `0` or `90`; rotates the tray around its vertical axis. |
 | `trays[].outer_mm.width`, `length`, `height` | Yes | Places the STL on the floor rather than through it. |
 | `trays[].footprint_in_box_mm.width`, `length` | Yes | Finds the footprint center after the possible rotation. |
 | `files[].stl_url` | Yes | Browser-accessible URL for the corresponding STL mesh and download link. |
 
-STL geometry must use z-up coordinates, with its base at `z = 0`. The frontend converts it to Three.js y-up coordinates, raises it by half of `outer_mm.height`, applies `rotation_degrees`, and places it from the footprint center. Do not pre-translate the mesh to the box location inside the STL itself.
+STL geometry must use z-up coordinates, with its base at `z = 0`. The frontend converts it to Three.js y-up coordinates, raises it to `position_mm.z` plus half of `outer_mm.height`, applies `rotation_degrees`, and places it from the footprint center. Do not pre-translate the mesh to the box location inside the STL itself.
 
 ## 5. Intermediate AI/CV planner result
 
@@ -185,53 +187,26 @@ This stage receives the game name, four photos, and any confirmed fallback measu
 
 ### Consumer: packing/STL stage
 
-The current CAD generator does **not** accept `sets[].members` directly. It accepts a reviewed organizer plan with `box_inner_mm` and `compartments[].required_mm`. The packing stage must make this conversion:
+`convert_grouping_output.py` turns this JSON, unedited, into an engine plan: every `sets[]` entry becomes exactly
+one plain open box (`type: "set"`, members and `storage_style` copied verbatim), `excluded` items get no box
+(an excluded board or rulebook only reserves its thickness as headroom), and `box.dimensions_mm` is the inside
+of the game box. `generate_organizer_stl.py` / `organizer.generate` then packs, builds and validates the boxes.
+The backend runs both for every job:
 
 ```text
-exoutput.json
-  box.dimensions_mm
-  sets[].members + storage_style
-       ↓ calculate a safe group envelope per set
-organizer_plan.json
-  box_inner_mm
-  compartments[].required_mm
-       ↓ generate_organizer_stl.py
-layout.json + individual STL files
+grouping JSON
+       ↓ convert_grouping_output.convert
+organizer plan (box_inner_mm, compartments[] of type "set")
+       ↓ organizer.generate
+layout.json + individual STL files + organizer.glb
        ↓
 frontend status: "complete" response
 ```
 
-Required mapping:
-
-```json
-{
-  "game": "<exoutput.game>",
-  "box_inner_mm": {
-    "width": "<exoutput.box.dimensions_mm.width>",
-    "length": "<exoutput.box.dimensions_mm.length>",
-    "height": "<exoutput.box.dimensions_mm.height>"
-  },
-  "compartments": [
-    {
-      "name": "<sets[i].name>",
-      "required_mm": {
-        "width": "<derived group width>",
-        "length": "<derived group length>",
-        "height": "<derived group height>"
-      }
-    }
-  ]
-}
-```
-
-Envelope rules are owned by the packing stage, not the frontend:
-
-- `loose`: derive a conservative rectangular envelope for all items in the group; do not sum incompatible dimensions blindly.
-- `stack`: use the component footprint plus the total stacked height (`quantity × item height`) when that stack is physically valid.
-- `excluded`: do not emit a tray. Account for its consumed box layer/height before claiming remaining space.
-- Add the generator's wall, floor, clearance, tray-gap, and box-margin settings only once—inside the generator/planner contract.
-
-The packer must reject or return a clear failure when the derived trays cannot fit. It must not scale component dimensions down to force a fit.
+The envelope rules (how big each box must be for `loose`, `stack`, `card_stack` and `tight_pack`) belong to
+the engine (`organizer/components.py`, documented in `README_STL_ENGINE.md`), not the frontend. When the boxes
+cannot fit, the job fails with the engine's `does_not_fit` message; component dimensions are never scaled down
+to force a fit.
 
 ### Final boundary back to the frontend
 

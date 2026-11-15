@@ -11,7 +11,7 @@ The JSON is the single source of truth:
   * box.dimensions_mm is the space the boxes must fit in.
   * Every entry of ``sets`` becomes exactly ONE plain open box (type "set") with one
     rectangular cavity, preserving the set's name, members, quantities, dimensions and
-    storage_style (loose, stack or card_stack). No dividers, wells or slots; no extra sets.
+    storage_style (loose, stack, card_stack or tight_pack). No dividers, wells or slots; no extra sets.
   * Everything in ``excluded`` is ignored: no container, no floor space and no fit check.
     The one exception: an excluded BOARD or RULEBOOK lies on top of the boxes, so every box
     is made shorter by its listed thickness (dimensions_mm.height × quantity) — that height
@@ -28,7 +28,7 @@ import sys
 from pathlib import Path
 
 SUPPORTED_ORGANIZERS = ("boxes", "divider", "trays")
-BOX_STYLES = ("loose", "stack", "card_stack")
+BOX_STYLES = ("loose", "stack", "card_stack", "tight_pack")
 # Excluded items that lie flat on top of the boxes (identified by their name)
 _LID_ITEMS = re.compile(r"\b(board|boards|gameboard|map|rules?|rulebooks?|leaflet|booklet|manual|instructions?)\b",
                         re.I)
