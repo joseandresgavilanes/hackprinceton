@@ -114,7 +114,10 @@ grouping decided upstream is used as-is:
   usable height (flush with the lid) and the boxes grow to cover the floor area. Each box's single cavity
   grows and deepens with it, so walls stay `wall_mm` and the floor stays `floor_mm` thick (no solid fill). Set
   `"fill_height": false, "fill_box": false` for compact boxes sized only to their contents. Boxes are put in
-  one layer; two are stacked (same footprint, fully supported) only if one layer cannot fit (`max_layers: 2`);
+  one layer; two are stacked (same footprint, fully supported) only if one layer cannot fit (`max_layers: 2`).
+  If that is not enough either, one box may rest on several boxes that stand at one common height and
+  together cover its footprint (a *bridge*, e.g. King of Tokyo's Monster Kits on the other four sets).
+  Several small boxes are never put on top of one larger box: it is open, so they would sit over its cavity;
 - boxes that hold the same thing (e.g. one bus set per player) always come out the **same size**: they grow
   together, never one more than another (listed as "Same contents, same size" in `layout.json` notes);
 - **similarly named** sets share one box shape and size too: names that match once numbers, colours and
@@ -175,7 +178,12 @@ These are printer/process defaults, not game measurements.
 4. **Pack** (`organizer/packing.py`) — tries 5 MaxRects heuristics × 7 sort orders (+ rectpack) for a
    single layer. If nothing fits, it stacks trays into columns, merging the pair that saves the most floor
    area while the column height fits the box. Trays in a column share one footprint, so every upper tray
-   is fully supported. With `fill_box`, the best layout is scaled proportionally to the box and remaining
+   is fully supported. If columns are not enough, it searches *bridges* (every top tray × every set of 2+
+   trays under it, up to 8 trays): the trays under it are raised to the tallest one's height and tiled
+   across the top tray's footprint (it grows if they need more room), and the rest are packed as before.
+   Layout validation checks that each upper tray rests on solid rims and walls surrounding the middle half
+   of its base, not only that its footprint overlaps the trays below. With `fill_box`, the best layout is
+   scaled proportionally to the box and remaining
    gaps are filled; trays with identical contents are kept the same size (each group grows only by amounts
    all its members can take); candidates are ranked by covered floor area, then by how evenly trays grew.
 5. **CAD** (`organizer/cad.py`) — CadQuery: rounded outer box minus cavities (cut from the rim down),

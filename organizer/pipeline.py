@@ -7,7 +7,7 @@ from pathlib import Path
 
 from .grouping import CellGeom, build_tray_designs, fits, place_cells
 from .mesh import box_triangles, read_stl, single_open_cavity, validate_mesh
-from .packing import PackResult, PlacedTray, pack_organizer
+from .packing import SUPPORT_COVER, PackResult, PlacedTray, pack_organizer
 from .schema import Plan, PlanError, parse_plan
 
 ENGINE_VERSION = "2.0.0"
@@ -22,7 +22,8 @@ SET_PALETTE = [(0.84, 0.30, 0.28, 1.0), (0.27, 0.47, 0.80, 1.0), (0.93, 0.72, 0.
                (0.55, 0.42, 0.75, 1.0), (0.33, 0.64, 0.45, 1.0), (0.90, 0.52, 0.22, 1.0)]
 
 NOTES = [
-    "Trays are separate open-top parts. Trays with layer > 0 rest directly on the tray below (same footprint).",
+    "Trays are separate open-top parts. Trays with layer > 0 rest directly on the trays below: on one tray with "
+    "the same footprint, or on several trays of one common height whose rims together carry their whole floor.",
     "Print each STL as exported: flat side down, z = 0 on the build plate. Units are millimetres.",
     "Raised floors and thickened walls are solid in CAD; the slicer fills them with infill (10–15% is plenty).",
     "required_mm (when used) is the bounding box of the whole stored group, not one piece.",
@@ -54,6 +55,80 @@ def _overlap(a0, a1, b0, b1, eps=1e-3):
 
 def _cell_rect(g: CellGeom):
     return (g.cx - g.w / 2, g.cy - g.l / 2, g.cx + g.w / 2, g.cy + g.l / 2)
+
+
+SUPPORT_CORE = 0.5  # the rims an upper tray rests on must surround the middle half of its base (each axis)
+
+
+def _open_rects(q: PlacedTray, geoms: list) -> list:
+    """Where q's top face is open (cavities; token wells as their bounding squares), in box coordinates."""
+    cx, cy = q.center
+    out = []
+    for g in geoms:
+        local = ([(x - g.well_r, y - g.well_r, x + g.well_r, y + g.well_r) for x, y in g.wells]
+                 if g.kind == "wells" else [_cell_rect(g)])
+        for u0, v0, u1, v1 in local:   # tray frame → box frame (rot is a quarter turn counter-clockwise)
+            out.append((cx + u0, cy + v0, cx + u1, cy + v1) if q.rot == 0 else (cx - v1, cy + u0, cx - v0, cy + u1))
+    return out
+
+
+def _contact_points(p: PlacedTray, q: PlacedTray, holes: list) -> list:
+    """Corners of the solid parts of q's top face (rims, walls) under p's footprint."""
+    (pw, pl), (qw, ql) = p.footprint, q.footprint
+    x0, y0, x1, y1 = max(p.x, q.x), max(p.y, q.y), min(p.x + pw, q.x + qw), min(p.y + pl, q.y + ql)
+    if x1 - x0 <= 1e-6 or y1 - y0 <= 1e-6:
+        return []
+    xs = sorted({x0, x1} | {v for h in holes for v in (h[0], h[2]) if x0 < v < x1})
+    ys = sorted({y0, y1} | {v for h in holes for v in (h[1], h[3]) if y0 < v < y1})
+    pts = []
+    for xa, xb in zip(xs, xs[1:]):
+        for ya, yb in zip(ys, ys[1:]):
+            mx, my = (xa + xb) / 2, (ya + yb) / 2
+            if not any(h[0] < mx < h[2] and h[1] < my < h[3] for h in holes):
+                pts += [(xa, ya), (xb, ya), (xa, yb), (xb, yb)]
+    return pts
+
+
+def _hull(points: list) -> list:
+    """Convex hull, counter-clockwise (Andrew's monotone chain)."""
+    pts = sorted(set(points))
+    if len(pts) < 3:
+        return pts
+
+    def cross(o, a, b):
+        return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0])
+
+    lower, upper = [], []
+    for p in pts:
+        while len(lower) >= 2 and cross(lower[-2], lower[-1], p) <= 0:
+            lower.pop()
+        lower.append(p)
+    for p in reversed(pts):
+        while len(upper) >= 2 and cross(upper[-2], upper[-1], p) <= 0:
+            upper.pop()
+        upper.append(p)
+    return lower[:-1] + upper[:-1]
+
+
+def _in_hull(hull: list, pt, eps=1e-6) -> bool:
+    if len(hull) < 3:
+        return False
+    return all((b[0] - a[0]) * (pt[1] - a[1]) - (b[1] - a[1]) * (pt[0] - a[0]) >= -eps
+               for a, b in zip(hull, hull[1:] + hull[:1]))
+
+
+def rim_supported(p: PlacedTray, below: list, geoms: dict) -> bool:
+    """True if the solid rims/walls p rests on surround the middle of its base, so it cannot tip.
+
+    Trays are open boxes: only their solid top face carries anything. A tray on one same-size
+    tray rests on its whole rim; a tray placed inside the footprint of one larger open tray only
+    touches part of the rim and sits over the cavity.
+    """
+    pts = [pt for q in below for pt in _contact_points(p, q, _open_rects(q, geoms[q.design.id]))]
+    hull = _hull(pts)
+    (fw, fl), (cx, cy) = p.footprint, p.center
+    dx, dy = fw * SUPPORT_CORE / 2, fl * SUPPORT_CORE / 2
+    return all(_in_hull(hull, (cx + sx * dx, cy + sy * dy)) for sx in (-1, 1) for sy in (-1, 1))
 
 
 def validate_layout(plan: Plan, trays: list[PlacedTray], geoms: dict) -> dict:
@@ -104,14 +179,17 @@ def validate_layout(plan: Plan, trays: list[PlacedTray], geoms: dict) -> dict:
                                     f"in every position the board can slide to")
             continue
         cover = 0.0
-        for q in trays:
-            if q is p or abs(q.z + q.h - p.z) > eps:
-                continue
+        below = [q for q in trays if q is not p and abs(q.z + q.h - p.z) <= eps]
+        for q in below:
             qw, ql = q.footprint
             cover += max(0, min(p.x + fw, q.x + qw) - max(p.x, q.x)) * max(0, min(p.y + fl, q.y + ql) - max(p.y, q.y))
-        if cover < 0.95 * fw * fl:
+        if cover < SUPPORT_COVER * fw * fl:
             unsupported += 1
             problems.append(f"{p.design.name}: only {cover / (fw * fl):.0%} of its base is supported")
+        elif not rim_supported(p, below, geoms):
+            unsupported += 1
+            problems.append(f"{p.design.name}: rests over the open cavity of the box below; the rims it touches "
+                            f"do not surround the middle of its base")
     min_wall = min_div = min_floor = math.inf
     for p in trays:
         gs = geoms[p.design.id]

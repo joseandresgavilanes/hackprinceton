@@ -12,6 +12,8 @@ from conftest import HAS_CADQUERY, ROOT, needs_cad
 from organizer import PlanError, plan_layout
 from organizer.grouping import place_cells
 from organizer.mesh import read_stl, single_open_cavity
+from organizer.packing import PlacedTray
+from organizer.pipeline import validate_layout
 
 spec = importlib.util.spec_from_file_location("convert_grouping_output", ROOT / "convert_grouping_output.py")
 conv = importlib.util.module_from_spec(spec)
@@ -447,3 +449,101 @@ def test_ttr_london_six_printable_open_boxes(ttr_output):
     assert {t["storage_style"] for t in decks.values()} == {"card_stack"}
     assert len({tuple(t["outer_mm"].values()) for t in decks.values()}) == 1  # similarly named decks too
     assert {t["size_group"] for t in decks.values()} == {"card deck"}
+
+
+# ---------------------------------------------------------------------------
+# King of Tokyo (kotoutput.json): the big box only fits on top of the four others
+# ---------------------------------------------------------------------------
+KOT_SETS = ["Power Card Deck", "Dice Pool", "Energy Cubes", "Status & Special Tokens", "Monster Kits (All Players)"]
+KOT_TOP = "Monster Kits (All Players)"
+# Minimum outer box sizes from Holden's dimensions (2.4 mm walls, 2 mm floor, 1 mm clearance), unchanged
+KOT_MIN = {"Power Card Deck": (74.1, 96.2, 29.4), "Dice Pool": (66.5, 74.5, 38.0), "Energy Cubes": (57.3, 107.8, 17.0),
+           "Status & Special Tokens": (100.6, 83.1, 23.0), KOT_TOP: (200.5, 197.0, 18.0)}
+
+
+@pytest.fixture
+def kot():
+    return load_grouping("kotoutput.json")
+
+
+def _geoms(plan, trays):
+    return {p.design.id: place_cells(p.design, p.w, p.l, p.h, plan.settings) for p in trays}
+
+
+@pytest.mark.parametrize("compact", [False, True])
+def test_king_of_tokyo_big_box_rests_on_the_other_four(kot, compact):
+    """Regression: both modes failed with does_not_fit (532 of 615 cm²).
+
+    Next to Monster Kits (200.5 × 197 mm) the 248 mm floor leaves 46.5 / 50 mm strips, narrower than any other
+    box, so nothing shares its level. The four other boxes stand at one height under it and carry it.
+    """
+    plan, _ = conv.convert(kot, BED, compact=compact)
+    for comp, src in zip(plan["compartments"], kot["sets"]):   # Holden's sets reach the engine unchanged
+        assert comp["name"] == src["name"]
+        assert [(m["quantity"], m["dimensions_mm"]) for m in comp["members"]] == \
+               [(m["quantity"], m["dimensions_mm"]) for m in src["members"]]
+    p, designs, packing = plan_layout(plan)
+    assert {d.name: (round(d.min_w, 1), round(d.min_l, 1), round(d.min_h, 1)) for d in designs} == KOT_MIN
+    assert [t.design.name for t in packing.trays] == KOT_SETS and packing.layers == 2
+    assert "bridge" in packing.method
+    assert p.usable_height == 59.0 and p.settings.headroom_mm == 8.0      # 67 mm box − 8 mm board + rulebook
+    top = next(t for t in packing.trays if t.design.name == KOT_TOP)
+    under = [t for t in packing.trays if t is not top]
+    assert top.layer == 1 and all(t.layer == 0 and t.z == 0 for t in under)
+    assert [t.h for t in under] == pytest.approx([38.0] * 4)             # one common height (Dice Pool's)
+    assert top.z == pytest.approx(38.0) and top.z + top.h <= 59.0 + 1e-9
+    for t in packing.trays:
+        assert t.w >= t.design.min_w - 1e-9 and t.l >= t.design.min_l - 1e-9 and t.h >= t.design.min_h - 1e-9
+        assert max(t.w, t.l) <= BED[0] and t.h <= BED[2]
+    v = validate_layout(p, packing.trays, _geoms(p, packing.trays))
+    assert v["ok"], v["problems"]
+    assert v["collisions"] == 0 and v["unsupported_trays"] == 0
+    assert v["min_wall_mm"] == pytest.approx(2.4) and v["min_floor_mm"] == pytest.approx(2.0)
+    if compact:
+        assert (top.w, top.l, top.h) == pytest.approx(KOT_MIN[KOT_TOP])
+    else:
+        assert top.z + top.h == pytest.approx(59.0)
+        assert sum(t.w * t.l for t in under) / (248 * 248) > 0.97         # the four boxes fill the floor
+
+
+def test_boxes_on_one_open_box_are_rejected(kot):
+    """The four smaller boxes do fit inside Monster Kits' footprint, but its top is a 2.4 mm rim around an open
+    195.7 × 192.2 mm cavity: they would sit over the hole. Validation must not accept that arrangement."""
+    plan, _ = conv.convert(kot, BED, compact=True)
+    p, designs, _ = plan_layout(plan)
+    by = {d.name: d for d in designs}
+    big = by[KOT_TOP]
+    trays = [PlacedTray(big, 1.5, 1.5, 0.0, 0, big.min_w, big.min_l, big.min_h, 0, 0)]
+    # an exact rectangle-packing search places them like this (lower-left corners, 1 mm gaps)
+    for name, (x, y) in {"Power Card Deck": (0, 0), "Dice Pool": (0, 97.2), "Energy Cubes": (75.1, 0),
+                         "Status & Special Tokens": (67.5, 108.8)}.items():
+        d = by[name]
+        trays.append(PlacedTray(d, 1.5 + x, 1.5 + y, big.min_h, 0, d.min_w, d.min_l, d.min_h, 1, 1))
+        assert 1.5 + x + d.min_w <= 1.5 + big.min_w and 1.5 + y + d.min_l <= 1.5 + big.min_l
+    v = validate_layout(p, trays, _geoms(p, trays))
+    assert v["collisions"] == 0 and v["unsupported_trays"] == 4
+    assert all("open cavity" in pr for pr in v["problems"]), v["problems"]
+
+
+@pytest.fixture(scope="module")
+def kot_output(tmp_path_factory):
+    if not HAS_CADQUERY:
+        pytest.skip("CadQuery not installed")
+    from organizer import generate
+    plan, _ = conv.convert(load_grouping("kotoutput.json"), BED)
+    dest = tmp_path_factory.mktemp("king_of_tokyo")
+    return dest, generate(plan, dest)
+
+
+@needs_cad
+def test_king_of_tokyo_five_printable_open_boxes(kot_output):
+    dest, layout = kot_output
+    _check_open_boxes(dest, layout, 5)
+    _check_glb(dest, layout, KOT_SETS)
+    lv = layout["validation"]["layout"]
+    assert lv["ok"] and lv["unsupported_trays"] == 0 and lv["collisions"] == 0
+    top = next(t for t in layout["trays"] if t["name"] == KOT_TOP)
+    assert top["layer"] == 1 and top["position_mm"]["z"] == pytest.approx(38.0)
+    for t in layout["trays"]:   # the four carry Monster Kits at 38 mm; it ends flush with the 8 mm headroom
+        top_z = t["position_mm"]["z"] + t["outer_mm"]["height"]
+        assert top_z == pytest.approx(59.0 if t["name"] == KOT_TOP else 38.0)

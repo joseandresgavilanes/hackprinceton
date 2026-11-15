@@ -5,7 +5,12 @@
 2. If that fails, stack trays into *columns*: two columns are merged when their
    heights fit the box and the merge saves the most floor area. Trays in a
    column share one footprint, so every upper tray is fully supported.
-3. With ``fill_box`` the placed footprints grow into the free floor space (no
+3. If columns are not enough, try a *bridge*: one tray lying on several trays
+   that are raised to one common height and together cover its footprint. Trays
+   are open boxes, so a tray is only carried by the rims below it: several small
+   trays on one large open tray would sit over its cavity, while a large tray's
+   solid floor rests safely on the rims of the trays under it.
+4. With ``fill_box`` the placed footprints grow into the free floor space (no
    rattling); trays that hold the same thing always keep the same size (they
    grow together); with ``fill_height`` the top tray of each column grows to the
    usable box height (flush surface under the lid/board).
@@ -237,11 +242,20 @@ def _merge(a: Column, b: Column, flip: bool) -> Column:
     return Column(a.trays + b.trays, a.rel_rot + [r != flip for r in b.rel_rot], max(a.w, bw), max(a.l, bl))
 
 
-def _best_merge(cols: list[Column], max_h: float, max_layers: int, gap: float, limits) -> Optional[tuple]:
+def _single(d: TrayDesign) -> Column:
+    """A one-tray column. Similar-name groups use the (short side, long side) frame so they line up."""
+    if d.size_group:
+        return Column([d], [d.min_w > d.min_l], min(d.min_w, d.min_l), max(d.min_w, d.min_l))
+    return Column([d], [False], d.min_w, d.min_l)
+
+
+def _best_merge(cols: list, max_h: float, max_layers: int, gap: float, limits) -> Optional[tuple]:
     best = None
     for i in range(len(cols)):
         for j in range(i + 1, len(cols)):
             a, b = cols[i], cols[j]
+            if isinstance(a, Bridge) or isinstance(b, Bridge):
+                continue
             if len(a.trays) + len(b.trays) > max_layers or a.h + b.h > max_h + EPS:
                 continue
             for flip in (False, True):
@@ -615,6 +629,202 @@ def best_layout(sizes: dict, bin_w: float, bin_l: float, fill: bool = False, cap
     return None if best is None else best[1:]
 
 
+# ---------------------------------------------------------------------------
+# Bridges: one tray carried by several trays raised to one common height
+# ---------------------------------------------------------------------------
+SUPPORT_COVER = 0.95      # share of an upper tray's base that must rest on trays below (also validate_layout)
+MAX_BRIDGE_TRAYS = 8      # the bridge search tries every top tray × set of trays under it up to this many trays
+
+
+@dataclass
+class Bridge:
+    """One tray lying flat on several trays that cover its footprint at one common height.
+
+    Trays are open boxes: a tray is only carried where it rests on the rims below it. Several
+    small trays on one large tray would sit over its open cavity, so the reverse is used: the
+    trays underneath are raised to the height of the tallest of them and stretched until their
+    rims carry the whole floor of the tray on top.
+    """
+    top: Column                 # one-tray column; its frame is the bridge frame
+    under: list                 # one-tray columns
+    tiles: dict                 # index in ``under`` → (x, y, w, l, rot): gap-inflated rects in the bridge frame
+    w: float                    # footprint in the bridge frame (at least the top tray's minimum)
+    l: float
+
+    @property
+    def base_h(self) -> float:
+        return max(c.h for c in self.under)
+
+    @property
+    def h(self) -> float:
+        return self.base_h + self.top.h
+
+    @property
+    def trays(self) -> list:
+        return [t for c in self.under for t in c.trays] + self.top.trays
+
+    @property
+    def rel_rot(self) -> list:
+        return [r for c in self.under for r in c.rel_rot] + self.top.rel_rot
+
+    @property
+    def name(self) -> str:
+        return f"{self.top.name} on " + " + ".join(c.name for c in self.under)
+
+
+def _tile(cols: list, bin_w: float, bin_l: float, gap: float) -> Optional[dict]:
+    """Cover a (gap-inflated) bin with the columns, which may grow; None unless they carry SUPPORT_COVER of it."""
+    sizes = {i: (c.w + gap, c.l + gap) for i, c in enumerate(cols)}
+    if sum(w * l for w, l in sizes.values()) > bin_w * bin_l + EPS:
+        return None
+    groups = twin_groups(cols)
+    found = block_layout(sizes, groups, bin_w, bin_l, gap) or best_layout(sizes, bin_w, bin_l, True, None, groups)
+    if not found:
+        return None
+    placements, rects = found[1], found[2]
+    tiles = {i: (*rects[i], placements[i][4]) for i in sizes}
+    covered = sum((w - gap) * (l - gap) for _, _, w, l, _ in tiles.values())
+    return tiles if covered >= SUPPORT_COVER * (bin_w - gap) * (bin_l - gap) - EPS else None
+
+
+def _make_bridge(top: Column, under: list, plan: Plan) -> Optional[Bridge]:
+    gap = plan.settings.tray_gap_mm
+    bin_w, bin_l = plan.bin_size
+    tw, tl = top.w + gap, top.l + gap
+    tiles = _tile(under, tw, tl, gap)
+    if tiles:
+        return Bridge(top, under, tiles, top.w, top.l)
+    # The trays underneath need more room than the top tray's footprint: the top tray grows to cover them.
+    compact = best_layout({i: (c.w + gap, c.l + gap) for i, c in enumerate(under)}, bin_w, bin_l)
+    if not compact:
+        return None
+    ext_w = max(r[0] + r[2] for r in compact[2].values())
+    ext_l = max(r[1] + r[3] for r in compact[2].values())
+    sizes = sorted({(max(tw, ew), max(tl, el)) for ew, el in ((ext_w, ext_l), (ext_l, ext_w))},
+                   key=lambda s: (s[0] * s[1], s))
+    for w, l in sizes:
+        if w > bin_w + EPS or l > bin_l + EPS or not fits(w - gap, l - gap, plan.bed[0], plan.bed[1]):
+            continue
+        tiles = _tile(under, w, l, gap)
+        if tiles:
+            return Bridge(top, under, tiles, w - gap, l - gap)
+    return None
+
+
+def _bridges(designs: list, plan: Plan):
+    """Every way to rest one tray on two or more others, fewest trays underneath first, then largest top."""
+    s = plan.settings
+    if s.max_layers < 2 or not 3 <= len(designs) <= MAX_BRIDGE_TRAYS:
+        return
+    cols = {d.id: _single(d) for d in designs}
+    twin_of = {}
+    for g in twin_groups([cols[d.id] for d in designs]):
+        ids = frozenset(designs[i].id for i in g)
+        twin_of.update({i: ids for i in ids})
+    by_area = sorted(designs, key=lambda d: -d.min_w * d.min_l)
+    for k in range(2, len(designs)):
+        for top in by_area:
+            # a twin on top would end up a different size from its twins
+            if top.layer_pref == "bottom" or top.id in twin_of:
+                continue
+            rest = [d for d in designs if d is not top and d.layer_pref != "top"]
+            for under in itertools.combinations(rest, k):
+                ids = {d.id for d in under}
+                if any(not twin_of[i] <= ids for i in ids if i in twin_of):   # twins stay together
+                    continue
+                if max(d.min_h for d in under) + top.min_h > plan.usable_height + EPS:
+                    continue
+                b = _make_bridge(cols[top.id], [cols[d.id] for d in under], plan)
+                if b is not None:
+                    yield b
+
+
+# ---------------------------------------------------------------------------
+# Floor layout and final placement
+# ---------------------------------------------------------------------------
+def _pack_floor(cols: list, plan: Plan, cap) -> tuple:
+    """Lay the columns out on the floor, merging two columns whenever one layer is not enough.
+
+    Returns (cols, twins, found, notes); ``found`` is None when nothing fits.
+    """
+    s, gap = plan.settings, plan.settings.tray_gap_mm
+    bin_w, bin_l = plan.bin_size
+    limits = [(plan.bed[0], plan.bed[1]), (bin_w, bin_l)]
+    notes = []
+    while True:
+        sizes = {i: (c.w + gap, c.l + gap) for i, c in enumerate(cols)}
+        twins = twin_groups(cols)
+        if plan.mode == "boxes" and s.fill_box and all(len(c.trays) == 1 or isinstance(c, Bridge) for c in cols):
+            blocks = block_layout(sizes, twins, bin_w, bin_l, gap, cap)
+            if blocks:
+                *found, distinct = blocks
+                notes.append("Each kind of set is one block of equal boxes; the blocks fill the whole box floor"
+                             + ("" if distinct else ". Some different kinds could not be given clearly "
+                                                    "different box shapes"))
+                return cols, twins, tuple(found), notes
+        found = best_layout(sizes, bin_w, bin_l, s.fill_box, cap, twins)
+        if found:
+            return cols, twins, found, notes
+        merge = _best_merge(cols, plan.usable_height, s.max_layers, gap, limits)
+        if merge is None:
+            return cols, twins, None, notes
+        _, i, j, m = merge
+        notes.append(f"Stacked '{cols[j].name}' on '{cols[i].name}' to save floor space")
+        cols = [c for k, c in enumerate(cols) if k not in (i, j)] + [m]
+
+
+def _place_column(col: Column, ci: int, rect, crot: int, plan: Plan, z0: float = 0.0, layer0: int = 0,
+                  height: Optional[float] = None) -> list:
+    """Stack a column's trays on the gap-inflated floor rect (x, y, w, l), turned by ``crot``.
+
+    ``height`` raises every tray to that height (trays carrying a bridge); otherwise, with
+    fill_height, the top tray grows to the usable box height.
+    """
+    s, gap = plan.settings, plan.settings.tray_gap_mm
+    x, y, rw, rl = rect
+    fw, fl = rw - gap, rl - gap                     # column footprint in box frame
+    cw, cl = (fw, fl) if crot == 0 else (fl, fw)    # in column frame
+    # bottom → top: explicit preferences first, then taller trays lower down
+    order = sorted(range(len(col.trays)), key=lambda t: (
+        {"bottom": 0, "any": 1, "top": 2}[col.trays[t].layer_pref], -col.trays[t].min_h))
+    out, z = [], z0
+    for li, t in enumerate(order):
+        d, rel = col.trays[t], col.rel_rot[t]
+        h = d.min_h
+        if height is not None:
+            h = max(h, height)
+        elif s.fill_height and li == len(order) - 1:
+            h = max(h, min(plan.max_tray_height, plan.usable_height - z))
+        tw, tl = (cl, cw) if rel else (cw, cl)
+        rot = ((90 if rel else 0) + crot) % 180
+        out.append(PlacedTray(design=d, x=plan.bin_rect[0] + x + gap / 2, y=plan.bin_rect[1] + y + gap / 2,
+                              z=plan.floor_z + z, rot=rot, w=tw, l=tl, h=h, layer=layer0 + li, column=ci))
+        z += h
+    return out
+
+
+def _place_bridge(b: Bridge, ci: int, rect, crot: int, plan: Plan) -> list:
+    gap = plan.settings.tray_gap_mm
+    x, y, rw, rl = rect
+    bw, bl = (b.w + gap, b.l + gap) if crot == 0 else (b.l + gap, b.w + gap)
+    fx, fy = rw / bw, rl / bl
+    tiles, rots = {}, {}
+    for i, (tx, ty, tw, tl, trot) in b.tiles.items():
+        if crot:  # a quarter turn of the bridge: the transposed tiling covers the turned footprint just as well
+            tx, ty, tw, tl, trot = ty, tx, tl, tw, 90 - trot
+        tiles[i] = [tx * fx, ty * fy, tw * fx, tl * fy]   # stretching keeps the tiling gap-free and overlap-free
+        rots[i] = trot
+    groups = twin_groups(b.under)
+    if groups and abs(fx - fy) > EPS:  # uneven stretch: twins turned differently would no longer match
+        tiles = equalize(tiles, rots, groups, rw, rl)
+    out = []
+    for i, c in enumerate(b.under):
+        tx, ty, tw, tl = tiles[i]
+        out += _place_column(c, ci, (x + tx, y + ty, tw, tl), rots[i], plan, height=b.base_h)
+    out += _place_column(b.top, ci, rect, crot, plan, z0=b.base_h, layer0=1)
+    return out
+
+
 def pack_organizer(designs: list[TrayDesign], plan: Plan) -> PackResult:
     s = plan.settings
     gap = s.tray_gap_mm
@@ -622,7 +832,6 @@ def pack_organizer(designs: list[TrayDesign], plan: Plan) -> PackResult:
     max_h = plan.max_tray_height        # one tray (box space and printer Z)
     stack_h = plan.usable_height        # a whole column
     bed_w, bed_l = plan.bed[0], plan.bed[1]
-    limits = [(bed_w, bed_l), (bin_w, bin_l)]
     for d in designs:
         if d.min_h > max_h + EPS:  # designers already guard this; keep as a safety net
             plan.issues.error("too_tall", f"{d.name}: tray height {d.min_h:.1f} mm exceeds the available "
@@ -631,81 +840,67 @@ def pack_organizer(designs: list[TrayDesign], plan: Plan) -> PackResult:
         raise PlanError(plan.issues)
 
     notes = share_similar_sizes(designs, plan)
-    # similar-name groups: every box in the column frame (short side, long side) so they line up
-    cols = [Column([d], [d.min_w > d.min_l], min(d.min_w, d.min_l), max(d.min_w, d.min_l)) if d.size_group
-            else Column([d], [False], d.min_w, d.min_l) for d in designs]
+    cols = [_single(d) for d in designs]
     min_area = sum((d.min_w + gap) * (d.min_l + gap) for d in designs)
 
-    def cap_for(cmap):
-        def cap(k, w, l, axis):
-            # keep the (gap-inflated) column footprint printable and inside the box
-            cw, cl = w - gap, l - gap
-            other = cl if axis == 0 else cw
-            best = 0.0
-            for W, L in ((bed_w, bed_l), (bed_l, bed_w)):
-                if other <= (L if axis == 0 else W) + EPS:
-                    best = max(best, W if axis == 0 else L)
-            return best + gap
-        return cap
+    def cap(k, w, l, axis):
+        # keep the (gap-inflated) column footprint printable and inside the box
+        cw, cl = w - gap, l - gap
+        other = cl if axis == 0 else cw
+        best = 0.0
+        for W, L in ((bed_w, bed_l), (bed_l, bed_w)):
+            if other <= (L if axis == 0 else W) + EPS:
+                best = max(best, W if axis == 0 else L)
+        return best + gap
 
-    while True:
-        sizes = {i: (c.w + gap, c.l + gap) for i, c in enumerate(cols)}
-        twins = twin_groups(cols)
-        if plan.mode == "boxes" and s.fill_box and all(len(c.trays) == 1 for c in cols):
-            blocks = block_layout(sizes, twins, bin_w, bin_l, gap, cap_for(cols))
-            if blocks:
-                *found, distinct = blocks
-                notes.append("Each kind of set is one block of equal boxes; the blocks fill the whole box floor"
-                             + ("" if distinct else ". Some different kinds could not be given clearly "
-                                                    "different box shapes"))
+    tried, twins, found, floor_notes = _pack_floor(cols, plan, cap)
+    cols, bridged = tried, None
+    if found is None:
+        for bridge in _bridges(designs, plan):
+            used = {t.id for t in bridge.trays}
+            rest = [_single(d) for d in designs if d.id not in used]
+            b_cols, b_twins, b_found, b_notes = _pack_floor(rest + [bridge], plan, cap)
+            if b_found:
+                cols, twins, found, floor_notes, bridged = b_cols, b_twins, b_found, b_notes, bridge
                 break
-        found = best_layout(sizes, bin_w, bin_l, s.fill_box, cap_for(cols), twins)
-        if found:
-            break
-        merge = _best_merge(cols, stack_h, s.max_layers, gap, limits)
-        if merge is None:
-            need = sum((c.w + gap) * (c.l + gap) for c in cols)
-            biggest = sorted(designs, key=lambda d: -d.min_w * d.min_l)[:3]
-            plan.issues.error(
-                "does_not_fit",
-                f"The trays cannot fit in the {plan.box[0]:g} × {plan.box[1]:g} × {plan.box[2]:g} mm box: they "
-                f"need at least {need / 100:.0f} cm² of floor (after stacking up to {s.max_layers} high within "
-                f"{stack_h:.1f} mm) but the box floor offers {bin_w * bin_l / 100:.0f} cm². Largest trays: "
-                + ", ".join(f"{d.name} {d.min_w:.0f}×{d.min_l:.0f}×{d.min_h:.0f}" for d in biggest)
-                + ". Options: a larger box, smaller clearance/walls, fewer components per box, "
-                  "more settings.max_layers, or less headroom_mm.")
-            raise PlanError(plan.issues)
-        _, i, j, m = merge
-        notes.append(f"Stacked '{cols[j].name}' on '{cols[i].name}' to save floor space")
-        cols = [c for k, c in enumerate(cols) if k not in (i, j)] + [m]
+    if found is None:
+        floor = bin_w * bin_l
+        biggest = sorted(designs, key=lambda d: -d.min_w * d.min_l)[:3]
+        if min_area > s.max_layers * floor + EPS:
+            why = (f"No arrangement exists: the trays need {min_area / 100:.0f} cm² of floor at their smallest, "
+                   f"more than {s.max_layers} layer(s) of the {floor / 100:.0f} cm² box floor.")
+        else:
+            need = sum((c.w + gap) * (c.l + gap) for c in tried)
+            why = (f"The packer found no arrangement (a heuristic search: this does not prove that none exists). "
+                   f"After stacking up to {s.max_layers} high within {stack_h:.1f} mm the trays still need "
+                   f"{need / 100:.0f} cm² of floor; the box floor offers {floor / 100:.0f} cm²"
+                   + (", and no tray could be carried by several others." if s.max_layers > 1 else "."))
+        plan.issues.error(
+            "does_not_fit",
+            f"The trays cannot fit in the {plan.box[0]:g} × {plan.box[1]:g} × {plan.box[2]:g} mm box. {why} "
+            "Largest trays: " + ", ".join(f"{d.name} {d.min_w:.0f}×{d.min_l:.0f}×{d.min_h:.0f}" for d in biggest)
+            + ". Options: a larger box, smaller clearance/walls, fewer components per box, "
+              "more settings.max_layers, or less headroom_mm.")
+        raise PlanError(plan.issues)
+    notes += floor_notes
+    if bridged:
+        notes.append(f"'{bridged.top.name}' rests on " + ", ".join(f"'{c.name}'" for c in bridged.under)
+                     + f": those boxes stand at one height ({bridged.base_h:.1f} mm) and together cover its "
+                       "footprint, so its floor is carried by their rims (boxes set on top of one open box "
+                       "would sit over its cavity)")
 
     method, placements, rects = found
+    if bridged:
+        method += " + bridge"
     if s.fill_box:
         method += " + fill_box"
     for g in twins:
         if not any(t.size_group for i in g for t in cols[i].trays):
             notes.append("Same contents, same size: " + ", ".join(f"'{cols[i].name}'" for i in g))
     placed: list[PlacedTray] = []
-    layers = 1
     for ci, col in enumerate(cols):
-        x, y, rw, rl = rects[ci]
-        crot = placements[ci][4]
-        fw, fl = rw - gap, rl - gap                     # column footprint in box frame
-        cw, cl = (fw, fl) if crot == 0 else (fl, fw)    # in column frame
-        # bottom → top: explicit preferences first, then taller trays lower down
-        order = sorted(range(len(col.trays)), key=lambda t: (
-            {"bottom": 0, "any": 1, "top": 2}[col.trays[t].layer_pref], -col.trays[t].min_h))
-        z = 0.0
-        layers = max(layers, len(order))
-        for li, t in enumerate(order):
-            d, rel = col.trays[t], col.rel_rot[t]
-            h = d.min_h
-            if s.fill_height and li == len(order) - 1:
-                h = max(h, min(max_h, stack_h - z))
-            tw, tl = (cl, cw) if rel else (cw, cl)
-            rot = ((90 if rel else 0) + crot) % 180
-            placed.append(PlacedTray(design=d, x=plan.bin_rect[0] + x + gap / 2, y=plan.bin_rect[1] + y + gap / 2,
-                                     z=plan.floor_z + z, rot=rot, w=tw, l=tl, h=h, layer=li, column=ci))
-            z += h
+        place = _place_bridge if isinstance(col, Bridge) else _place_column
+        placed += place(col, ci, rects[ci], placements[ci][4], plan)
     placed.sort(key=lambda p: p.design.id)
+    layers = max(p.layer for p in placed) + 1
     return PackResult(trays=placed, method=method, layers=layers, notes=notes, min_area_mm2=min_area)

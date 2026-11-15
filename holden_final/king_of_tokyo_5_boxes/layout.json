@@ -1,0 +1,1746 @@
+{
+  "schema_version": 2,
+  "engine": "inside-the-box organizer 2.0.0",
+  "status": "ok",
+  "game": "King of Tokyo",
+  "units": "mm",
+  "method": "blocks + bridge + fill_box",
+  "box_inner_mm": {
+    "width": 250.0,
+    "length": 250.0,
+    "height": 67.0
+  },
+  "usable_height_mm": 59.0,
+  "organizer_mode": "boxes",
+  "floor_offset_mm": 0.0,
+  "bottom_layer": [],
+  "printer_bed_mm": {
+    "width": 256.0,
+    "length": 256.0,
+    "height": 256.0
+  },
+  "constraints": {
+    "wall_mm": 2.4,
+    "floor_mm": 2.0,
+    "clearance_mm": 1.0,
+    "tray_gap_mm": 1.0,
+    "box_margin_mm": 1.0,
+    "divider_mm": 1.6,
+    "min_feature_mm": 1.2,
+    "headroom_mm": 8.0,
+    "fill_height": true,
+    "fill_box": true,
+    "max_layers": 2
+  },
+  "coordinate_system": {
+    "origin": "lower-left corner of the box interior floor",
+    "axes": "x = box width, y = box length, z = up (millimetres)",
+    "stl_frame": "each STL is centred on x/y = 0 with its base at z = 0",
+    "placement": "rotate the STL by rotation_degrees counter-clockwise about +z, then translate it to center_mm (equivalently apply transform_mm, a row-major 4×4 matrix)",
+    "position_mm": "lower-left corner of the rotated footprint (schema v1 meaning); z includes the bottom layer (floor_offset_mm) the trays rest on",
+    "glb": "organizer.glb root node converts this Z-up mm frame to glTF Y-up metres; tray nodes use the same mm values as this file"
+  },
+  "files": {
+    "stl": [
+      "01_power_card_deck.stl",
+      "02_dice_pool.stl",
+      "03_energy_cubes.stl",
+      "04_status_special_tokens.stl",
+      "05_monster_kits_all_players.stl"
+    ],
+    "glb": "organizer.glb",
+    "layout": "layout.json"
+  },
+  "stats": {
+    "trays": 5,
+    "layers": 2,
+    "floor_coverage": 0.968,
+    "tray_volume_fraction": 0.971,
+    "min_floor_area_needed_mm2": 67181
+  },
+  "notes": [
+    "Trays are separate open-top parts. Trays with layer > 0 rest directly on the trays below: on one tray with the same footprint, or on several trays of one common height whose rims together carry their whole floor.",
+    "Print each STL as exported: flat side down, z = 0 on the build plate. Units are millimetres.",
+    "Raised floors and thickened walls are solid in CAD; the slicer fills them with infill (10–15% is plenty).",
+    "required_mm (when used) is the bounding box of the whole stored group, not one piece.",
+    "The packing heuristic is not guaranteed optimal. Verify slicer checks and a physical test fit before a full print.",
+    "Each kind of set is one block of equal boxes; the blocks fill the whole box floor",
+    "'Monster Kits (All Players)' rests on 'Power Card Deck', 'Dice Pool', 'Energy Cubes', 'Status & Special Tokens': those boxes stand at one height (38.0 mm) and together cover its footprint, so its floor is carried by their rims (boxes set on top of one open box would sit over its cavity)"
+  ],
+  "assumptions": [
+    "Dice Pool: loose box sized so every piece's bounding box fits in 1 arranged layer(s) of 59.7 × 67.7 mm; pieces poured in at random may need settling. Physical fit is not verified.",
+    "Energy Cubes: loose box sized so every piece's bounding box fits in 1 arranged layer(s) of 50.5 × 101.0 mm; pieces poured in at random may need settling. Physical fit is not verified.",
+    "Status & Special Tokens: loose box sized so every piece's bounding box fits in 1 arranged layer(s) of 93.8 × 76.3 mm; pieces poured in at random may need settling. Physical fit is not verified.",
+    "Monster Kits (All Players): loose box sized so every piece's bounding box fits in 3 arranged layer(s) of 193.7 × 190.2 mm; pieces poured in at random may need settling. Physical fit is not verified."
+  ],
+  "warnings": [],
+  "skipped_compartments": [],
+  "validation": {
+    "layout": {
+      "ok": true,
+      "problems": [],
+      "collisions": 0,
+      "unsupported_trays": 0,
+      "min_wall_mm": 2.4,
+      "min_divider_mm": null,
+      "min_floor_mm": 2.0,
+      "min_board_support_fraction": null
+    },
+    "meshes_ok": true
+  },
+  "trays": [
+    {
+      "name": "Power Card Deck",
+      "stl": "01_power_card_deck.stl",
+      "position_mm": {
+        "x": 1.5,
+        "y": 1.5,
+        "z": 0.0
+      },
+      "rotation_degrees": 0,
+      "outer_mm": {
+        "width": 100.6,
+        "length": 145.36,
+        "height": 38.0
+      },
+      "footprint_in_box_mm": {
+        "width": 100.6,
+        "length": 145.36
+      },
+      "cavity_mm": {
+        "width": 95.8,
+        "length": 140.56,
+        "depth": 36.0
+      },
+      "id": 1,
+      "type": "set",
+      "compartments": [
+        "Power Card Deck"
+      ],
+      "storage_style": "card_stack",
+      "contents": "66× Power card",
+      "layer": 0,
+      "column": 0,
+      "center_mm": {
+        "x": 51.8,
+        "y": 74.18,
+        "z": 0.0
+      },
+      "transform_mm": [
+        [
+          1.0,
+          -0.0,
+          0.0,
+          51.798
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          74.18
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "assembled_position_mm": [
+        51.8,
+        74.18,
+        0.0
+      ],
+      "exploded_position_mm": [
+        26.18,
+        56.39,
+        97.0
+      ],
+      "assembly_order": 0,
+      "min_outer_mm": {
+        "width": 74.1,
+        "length": 96.2,
+        "height": 29.4
+      },
+      "cells": [
+        {
+          "name": "Power Card Deck",
+          "component": "Power Card Deck",
+          "type": "set",
+          "shape": "rect",
+          "cavity_center_mm": [
+            0.0,
+            0.0
+          ],
+          "cavity_mm": {
+            "width": 95.8,
+            "length": 140.56,
+            "depth": 36.0
+          },
+          "floor_thickness_mm": 2.0,
+          "grows_to_fill": true,
+          "contents": {
+            "storage_style": "card_stack",
+            "members": [
+              {
+                "name": "Power card",
+                "component_id": "component_6",
+                "quantity": 66,
+                "shape": "rectangular_prism",
+                "dimensions_mm": {
+                  "length": 89.4,
+                  "width": 67.3,
+                  "height": 0.4
+                }
+              }
+            ],
+            "stack_height_mm": 26.4,
+            "fit_basis": "one deck lying flat: 66 × 0.4 mm"
+          }
+        }
+      ],
+      "features": [
+        {
+          "kind": "cavity",
+          "cell": "Power Card Deck",
+          "size_mm": [
+            95.8,
+            140.56,
+            36.0
+          ]
+        }
+      ],
+      "solid_volume_cm3": 70.884,
+      "mesh_validation": {
+        "triangles": 284,
+        "watertight": true,
+        "manifold": true,
+        "consistent_winding": true,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "inconsistent_edges": 0,
+        "degenerate_triangles": 0,
+        "shells": 1,
+        "euler_characteristic": 2,
+        "volume_mm3": 70884.09,
+        "outward_normals": true,
+        "bbox_mm": [
+          100.595,
+          145.361,
+          38.0
+        ],
+        "bbox_deviation_mm": 0.0,
+        "volume_vs_cad": 0.0,
+        "min_thickness": {
+          "x": {
+            "min_mm": 2.4,
+            "at_mm": [
+              -50.3,
+              -68.92,
+              2.3
+            ]
+          },
+          "y": {
+            "min_mm": 2.4,
+            "at_mm": [
+              -47.18,
+              -72.68,
+              3.19
+            ]
+          },
+          "z": {
+            "min_mm": 2.0,
+            "at_mm": [
+              -46.6,
+              -69.02,
+              0.0
+            ]
+          },
+          "overall_min_mm": 2.0
+        },
+        "problems": [],
+        "ok": true,
+        "single_open_cavity": {
+          "ok": true,
+          "cavity_points": 13066,
+          "rim_points": 819,
+          "cavity_points_not_on_floor": 0,
+          "rim_points_below_top": 0,
+          "cavity_floor_z_mm": 2.0
+        }
+      }
+    },
+    {
+      "name": "Dice Pool",
+      "stl": "02_dice_pool.stl",
+      "position_mm": {
+        "x": 1.5,
+        "y": 147.86,
+        "z": 0.0
+      },
+      "rotation_degrees": 90,
+      "outer_mm": {
+        "width": 100.64,
+        "length": 100.6,
+        "height": 38.0
+      },
+      "footprint_in_box_mm": {
+        "width": 100.6,
+        "length": 100.64
+      },
+      "cavity_mm": {
+        "width": 95.84,
+        "length": 95.8,
+        "depth": 36.0
+      },
+      "id": 2,
+      "type": "set",
+      "compartments": [
+        "Dice Pool"
+      ],
+      "storage_style": "loose",
+      "contents": "6× Black die (custom-engraved), 2× Green die (custom-engraved)",
+      "layer": 0,
+      "column": 0,
+      "center_mm": {
+        "x": 51.8,
+        "y": 198.18,
+        "z": 0.0
+      },
+      "transform_mm": [
+        [
+          0.0,
+          -1.0,
+          0.0,
+          51.798
+        ],
+        [
+          1.0,
+          0.0,
+          0.0,
+          198.18
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "assembled_position_mm": [
+        51.8,
+        198.18,
+        0.0
+      ],
+      "exploded_position_mm": [
+        26.18,
+        223.79,
+        97.0
+      ],
+      "assembly_order": 1,
+      "min_outer_mm": {
+        "width": 66.5,
+        "length": 74.5,
+        "height": 38.0
+      },
+      "cells": [
+        {
+          "name": "Dice Pool",
+          "component": "Dice Pool",
+          "type": "set",
+          "shape": "rect",
+          "cavity_center_mm": [
+            0.0,
+            0.0
+          ],
+          "cavity_mm": {
+            "width": 95.84,
+            "length": 95.8,
+            "depth": 36.0
+          },
+          "floor_thickness_mm": 2.0,
+          "grows_to_fill": true,
+          "contents": {
+            "storage_style": "loose",
+            "members": [
+              {
+                "name": "Black die (custom-engraved)",
+                "component_id": "component_7",
+                "quantity": 6,
+                "shape": "cylinder",
+                "dimensions_mm": {
+                  "length": 19.9,
+                  "width": 19.9,
+                  "height": 21.9
+                }
+              },
+              {
+                "name": "Green die (custom-engraved)",
+                "component_id": "component_8",
+                "quantity": 2,
+                "shape": "cylinder",
+                "dimensions_mm": {
+                  "length": 27.9,
+                  "width": 27.9,
+                  "height": 35.0
+                }
+              }
+            ],
+            "layers": 1,
+            "fit_basis": "bounding boxes arranged without overlap",
+            "arrangement_mm": [
+              {
+                "member": "Green die (custom-engraved)",
+                "x": 0.0,
+                "y": 0.0,
+                "w": 27.9,
+                "l": 27.9
+              },
+              {
+                "member": "Green die (custom-engraved)",
+                "x": 27.9,
+                "y": 0.0,
+                "w": 27.9,
+                "l": 27.9
+              },
+              {
+                "member": "Black die (custom-engraved)",
+                "x": 0.0,
+                "y": 27.9,
+                "w": 19.9,
+                "l": 19.9
+              },
+              {
+                "member": "Black die (custom-engraved)",
+                "x": 19.9,
+                "y": 27.9,
+                "w": 19.9,
+                "l": 19.9
+              },
+              {
+                "member": "Black die (custom-engraved)",
+                "x": 39.8,
+                "y": 27.9,
+                "w": 19.9,
+                "l": 19.9
+              },
+              {
+                "member": "Black die (custom-engraved)",
+                "x": 0.0,
+                "y": 47.8,
+                "w": 19.9,
+                "l": 19.9
+              },
+              {
+                "member": "Black die (custom-engraved)",
+                "x": 19.9,
+                "y": 47.8,
+                "w": 19.9,
+                "l": 19.9
+              },
+              {
+                "member": "Black die (custom-engraved)",
+                "x": 39.8,
+                "y": 47.8,
+                "w": 19.9,
+                "l": 19.9
+              }
+            ]
+          }
+        }
+      ],
+      "features": [
+        {
+          "kind": "cavity",
+          "cell": "Dice Pool",
+          "size_mm": [
+            95.84,
+            95.8,
+            36.0
+          ]
+        }
+      ],
+      "solid_volume_cm3": 54.159,
+      "mesh_validation": {
+        "triangles": 284,
+        "watertight": true,
+        "manifold": true,
+        "consistent_winding": true,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "inconsistent_edges": 0,
+        "degenerate_triangles": 0,
+        "shells": 1,
+        "euler_characteristic": 2,
+        "volume_mm3": 54158.72,
+        "outward_normals": true,
+        "bbox_mm": [
+          100.639,
+          100.595,
+          38.0
+        ],
+        "bbox_deviation_mm": 0.0,
+        "volume_vs_cad": 0.0,
+        "min_thickness": {
+          "x": {
+            "min_mm": 2.4,
+            "at_mm": [
+              -50.32,
+              -47.18,
+              3.19
+            ]
+          },
+          "y": {
+            "min_mm": 2.4,
+            "at_mm": [
+              -47.2,
+              -50.3,
+              3.19
+            ]
+          },
+          "z": {
+            "min_mm": 2.0,
+            "at_mm": [
+              -47.28,
+              -47.26,
+              0.0
+            ]
+          },
+          "overall_min_mm": 2.0
+        },
+        "problems": [],
+        "ok": true,
+        "single_open_cavity": {
+          "ok": true,
+          "cavity_points": 8930,
+          "rim_points": 587,
+          "cavity_points_not_on_floor": 0,
+          "rim_points_below_top": 0,
+          "cavity_floor_z_mm": 2.0
+        }
+      }
+    },
+    {
+      "name": "Energy Cubes",
+      "stl": "03_energy_cubes.stl",
+      "position_mm": {
+        "x": 103.1,
+        "y": 1.5,
+        "z": 0.0
+      },
+      "rotation_degrees": 90,
+      "outer_mm": {
+        "width": 100.53,
+        "length": 145.4,
+        "height": 38.0
+      },
+      "footprint_in_box_mm": {
+        "width": 145.4,
+        "length": 100.53
+      },
+      "cavity_mm": {
+        "width": 95.73,
+        "length": 140.6,
+        "depth": 36.0
+      },
+      "id": 3,
+      "type": "set",
+      "compartments": [
+        "Energy Cubes"
+      ],
+      "storage_style": "loose",
+      "contents": "50× Energy cube",
+      "layer": 0,
+      "column": 0,
+      "center_mm": {
+        "x": 175.8,
+        "y": 51.77,
+        "z": 0.0
+      },
+      "transform_mm": [
+        [
+          0.0,
+          -1.0,
+          0.0,
+          175.798
+        ],
+        [
+          1.0,
+          0.0,
+          0.0,
+          51.767
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "assembled_position_mm": [
+        175.8,
+        51.77,
+        0.0
+      ],
+      "exploded_position_mm": [
+        193.58,
+        26.14,
+        97.0
+      ],
+      "assembly_order": 2,
+      "min_outer_mm": {
+        "width": 57.3,
+        "length": 107.8,
+        "height": 17.0
+      },
+      "cells": [
+        {
+          "name": "Energy Cubes",
+          "component": "Energy Cubes",
+          "type": "set",
+          "shape": "rect",
+          "cavity_center_mm": [
+            0.0,
+            0.0
+          ],
+          "cavity_mm": {
+            "width": 95.73,
+            "length": 140.6,
+            "depth": 36.0
+          },
+          "floor_thickness_mm": 2.0,
+          "grows_to_fill": true,
+          "contents": {
+            "storage_style": "loose",
+            "members": [
+              {
+                "name": "Energy cube",
+                "component_id": "component_9",
+                "quantity": 50,
+                "shape": "cylinder",
+                "dimensions_mm": {
+                  "length": 10.1,
+                  "width": 10.1,
+                  "height": 14.0
+                }
+              }
+            ],
+            "layers": 1,
+            "fit_basis": "bounding boxes arranged without overlap",
+            "arrangement_mm": [
+              {
+                "member": "Energy cube",
+                "x": 0.0,
+                "y": 0.0,
+                "w": 10.1,
+                "l": 10.1
+              },
+              {
+                "member": "Energy cube",
+                "x": 10.1,
+                "y": 0.0,
+                "w": 10.1,
+                "l": 10.1
+              },
+              {
+                "member": "Energy cube",
+                "x": 20.2,
+                "y": 0.0,
+                "w": 10.1,
+                "l": 10.1
+              },
+              {
+                "member": "Energy cube",
+                "x": 30.3,
+                "y": 0.0,
+                "w": 10.1,
+                "l": 10.1
+              },
+              {
+                "member": "Energy cube",
+                "x": 40.4,
+                "y": 0.0,
+                "w": 10.1,
+                "l": 10.1
+              },
+              {
+                "member": "Energy cube",
+                "x": 0.0,
+                "y": 10.1,
+                "w": 10.1,
+                "l": 10.1
+              },
+              {
+                "member": "Energy cube",
+                "x": 10.1,
+                "y": 10.1,
+                "w": 10.1,
+                "l": 10.1
+              },
+              {
+                "member": "Energy cube",
+                "x": 20.2,
+                "y": 10.1,
+                "w": 10.1,
+                "l": 10.1
+              },
+              {
+                "member": "Energy cube",
+                "x": 30.3,
+                "y": 10.1,
+                "w": 10.1,
+                "l": 10.1
+              },
+              {
+                "member": "Energy cube",
+                "x": 40.4,
+                "y": 10.1,
+                "w": 10.1,
+                "l": 10.1
+              },
+              {
+                "member": "Energy cube",
+                "x": 0.0,
+                "y": 20.2,
+                "w": 10.1,
+                "l": 10.1
+              },
+              {
+                "member": "Energy cube",
+                "x": 10.1,
+                "y": 20.2,
+                "w": 10.1,
+                "l": 10.1
+              },
+              {
+                "member": "Energy cube",
+                "x": 20.2,
+                "y": 20.2,
+                "w": 10.1,
+                "l": 10.1
+              },
+              {
+                "member": "Energy cube",
+                "x": 30.3,
+                "y": 20.2,
+                "w": 10.1,
+                "l": 10.1
+              },
+              {
+                "member": "Energy cube",
+                "x": 40.4,
+                "y": 20.2,
+                "w": 10.1,
+                "l": 10.1
+              },
+              {
+                "member": "Energy cube",
+                "x": 0.0,
+                "y": 30.3,
+                "w": 10.1,
+                "l": 10.1
+              },
+              {
+                "member": "Energy cube",
+                "x": 10.1,
+                "y": 30.3,
+                "w": 10.1,
+                "l": 10.1
+              },
+              {
+                "member": "Energy cube",
+                "x": 20.2,
+                "y": 30.3,
+                "w": 10.1,
+                "l": 10.1
+              },
+              {
+                "member": "Energy cube",
+                "x": 30.3,
+                "y": 30.3,
+                "w": 10.1,
+                "l": 10.1
+              },
+              {
+                "member": "Energy cube",
+                "x": 40.4,
+                "y": 30.3,
+                "w": 10.1,
+                "l": 10.1
+              },
+              {
+                "member": "Energy cube",
+                "x": 0.0,
+                "y": 40.4,
+                "w": 10.1,
+                "l": 10.1
+              },
+              {
+                "member": "Energy cube",
+                "x": 10.1,
+                "y": 40.4,
+                "w": 10.1,
+                "l": 10.1
+              },
+              {
+                "member": "Energy cube",
+                "x": 20.2,
+                "y": 40.4,
+                "w": 10.1,
+                "l": 10.1
+              },
+              {
+                "member": "Energy cube",
+                "x": 30.3,
+                "y": 40.4,
+                "w": 10.1,
+                "l": 10.1
+              },
+              {
+                "member": "Energy cube",
+                "x": 40.4,
+                "y": 40.4,
+                "w": 10.1,
+                "l": 10.1
+              },
+              {
+                "member": "Energy cube",
+                "x": 0.0,
+                "y": 50.5,
+                "w": 10.1,
+                "l": 10.1
+              },
+              {
+                "member": "Energy cube",
+                "x": 10.1,
+                "y": 50.5,
+                "w": 10.1,
+                "l": 10.1
+              },
+              {
+                "member": "Energy cube",
+                "x": 20.2,
+                "y": 50.5,
+                "w": 10.1,
+                "l": 10.1
+              },
+              {
+                "member": "Energy cube",
+                "x": 30.3,
+                "y": 50.5,
+                "w": 10.1,
+                "l": 10.1
+              },
+              {
+                "member": "Energy cube",
+                "x": 40.4,
+                "y": 50.5,
+                "w": 10.1,
+                "l": 10.1
+              },
+              {
+                "member": "Energy cube",
+                "x": 0.0,
+                "y": 60.6,
+                "w": 10.1,
+                "l": 10.1
+              },
+              {
+                "member": "Energy cube",
+                "x": 10.1,
+                "y": 60.6,
+                "w": 10.1,
+                "l": 10.1
+              },
+              {
+                "member": "Energy cube",
+                "x": 20.2,
+                "y": 60.6,
+                "w": 10.1,
+                "l": 10.1
+              },
+              {
+                "member": "Energy cube",
+                "x": 30.3,
+                "y": 60.6,
+                "w": 10.1,
+                "l": 10.1
+              },
+              {
+                "member": "Energy cube",
+                "x": 40.4,
+                "y": 60.6,
+                "w": 10.1,
+                "l": 10.1
+              },
+              {
+                "member": "Energy cube",
+                "x": 0.0,
+                "y": 70.7,
+                "w": 10.1,
+                "l": 10.1
+              },
+              {
+                "member": "Energy cube",
+                "x": 10.1,
+                "y": 70.7,
+                "w": 10.1,
+                "l": 10.1
+              },
+              {
+                "member": "Energy cube",
+                "x": 20.2,
+                "y": 70.7,
+                "w": 10.1,
+                "l": 10.1
+              },
+              {
+                "member": "Energy cube",
+                "x": 30.3,
+                "y": 70.7,
+                "w": 10.1,
+                "l": 10.1
+              },
+              {
+                "member": "Energy cube",
+                "x": 40.4,
+                "y": 70.7,
+                "w": 10.1,
+                "l": 10.1
+              },
+              {
+                "member": "Energy cube",
+                "x": 0.0,
+                "y": 80.8,
+                "w": 10.1,
+                "l": 10.1
+              },
+              {
+                "member": "Energy cube",
+                "x": 10.1,
+                "y": 80.8,
+                "w": 10.1,
+                "l": 10.1
+              },
+              {
+                "member": "Energy cube",
+                "x": 20.2,
+                "y": 80.8,
+                "w": 10.1,
+                "l": 10.1
+              },
+              {
+                "member": "Energy cube",
+                "x": 30.3,
+                "y": 80.8,
+                "w": 10.1,
+                "l": 10.1
+              },
+              {
+                "member": "Energy cube",
+                "x": 40.4,
+                "y": 80.8,
+                "w": 10.1,
+                "l": 10.1
+              },
+              {
+                "member": "Energy cube",
+                "x": 0.0,
+                "y": 90.9,
+                "w": 10.1,
+                "l": 10.1
+              },
+              {
+                "member": "Energy cube",
+                "x": 10.1,
+                "y": 90.9,
+                "w": 10.1,
+                "l": 10.1
+              },
+              {
+                "member": "Energy cube",
+                "x": 20.2,
+                "y": 90.9,
+                "w": 10.1,
+                "l": 10.1
+              },
+              {
+                "member": "Energy cube",
+                "x": 30.3,
+                "y": 90.9,
+                "w": 10.1,
+                "l": 10.1
+              },
+              {
+                "member": "Energy cube",
+                "x": 40.4,
+                "y": 90.9,
+                "w": 10.1,
+                "l": 10.1
+              }
+            ]
+          }
+        }
+      ],
+      "features": [
+        {
+          "kind": "cavity",
+          "cell": "Energy Cubes",
+          "size_mm": [
+            95.73,
+            140.6,
+            36.0
+          ]
+        }
+      ],
+      "solid_volume_cm3": 70.872,
+      "mesh_validation": {
+        "triangles": 284,
+        "watertight": true,
+        "manifold": true,
+        "consistent_winding": true,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "inconsistent_edges": 0,
+        "degenerate_triangles": 0,
+        "shells": 1,
+        "euler_characteristic": 2,
+        "volume_mm3": 70872.01,
+        "outward_normals": true,
+        "bbox_mm": [
+          100.534,
+          145.405,
+          38.0
+        ],
+        "bbox_deviation_mm": 0.0,
+        "volume_vs_cad": 0.0,
+        "min_thickness": {
+          "x": {
+            "min_mm": 2.4,
+            "at_mm": [
+              -50.27,
+              -68.94,
+              2.3
+            ]
+          },
+          "y": {
+            "min_mm": 2.4,
+            "at_mm": [
+              -47.15,
+              -72.7,
+              3.19
+            ]
+          },
+          "z": {
+            "min_mm": 2.0,
+            "at_mm": [
+              -46.57,
+              -69.04,
+              0.0
+            ]
+          },
+          "overall_min_mm": 2.0
+        },
+        "problems": [],
+        "ok": true,
+        "single_open_cavity": {
+          "ok": true,
+          "cavity_points": 13066,
+          "rim_points": 819,
+          "cavity_points_not_on_floor": 0,
+          "rim_points_below_top": 0,
+          "cavity_floor_z_mm": 2.0
+        }
+      }
+    },
+    {
+      "name": "Status & Special Tokens",
+      "stl": "04_status_special_tokens.stl",
+      "position_mm": {
+        "x": 103.1,
+        "y": 103.03,
+        "z": 0.0
+      },
+      "rotation_degrees": 0,
+      "outer_mm": {
+        "width": 145.4,
+        "length": 145.47,
+        "height": 38.0
+      },
+      "footprint_in_box_mm": {
+        "width": 145.4,
+        "length": 145.47
+      },
+      "cavity_mm": {
+        "width": 140.6,
+        "length": 140.67,
+        "depth": 36.0
+      },
+      "id": 4,
+      "type": "set",
+      "compartments": [
+        "Status & Special Tokens"
+      ],
+      "storage_style": "loose",
+      "contents": "12× Poison token, 12× Shrink token, 3× Smoke token, 1× Mimic token",
+      "layer": 0,
+      "column": 0,
+      "center_mm": {
+        "x": 175.8,
+        "y": 175.77,
+        "z": 0.0
+      },
+      "transform_mm": [
+        [
+          1.0,
+          -0.0,
+          0.0,
+          175.798
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          175.767
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "assembled_position_mm": [
+        175.8,
+        175.77,
+        0.0
+      ],
+      "exploded_position_mm": [
+        193.58,
+        193.54,
+        97.0
+      ],
+      "assembly_order": 3,
+      "min_outer_mm": {
+        "width": 100.6,
+        "length": 83.1,
+        "height": 23.0
+      },
+      "cells": [
+        {
+          "name": "Status & Special Tokens",
+          "component": "Status & Special Tokens",
+          "type": "set",
+          "shape": "rect",
+          "cavity_center_mm": [
+            0.0,
+            0.0
+          ],
+          "cavity_mm": {
+            "width": 140.6,
+            "length": 140.67,
+            "depth": 36.0
+          },
+          "floor_thickness_mm": 2.0,
+          "grows_to_fill": true,
+          "contents": {
+            "storage_style": "loose",
+            "members": [
+              {
+                "name": "Poison token",
+                "component_id": "component_10",
+                "quantity": 12,
+                "shape": "cylinder",
+                "dimensions_mm": {
+                  "length": 13.9,
+                  "width": 13.9,
+                  "height": 19.6
+                }
+              },
+              {
+                "name": "Shrink token",
+                "component_id": "component_11",
+                "quantity": 12,
+                "shape": "cylinder",
+                "dimensions_mm": {
+                  "length": 15.1,
+                  "width": 15.1,
+                  "height": 20.0
+                }
+              },
+              {
+                "name": "Smoke token",
+                "component_id": "component_12",
+                "quantity": 3,
+                "shape": "cylinder",
+                "dimensions_mm": {
+                  "length": 18.0,
+                  "width": 18.0,
+                  "height": 4.0
+                }
+              },
+              {
+                "name": "Mimic token",
+                "component_id": "component_13",
+                "quantity": 1,
+                "shape": "cylinder",
+                "dimensions_mm": {
+                  "length": 18.3,
+                  "width": 18.3,
+                  "height": 3.1
+                }
+              }
+            ],
+            "layers": 1,
+            "fit_basis": "bounding boxes arranged without overlap",
+            "arrangement_mm": [
+              {
+                "member": "Mimic token",
+                "x": 0.0,
+                "y": 0.0,
+                "w": 18.3,
+                "l": 18.3
+              },
+              {
+                "member": "Smoke token",
+                "x": 18.3,
+                "y": 0.0,
+                "w": 18.0,
+                "l": 18.0
+              },
+              {
+                "member": "Smoke token",
+                "x": 36.3,
+                "y": 0.0,
+                "w": 18.0,
+                "l": 18.0
+              },
+              {
+                "member": "Smoke token",
+                "x": 54.3,
+                "y": 0.0,
+                "w": 18.0,
+                "l": 18.0
+              },
+              {
+                "member": "Shrink token",
+                "x": 72.3,
+                "y": 0.0,
+                "w": 15.1,
+                "l": 15.1
+              },
+              {
+                "member": "Shrink token",
+                "x": 72.3,
+                "y": 15.1,
+                "w": 15.1,
+                "l": 15.1
+              },
+              {
+                "member": "Shrink token",
+                "x": 18.3,
+                "y": 18.0,
+                "w": 15.1,
+                "l": 15.1
+              },
+              {
+                "member": "Shrink token",
+                "x": 33.4,
+                "y": 18.0,
+                "w": 15.1,
+                "l": 15.1
+              },
+              {
+                "member": "Shrink token",
+                "x": 48.5,
+                "y": 18.0,
+                "w": 15.1,
+                "l": 15.1
+              },
+              {
+                "member": "Shrink token",
+                "x": 0.0,
+                "y": 18.3,
+                "w": 15.1,
+                "l": 15.1
+              },
+              {
+                "member": "Shrink token",
+                "x": 63.6,
+                "y": 30.2,
+                "w": 15.1,
+                "l": 15.1
+              },
+              {
+                "member": "Shrink token",
+                "x": 78.7,
+                "y": 30.2,
+                "w": 15.1,
+                "l": 15.1
+              },
+              {
+                "member": "Shrink token",
+                "x": 15.1,
+                "y": 33.1,
+                "w": 15.1,
+                "l": 15.1
+              },
+              {
+                "member": "Shrink token",
+                "x": 30.2,
+                "y": 33.1,
+                "w": 15.1,
+                "l": 15.1
+              },
+              {
+                "member": "Shrink token",
+                "x": 45.3,
+                "y": 33.1,
+                "w": 15.1,
+                "l": 15.1
+              },
+              {
+                "member": "Shrink token",
+                "x": 0.0,
+                "y": 33.4,
+                "w": 15.1,
+                "l": 15.1
+              },
+              {
+                "member": "Poison token",
+                "x": 60.4,
+                "y": 45.3,
+                "w": 13.9,
+                "l": 13.9
+              },
+              {
+                "member": "Poison token",
+                "x": 74.3,
+                "y": 45.3,
+                "w": 13.9,
+                "l": 13.9
+              },
+              {
+                "member": "Poison token",
+                "x": 15.1,
+                "y": 48.2,
+                "w": 13.9,
+                "l": 13.9
+              },
+              {
+                "member": "Poison token",
+                "x": 29.0,
+                "y": 48.2,
+                "w": 13.9,
+                "l": 13.9
+              },
+              {
+                "member": "Poison token",
+                "x": 42.9,
+                "y": 48.2,
+                "w": 13.9,
+                "l": 13.9
+              },
+              {
+                "member": "Poison token",
+                "x": 0.0,
+                "y": 48.5,
+                "w": 13.9,
+                "l": 13.9
+              },
+              {
+                "member": "Poison token",
+                "x": 56.8,
+                "y": 59.2,
+                "w": 13.9,
+                "l": 13.9
+              },
+              {
+                "member": "Poison token",
+                "x": 70.7,
+                "y": 59.2,
+                "w": 13.9,
+                "l": 13.9
+              },
+              {
+                "member": "Poison token",
+                "x": 13.9,
+                "y": 62.1,
+                "w": 13.9,
+                "l": 13.9
+              },
+              {
+                "member": "Poison token",
+                "x": 27.8,
+                "y": 62.1,
+                "w": 13.9,
+                "l": 13.9
+              },
+              {
+                "member": "Poison token",
+                "x": 41.7,
+                "y": 62.1,
+                "w": 13.9,
+                "l": 13.9
+              },
+              {
+                "member": "Poison token",
+                "x": 0.0,
+                "y": 62.4,
+                "w": 13.9,
+                "l": 13.9
+              }
+            ]
+          }
+        }
+      ],
+      "features": [
+        {
+          "kind": "cavity",
+          "cell": "Status & Special Tokens",
+          "size_mm": [
+            140.6,
+            140.67,
+            36.0
+          ]
+        }
+      ],
+      "solid_volume_cm3": 91.703,
+      "mesh_validation": {
+        "triangles": 284,
+        "watertight": true,
+        "manifold": true,
+        "consistent_winding": true,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "inconsistent_edges": 0,
+        "degenerate_triangles": 0,
+        "shells": 1,
+        "euler_characteristic": 2,
+        "volume_mm3": 91703.21,
+        "outward_normals": true,
+        "bbox_mm": [
+          145.405,
+          145.466,
+          38.0
+        ],
+        "bbox_deviation_mm": 0.0,
+        "volume_vs_cad": 0.0,
+        "min_thickness": {
+          "x": {
+            "min_mm": 2.4,
+            "at_mm": [
+              -72.7,
+              -68.97,
+              2.3
+            ]
+          },
+          "y": {
+            "min_mm": 2.4,
+            "at_mm": [
+              -68.94,
+              -72.73,
+              2.3
+            ]
+          },
+          "z": {
+            "min_mm": 2.0,
+            "at_mm": [
+              -68.32,
+              -68.35,
+              0.0
+            ]
+          },
+          "overall_min_mm": 2.0
+        },
+        "problems": [],
+        "ok": true,
+        "single_open_cavity": {
+          "ok": true,
+          "cavity_points": 19321,
+          "rim_points": 999,
+          "cavity_points_not_on_floor": 0,
+          "rim_points_below_top": 0,
+          "cavity_floor_z_mm": 2.0
+        }
+      }
+    },
+    {
+      "name": "Monster Kits (All Players)",
+      "stl": "05_monster_kits_all_players.stl",
+      "position_mm": {
+        "x": 1.5,
+        "y": 1.5,
+        "z": 38.0
+      },
+      "rotation_degrees": 0,
+      "outer_mm": {
+        "width": 247.0,
+        "length": 247.0,
+        "height": 21.0
+      },
+      "footprint_in_box_mm": {
+        "width": 247.0,
+        "length": 247.0
+      },
+      "cavity_mm": {
+        "width": 242.2,
+        "length": 242.2,
+        "depth": 19.0
+      },
+      "id": 5,
+      "type": "set",
+      "compartments": [
+        "Monster Kits (All Players)"
+      ],
+      "storage_style": "loose",
+      "contents": "6× Monster board, 6× Cardboard monster figure, 6× Plastic figure stand",
+      "layer": 1,
+      "column": 0,
+      "center_mm": {
+        "x": 125.0,
+        "y": 125.0,
+        "z": 38.0
+      },
+      "transform_mm": [
+        [
+          1.0,
+          -0.0,
+          0.0,
+          125.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          125.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          38.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "assembled_position_mm": [
+        125.0,
+        125.0,
+        38.0
+      ],
+      "exploded_position_mm": [
+        125.0,
+        125.0,
+        165.0
+      ],
+      "assembly_order": 4,
+      "min_outer_mm": {
+        "width": 200.5,
+        "length": 197.0,
+        "height": 18.0
+      },
+      "cells": [
+        {
+          "name": "Monster Kits (All Players)",
+          "component": "Monster Kits (All Players)",
+          "type": "set",
+          "shape": "rect",
+          "cavity_center_mm": [
+            0.0,
+            0.0
+          ],
+          "cavity_mm": {
+            "width": 242.2,
+            "length": 242.2,
+            "depth": 19.0
+          },
+          "floor_thickness_mm": 2.0,
+          "grows_to_fill": true,
+          "contents": {
+            "storage_style": "loose",
+            "members": [
+              {
+                "name": "Monster board",
+                "component_id": "component_3",
+                "quantity": 6,
+                "shape": "rectangular_prism",
+                "dimensions_mm": {
+                  "length": 127.7,
+                  "width": 95.1,
+                  "height": 4.0
+                }
+              },
+              {
+                "name": "Cardboard monster figure",
+                "component_id": "component_4",
+                "quantity": 6,
+                "shape": "rectangular_prism",
+                "dimensions_mm": {
+                  "length": 75.5,
+                  "width": 66.0,
+                  "height": 4.3
+                }
+              },
+              {
+                "name": "Plastic figure stand",
+                "component_id": "component_5",
+                "quantity": 6,
+                "shape": "cylinder",
+                "dimensions_mm": {
+                  "length": 27.6,
+                  "width": 27.6,
+                  "height": 5.0
+                }
+              }
+            ],
+            "layers": 3,
+            "fit_basis": "bounding boxes arranged without overlap",
+            "arrangement_mm": [
+              {
+                "member": "Monster board",
+                "x": 0.0,
+                "y": 0.0,
+                "w": 127.7,
+                "l": 95.1
+              },
+              {
+                "member": "Monster board",
+                "x": 0.0,
+                "y": 95.1,
+                "w": 127.7,
+                "l": 95.1
+              },
+              {
+                "member": "Cardboard monster figure",
+                "x": 127.7,
+                "y": 0.0,
+                "w": 66.0,
+                "l": 75.5
+              },
+              {
+                "member": "Cardboard monster figure",
+                "x": 127.7,
+                "y": 75.5,
+                "w": 66.0,
+                "l": 75.5
+              },
+              {
+                "member": "Plastic figure stand",
+                "x": 127.7,
+                "y": 151.0,
+                "w": 27.6,
+                "l": 27.6
+              },
+              {
+                "member": "Plastic figure stand",
+                "x": 155.3,
+                "y": 151.0,
+                "w": 27.6,
+                "l": 27.6
+              }
+            ]
+          }
+        }
+      ],
+      "features": [
+        {
+          "kind": "cavity",
+          "cell": "Monster Kits (All Players)",
+          "size_mm": [
+            242.2,
+            242.2,
+            19.0
+          ]
+        }
+      ],
+      "solid_volume_cm3": 166.615,
+      "mesh_validation": {
+        "triangles": 284,
+        "watertight": true,
+        "manifold": true,
+        "consistent_winding": true,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "inconsistent_edges": 0,
+        "degenerate_triangles": 0,
+        "shells": 1,
+        "euler_characteristic": 2,
+        "volume_mm3": 166614.94,
+        "outward_normals": true,
+        "bbox_mm": [
+          247.0,
+          247.0,
+          21.0
+        ],
+        "bbox_deviation_mm": 0.0,
+        "volume_vs_cad": 0.0,
+        "min_thickness": {
+          "x": {
+            "min_mm": 2.4,
+            "at_mm": [
+              -123.5,
+              -119.87,
+              2.27
+            ]
+          },
+          "y": {
+            "min_mm": 2.4,
+            "at_mm": [
+              -119.87,
+              -123.5,
+              2.27
+            ]
+          },
+          "z": {
+            "min_mm": 2.0,
+            "at_mm": [
+              -120.96,
+              -120.96,
+              0.0
+            ]
+          },
+          "overall_min_mm": 2.0
+        },
+        "problems": [],
+        "ok": true,
+        "single_open_cavity": {
+          "ok": true,
+          "cavity_points": 58081,
+          "rim_points": 1463,
+          "cavity_points_not_on_floor": 0,
+          "rim_points_below_top": 0,
+          "cavity_floor_z_mm": 2.0
+        }
+      }
+    }
+  ]
+}
