@@ -25,9 +25,23 @@ In both modes the converter (`convert_grouping_output.py`) and the CAD engine (`
 the job's own folder: every job's STL, GLB and layout are generated for that job, never taken from a demo.
 In fixtures mode the photos are validated and stored but not measured.
 
+If a live-mode layout cannot fit (including an oversized tray), the engine first tries its safe local packing fallbacks. If those are exhausted,
+it can regroup the checked inventory with the exact fit diagnostic and retry the plan (two retries by default).
+The original grouping and each retry stay in the job folder. Set `ITB_FIT_RETRIES=0` to disable this extra paid work.
+
 Live mode needs `ANTHROPIC_API_KEY` in the server's environment (or in `.env` at the repository root, which
 is git-ignored) and `pip install -r requirements-live.txt`. The key is passed to the stage scripts only; it is
 never sent to the browser, and it is removed from stage logs and error messages.
+
+### Box dimensions are mandatory
+
+The live grouping stage searches for box dimensions before creating storage sets, including publisher material,
+BoardGameGeek, ecommerce listings, Reddit, insert makers and other relevant game sources. A source-backed internal
+measurement is preferred; a cited external measurement can only produce an explicitly labelled estimate. If none
+of those yields a complete box size, the last resort is a documented estimate based on the largest measured board
+or rulebook: its footprint, all board/rulebook thickness under the lid, and the tallest remaining component plus a
+printable tray floor. If neither online evidence nor a measured board/rulebook is available, the grouping stage
+stops rather than passing unknown box dimensions into the box designer.
 
 ## API
 
@@ -42,12 +56,19 @@ never sent to the browser, and it is removed from stage logs and error messages.
 Uploads are checked before a job starts: a game name (≤ 120 characters), 2 to 6 files (`Config.min_photos` / `max_photos`, sent to the web UI in `config.js`), each a real
 JPEG/PNG/HEIC/WebP (by its bytes, not its name), ≤ 25 MB. Photos are saved as `photo_1…6.<ext>`.
 
-### When the user is asked for a measurement
+### Measurement completion before grouping
 
 After the measurement stage (`backend/measurement.py`):
 
-- A component without a usable length × width × height or quantity stops the job (`422 missing_measurements`)
-  with a list of what is missing: retake the photos. Nothing is guessed.
+- The supplied ruler photos are the source of component dimensions. The CV step must identify every visible object
+  against the requested component list. If a height remains unresolved after image processing, the existing cylinder
+  approximation is used from a measured footprint (or the documented 0.4 mm card / 4 mm board-rulebook thickness).
+  Only after that does the backend infer an unmeasured item relative to an image-measured same-type/shape reference;
+  it records a warning and its `measurement_method`. If absolutely no image-derived or relative reference survives,
+  the sole emergency fallback is a clearly-labelled 20 mm diameter × 30 mm height cylinder. Grouping never starts
+  until every expected component has complete dimensions.
+- If the image/inventory stage cannot establish a positive quantity, it is explicitly warned and treated as one piece;
+  a missing count never produces a blocking measurement error.
 - If a photo's scale was not read from the ruler's tick marks (`scale_source` `labels` or `assumed_length`),
   the job asks for the width of one reference piece (a card if there is one). The answer rescales every
   photo measurement by `answer / measured` (fixtures mode applies the same correction to the grouping JSON).
@@ -101,7 +122,8 @@ To reuse a paid live run without paying again, point a fixtures file at its outp
 Environment variables (see `backend/config.py`): `ITB_PIPELINE_MODE`, `ANTHROPIC_API_KEY`, `ITB_JOBS_DIR`,
 `ITB_PRINTER_BED` (default `256,256,256`, illustrative), `ITB_COMPACT`, `ITB_FIXTURES` (extra fixture games:
 `{"<name>": {"title", "grouping", "dimensions"?}}`, paths relative to that file), `ITB_CV_SCRIPT`,
-`ITB_GROUPING_SCRIPT`, `ITB_STAGE_TIMEOUT_S`, `ITB_CORS_ORIGINS` (for a UI served from another origin).
+`ITB_GROUPING_SCRIPT`, `ITB_STAGE_TIMEOUT_S`, `ITB_FIT_RETRIES` (default `2`, maximum `3`), `ITB_CORS_ORIGINS`
+(for a UI served from another origin).
 
 ## Tests
 

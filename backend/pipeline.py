@@ -17,6 +17,8 @@ from organizer import GenerationError, PlanError, generate, write_failure_report
 from . import measurement
 from .jobs import Job, JobStore, StageError
 
+FIT_REPLAN_CODES = frozenset({"does_not_fit", "too_large"})
+
 
 def normalize(name: str) -> str:
     s = re.sub(r"[^a-z0-9]+", " ", str(name).lower().replace("&", " and "))
@@ -102,6 +104,10 @@ def measure(job: Job, store: JobStore, config) -> None:
                     job, config, "measurement")
         cv = _load_json(out, "measurement")
 
+    cv, inventory_warnings = measurement.ensure_expected_components(cv)
+    cv, thickness, thickness_warnings = measurement.default_thickness(cv)
+    cv, inference_warnings = measurement.complete_dimensions(cv)
+    cv, quantity_warnings = measurement.complete_quantities(cv)
     missing = measurement.missing_components(cv)
     if missing:
         raise StageError("The photos did not give complete measurements for: " + "; ".join(missing[:5])
@@ -109,8 +115,10 @@ def measure(job: Job, store: JobStore, config) -> None:
                          + ". Retake the photos with each piece flat and fully visible next to the whole ruler, "
                            "plus at least one side view for heights.",
                          code="missing_measurements", http_status=422, details=missing)
-    cv, thickness, thickness_warnings = measurement.default_thickness(cv)
+    job.warnings.extend(inventory_warnings)
     job.warnings.extend(thickness_warnings)
+    job.warnings.extend(inference_warnings)
+    job.warnings.extend(quantity_warnings)
     job.warnings.extend(measurement.low_confidence(cv))
     question = measurement.scale_question(cv)
     if question:
@@ -120,7 +128,13 @@ def measure(job: Job, store: JobStore, config) -> None:
     store.update(job, cv=cv, thickness=thickness, cv_done=True)
 
 
-def group(job: Job, store: JobStore, config) -> dict:
+def group(job: Job, store: JobStore, config, fit_feedback: dict | None = None) -> dict:
+    """Group the inventory, optionally asking the live stage to correct a failed fit.
+
+    A retry starts with the already checked measurements and the prior grouping; it never reruns
+    CV or exposes a secret to the browser. Keeping its JSON and log separate makes a costly
+    regrouping decision auditable after the job completes.
+    """
     store.update(job, stage="grouping")
     if config.mode == "fixtures":
         fx = find_fixture(config, job.game_name)
@@ -131,13 +145,40 @@ def group(job: Job, store: JobStore, config) -> dict:
             grouping = measurement.rescale_grouping(grouping, job.scale["ratio"], job.scale["ids"])
         job.notes.append(f"Fixtures mode: grouping from {fx['grouping']} (no AI call).")
     else:
-        inp, out = job.dir / "dimensions_checked.json", job.dir / "grouping.json"
+        retry = int(fit_feedback.get("attempt", 0)) if fit_feedback else 0
+        inp = job.dir / "dimensions_checked.json"
+        out = job.dir / (f"grouping_retry_{retry}.json" if retry else "grouping.json")
         _write_json(inp, job.cv)
-        _run_script(config.grouping_command + [str(inp), str(out)], job, config, "grouping")
+        command = config.grouping_command + [str(inp), str(out)]
+        step = "grouping"
+        if fit_feedback:
+            feedback_path = job.dir / f"fit_retry_{retry}.json"
+            _write_json(feedback_path, fit_feedback)
+            command += ["--fit-feedback", str(feedback_path)]
+            step = f"grouping_retry_{retry}"
+        _run_script(command, job, config, step)
         grouping = _load_json(out, "grouping")
-    _write_json(job.dir / "grouping.json", grouping)
+    if not fit_feedback:
+        _write_json(job.dir / "grouping_initial.json", grouping)
+    _write_json(job.dir / "grouping.json", grouping)  # latest grouping remains convenient for fixture reuse
     job.warnings.extend(f"Grouping: {w}" for w in grouping.get("warnings") or [] if isinstance(w, str))
     return grouping
+
+
+def fit_feedback(grouping: dict, plan: dict, failure: StageError, attempt: int) -> dict:
+    """Give the grouping stage only the information needed to make a smaller valid partition."""
+    previous = {key: grouping.get(key) for key in ("box", "sets", "excluded", "warnings", "research_notes", "sources")
+                if key in grouping}
+    return {
+        "attempt": attempt,
+        "engine_error": {"code": failure.code, "message": failure.message, "details": failure.details},
+        "box_inner_mm": plan.get("box_inner_mm"),
+        "plan_settings": plan.get("settings"),
+        "previous_grouping": previous,
+        "instruction": ("The previous grouping was geometrically impossible. Preserve all inventory and the "
+                        "measured box, but regroup for a genuinely smaller printable layout. You may split a "
+                        "player kit or combine compatible components when that is necessary to fit."),
+    }
 
 
 def to_plan(job: Job, store: JobStore, config, grouping: dict) -> dict:
@@ -173,8 +214,20 @@ def run(job: Job, store: JobStore, config) -> None:
     if job.status == "needs_measurement":
         return
     grouping = group(job, store, config)
-    plan = to_plan(job, store, config, grouping)
-    layout = build(job, store, config, plan)
+    for attempt in range(config.fit_retries + 1):
+        plan = to_plan(job, store, config, grouping)
+        try:
+            layout = build(job, store, config, plan)
+            break
+        except StageError as failure:
+            if config.mode != "live" or failure.code not in FIT_REPLAN_CODES or attempt >= config.fit_retries:
+                raise
+            retry = attempt + 1
+            feedback = fit_feedback(grouping, plan, failure, retry)
+            job.notes.append(f"Fit attempt {retry}: the first box layout could not fit, so components are being "
+                             "regrouped using the engine's exact fit diagnostic.")
+            (job.output_dir / "report.json").unlink(missing_ok=True)
+            grouping = group(job, store, config, fit_feedback=feedback)
     job.warnings.extend(w["message"] for w in layout.get("warnings", []) if isinstance(w, dict))
     store.update(job, layout=layout, files=[{"name": t["name"], "stl": t["stl"]} for t in layout["trays"]],
                  status="complete", stage="done")

@@ -188,11 +188,12 @@ Report:
 If no ruler with readable numbers is visible, set ruler_visible=false."""
 
 DETECT_SYSTEM = """You are a computer-vision assistant. You get one photo and a list of a board game's components.
-The photo contains a ruler plus exactly ONE physical copy of each component (some components may be absent), laid out
-separately. Use that to identify objects: every object other than the ruler should be one of the listed components,
-and each listed name can be used AT MOST ONCE - never return two detections with the same name. Decide which name
-belongs to which object using its appearance, relative size, and the 'typically' shape hints. Do not force a match:
-if an object is not any listed component, or a listed component is not visible, leave it out.
+All listed components are represented somewhere in the supplied photo set; this individual photo may show a subset.
+It contains a ruler plus at most ONE physical copy of each visible component, laid out separately. Every physical
+object other than the ruler must be matched to the closest listed component, and each listed name can be used AT MOST
+ONCE in this photo. Decide the match from appearance, spatial/relative size, and the 'typically' shape hints. Do not
+leave a visible object unmatched merely because the match is uncertain: choose the best visual match and a tight box.
+Only omit a listed name when no corresponding physical object appears in this individual photo.
 
 For each identified component return exactly one detection:
  - name: exactly as written in the list.
@@ -1397,7 +1398,11 @@ def resolve_same_type(entries: list[dict], groups: list[TypeGroup], preset: dict
             options.setdefault(tuple(round(v / 2) for _, v in sorted(by[r]["dimensions_mm"].items())), r)
         options = list(options.values())
         if not interactive:
-            pending.append({"components": miss, "possible_same_as": options, "type": g.type_name})
+            if len(options) == 1:
+                for m in miss:
+                    apply(m, options[0], "the only measured same-type reference")
+            else:
+                pending.append({"components": miss, "possible_same_as": options, "type": g.type_name})
             continue
 
         def ask_for(names):
@@ -1552,7 +1557,7 @@ def main() -> int:
         else:
             e.update({"shape": spec.shape_hint.value, "dimensions_mm": None, "confidence": "none",
                       "estimated_error_pct": None, "measurement_method": None,
-                      "notes": "Not found/measurable in the supplied photos."})
+                      "notes": "Not directly measurable; backend will exhaust cylinder and relative-size fallbacks before grouping."})
         out.append(e)
 
     # ---- last resort: same-type pieces -------------------------------------------------------------------
@@ -1589,6 +1594,8 @@ def main() -> int:
                   "heights estimated using calibrated multi-angle silhouettes or upright-ruler photos; unresolved heights use labeled component-type defaults. Game packaging excluded.",
         "assumed_ruler_length_mm": round(L_mm, 1),
         "photos": photo_log,
+        "expected_components": [{"index": i, "name": spec.name, "quantity": spec.quantity,
+                                 "shape": spec.shape_hint.value} for i, spec in enumerate(specs, 1)],
         "components": out,
         "type_groups": [g.model_dump() for g in groups],
         "same_type_decisions": decisions,

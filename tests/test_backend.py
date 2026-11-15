@@ -4,6 +4,7 @@ Fixtures mode uses committed JSON for the CV and grouping stages; live mode is e
 stage scripts. The converter and the CAD engine always run for real.
 """
 import json
+import importlib.util
 import struct
 import sys
 import time
@@ -102,6 +103,84 @@ def test_fixtures(tmp_path, cv=None, grouping=None):
 test_fixtures.__test__ = False   # a helper, not a test
 
 
+def test_grouping_uses_a_full_board_based_box_estimate_as_last_resort():
+    """No online measurement must not allow box design with an unknown box size."""
+    script = ROOT / "pipeline" / "organize_game_boxes.py"
+    spec = importlib.util.spec_from_file_location("itb_grouping_stage", script)
+    stage = importlib.util.module_from_spec(spec)
+    assert spec.loader is not None
+    spec.loader.exec_module(stage)
+    game = stage.Game.model_validate({"game": "Test Game", "components": [
+        {"id": "board", "name": "Game board", "quantity": 1, "shape": "rectangular_prism",
+         "dimensions_mm": {"length": 300, "width": 200, "height": 3}},
+        {"id": "rules", "name": "Rulebook", "quantity": 2, "shape": "rectangular_prism",
+         "dimensions_mm": {"length": 280, "width": 180, "height": 1}},
+        {"id": "piece", "name": "Tall piece", "quantity": 4, "shape": "cylinder",
+         "dimensions_mm": {"length": 20, "width": 20, "height": 25}},
+    ]})
+
+    estimate = stage.approximate_box_from_flat_items(game)
+
+    assert estimate.basis == "estimated_from_contents"
+    assert estimate.dimensions_mm.model_dump() == {"length": 300.0, "width": 200.0, "height": 32.0}
+    assert "Game board" in estimate.explanation
+    no_flat = stage.Game.model_validate({"game": "No flat item", "components": [
+        {"id": "piece", "name": "Token", "quantity": 1, "shape": "cylinder",
+         "dimensions_mm": {"length": 20, "width": 20, "height": 5}},
+    ]})
+    assert stage.approximate_box_from_flat_items(no_flat) is None
+
+
+def test_live_fit_failure_regroups_from_the_engine_diagnostic(monkeypatch, tmp_path):
+    """A live fit failure retries grouping, not measurement, and retains the retry evidence."""
+    from backend import pipeline as job_pipeline
+    from backend.jobs import Job, StageError
+
+    job = Job(id="0123456789abcdef", game_name="Test Game", mode="live", dir=tmp_path / "job", photos=[])
+    job.output_dir.mkdir(parents=True)
+
+    class Store:
+        def update(self, target, **changes):
+            for key, value in changes.items():
+                setattr(target, key, value)
+
+    calls, feedbacks = [], []
+
+    def fake_measure(*_args):
+        return None
+
+    def fake_group(_job, _store, _config, fit_feedback=None):
+        feedbacks.append(fit_feedback)
+        return {"sets": [{"name": "compact" if fit_feedback else "first pass"}],
+                "research_notes": "reused research", "sources": {"https://example.test": "source"}}
+
+    def fake_plan(_job, _store, _config, _grouping):
+        return {"box_inner_mm": {"width": 100, "length": 100, "height": 50},
+                "settings": {"headroom_mm": 0}}
+
+    def fake_build(*_args):
+        calls.append("build")
+        if len(calls) == 1:
+            raise StageError("first layout does not fit", code="does_not_fit", http_status=422,
+                             details=["needs a smaller grouping"])
+        return {"warnings": [], "trays": []}
+
+    monkeypatch.setattr(job_pipeline, "measure", fake_measure)
+    monkeypatch.setattr(job_pipeline, "group", fake_group)
+    monkeypatch.setattr(job_pipeline, "to_plan", fake_plan)
+    monkeypatch.setattr(job_pipeline, "build", fake_build)
+
+    job_pipeline.run(job, Store(), Config(mode="live", jobs_dir=tmp_path / "jobs", fit_retries=1))
+
+    assert calls == ["build", "build"]
+    assert feedbacks[0] is None
+    assert feedbacks[1]["attempt"] == 1
+    assert feedbacks[1]["engine_error"]["code"] == "does_not_fit"
+    assert feedbacks[1]["previous_grouping"]["sets"] == [{"name": "first pass"}]
+    assert "Fit attempt 1" in job.notes[0]
+    assert job.status == "complete"
+
+
 # ---------------------------------------------------------------------------
 # Service basics and input validation (no CAD needed)
 # ---------------------------------------------------------------------------
@@ -159,14 +238,46 @@ def test_unknown_jobs_and_files_are_404(make_client):
         assert client.get(url).status_code == 404
 
 
-def test_missing_measurements_stop_the_job(make_client, tmp_path):
-    cv = cv_json(card_dims={"length": 88.0, "width": None})
-    client = make_client(**test_fixtures(tmp_path, cv=cv))
-    r = wait(client, start(client, "Test Game").json()["job_id"])
-    body = r.json()
-    assert r.status_code == 422 and body["code"] == "missing_measurements"
-    assert "Test card" in body["message"] and "Retake the photos" in body["message"]
-    assert body["details"] == ["Test card: no complete length × width × height"]
+def test_missing_quantity_is_assumed_as_one_instead_of_blocking():
+    from backend import measurement
+    cv = cv_json()
+    cv["components"][0]["quantity"] = None
+    completed, warnings = measurement.complete_quantities(cv)
+    assert completed["components"][0]["quantity"] == 1
+    assert completed["components"][0]["measurement"]["quantity_inferred"] is True
+    assert warnings == ["Test card: no reliable quantity was available; assumed one piece."]
+
+
+def test_measurement_completion_uses_cylinder_then_relative_inference():
+    from backend import measurement
+    cv = {"components": [
+        {"index": 1, "name": "Wooden token", "quantity": 4, "shape": "cylinder",
+         "dimensions_mm": {"length": 20.0, "width": 10.0}, "measurement_method": "photos"},
+        {"index": 2, "name": "Small wooden token", "quantity": 4, "shape": "cylinder",
+         "dimensions_mm": None, "measurement_method": None},
+    ]}
+    completed, warnings = measurement.complete_dimensions(cv)
+    token, small = completed["components"]
+    assert token["dimensions_mm"] == {"diameter": 10.0, "height": 20.0}
+    assert token["measurement_method"] == "assumed_cylinder_from_footprint"
+    assert small["dimensions_mm"] == {"length": 8.0, "width": 8.0, "height": 16.0}
+    assert small["measurement_method"] == "relative_token_size_inference"
+    assert measurement.missing_components(completed) == []
+    assert len(warnings) == 2
+
+
+def test_unemitted_expected_component_becomes_the_fixed_emergency_cylinder():
+    from backend import measurement
+    cv = {"expected_components": [{"index": 1, "name": "Missing piece", "quantity": 1,
+                                    "shape": "rectangular_prism"}], "components": []}
+    inventory, inventory_warnings = measurement.ensure_expected_components(cv)
+    completed, dimension_warnings = measurement.complete_dimensions(inventory)
+    piece = completed["components"][0]
+    assert piece["shape"] == "cylinder"
+    assert piece["dimensions_mm"] == {"diameter": 20.0, "height": 30.0}
+    assert piece["measurement_method"] == "last_resort_20x30mm_cylinder"
+    assert measurement.missing_components(completed) == []
+    assert inventory_warnings and dimension_warnings
 
 
 # ---------------------------------------------------------------------------

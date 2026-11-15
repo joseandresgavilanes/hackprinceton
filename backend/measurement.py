@@ -1,9 +1,14 @@
-"""Check the CV measurement JSON before grouping: report what is missing, or ask ONE question.
+"""Check and complete the CV measurement JSON before grouping.
 
-Rules (a dimension is never guessed):
-* A component without usable length, width and height (a cylinder's diameter counts as length and width)
-  or without a quantity stops the job: the user has to retake photos. One width cannot fill those in, and
-  the grouping step refuses an incomplete inventory anyway.
+Rules (in order of evidence):
+* Measurements come from the supplied ruler photos.  A component with an unresolved height but a measured
+  footprint uses the CV script's established cylinder approximation (or the documented thin flat-piece
+  thickness for cards, boards and rulebooks).
+* Only after those image-derived paths are exhausted, an unresolved component is inferred from a measured
+  component of the same type/shape.  Its method and a conspicuous warning make that last-resort decision
+  auditable.  The sole final fallback is a fixed 20 mm diameter × 30 mm height cylinder.
+* The job never reaches grouping with an incomplete length × width × height inventory.  If a count is absent
+  after image/inventory processing, it is conservatively recorded as one rather than surfacing a blocking error.
 * If a photo that was used was NOT scaled from the ruler's tick marks (``scale_source`` "labels" or
   "assumed_length"), the whole reconstruction may be off by a few percent. The user is asked to measure the
   width of one reference component (a card if there is one, else the widest measured piece). The answer
@@ -32,6 +37,12 @@ FLAT_KINDS = (
     ("board", re.compile(r"\b(?:boards?|cardboard)\b", re.I)),
     ("card", re.compile(r"\bcards?\b", re.I)),
 )
+SIZE_MODIFIERS = ((re.compile(r"\b(?:tiny|mini(?:ature)?)\b", re.I), 0.65),
+                  (re.compile(r"\bsmall\b", re.I), 0.80),
+                  (re.compile(r"\b(?:large|big)\b", re.I), 1.25),
+                  (re.compile(r"\b(?:giant|jumbo|huge)\b", re.I), 1.50))
+LAST_RESORT_CYLINDER_DIAMETER_MM = 20.0
+LAST_RESORT_CYLINDER_HEIGHT_MM = 30.0
 
 
 def component_id(c: dict, i: int) -> str:
@@ -55,8 +66,59 @@ def usable_dims(c: dict) -> dict | None:
 
 
 def _photo_measured(c: dict) -> bool:
-    method = str(c.get("measurement_method") or "photos").lower()
-    return "photo" in method
+    method = str(c.get("measurement_method") or "").lower()
+    # The CV script's labelled cylinder/card/board fallbacks still begin with a measured image footprint.
+    return "photo" in method or method.startswith("assumed_")
+
+
+def ensure_expected_components(cv: dict) -> tuple[dict, list[str]]:
+    """Make the CV inventory total before dimensions are completed.
+
+    Live CV publishes ``expected_components`` from its component-list stage.  If an expected name was not
+    emitted by vision, retain it as an explicit unresolved component instead of silently letting it disappear
+    before grouping.  Fixtures predating this field remain supported.
+    """
+    cv = copy.deepcopy(cv)
+    expected = cv.get("expected_components")
+    warnings = []
+    if expected is None:
+        expected = []
+        warnings.append("The CV stage omitted its expected inventory; preserved all detected components and applied the emergency fallback if needed.")
+    elif not isinstance(expected, list):
+        expected = []
+        warnings.append("The CV expected inventory was invalid; preserved all detected components and applied the emergency fallback if needed.")
+    components = cv.get("components")
+    if not isinstance(components, list):
+        components = []
+        cv["components"] = components
+        warnings.append("The CV component list was invalid; added one emergency placeholder component.")
+    else:
+        invalid_entries = len([c for c in components if not isinstance(c, dict)])
+        if invalid_entries:
+            components[:] = [c for c in components if isinstance(c, dict)]
+            warnings.append(f"Discarded {invalid_entries} malformed CV component entr{'y' if invalid_entries == 1 else 'ies'}.")
+    seen = {str(c.get("name")) for c in components if isinstance(c, dict) and c.get("name")}
+    for ordinal, item in enumerate(expected, 1):
+        if not isinstance(item, dict) or not item.get("name"):
+            warnings.append(f"Expected inventory entry {ordinal} was unnamed and was skipped.")
+            continue
+        name = str(item["name"])
+        if name in seen:
+            continue
+        components.append({"index": item.get("index", len(components) + 1), "name": name,
+                           "quantity": item.get("quantity"), "shape": item.get("shape", "cylinder"),
+                           "dimensions_mm": None, "confidence": "none", "estimated_error_pct": None,
+                           "measurement_method": None,
+                           "notes": "Not emitted by vision; retained from the required measurement inventory."})
+        seen.add(name)
+        warnings.append(f"{name}: absent from the vision detections; retained for mandatory completion.")
+    if not components:
+        components.append({"index": 1, "name": "Unidentified component", "quantity": 1, "shape": "cylinder",
+                           "dimensions_mm": None, "confidence": "none", "estimated_error_pct": None,
+                           "measurement_method": None,
+                           "notes": "No component inventory survived measurement; emergency placeholder retained."})
+        warnings.append("No components were emitted by CV; added one emergency placeholder component.")
+    return cv, warnings
 
 
 def missing_components(cv: dict) -> list[str]:
@@ -69,6 +131,20 @@ def missing_components(cv: dict) -> list[str]:
         elif not isinstance(q, int) or isinstance(q, bool) or q <= 0:
             out.append(f"{name}: no quantity")
     return out
+
+
+def complete_quantities(cv: dict) -> tuple[dict, list[str]]:
+    """Never fail the job solely because vision/the inventory lookup did not provide a count."""
+    cv = copy.deepcopy(cv)
+    warnings = []
+    for i, c in enumerate(cv.get("components") or [], 1):
+        q = c.get("quantity")
+        if isinstance(q, int) and not isinstance(q, bool) and q > 0:
+            continue
+        c["quantity"] = 1
+        c.setdefault("measurement", {}).update({"quantity_inferred": True, "quantity_inference_method": "emergency_default_one"})
+        warnings.append(f"{c.get('name') or f'component {i}'}: no reliable quantity was available; assumed one piece.")
+    return cv, warnings
 
 
 def thickness_not_calculated(c: dict) -> bool:
@@ -102,6 +178,114 @@ def default_thickness(cv: dict) -> tuple[dict, dict, list[str]]:
         warnings.append(f"{c.get('name')}: the photos could not calculate its thickness ({old:g} ± {err:g} mm), "
                         f"so the default {new:g} mm for a {kind} was used.")
     return cv, heights, warnings
+
+
+def _positive(value) -> float | None:
+    return (float(value) if isinstance(value, (int, float)) and not isinstance(value, bool)
+            and math.isfinite(value) and value > 0 else None)
+
+
+def _flat_kind(c: dict) -> str | None:
+    return next((kind for kind, rx in FLAT_KINDS if rx.search(str(c.get("name") or ""))), None)
+
+
+def _relative_factor(name: str) -> float:
+    return next((factor for rx, factor in SIZE_MODIFIERS if rx.search(name)), 1.0)
+
+
+def _copy_scaled_dimensions(reference: dict, target: dict) -> dict:
+    """Copy a measured reference, preserving/scaling to any partial image measurement on target."""
+    ref = usable_dims(reference)
+    if ref is None:
+        raise ValueError("reference needs usable dimensions")
+    raw = target.get("dimensions_mm") if isinstance(target.get("dimensions_mm"), dict) else {}
+    partial = {k: _positive(raw.get(k)) for k in ("length", "width", "height", "diameter")}
+    partial = {k: v for k, v in partial.items() if v is not None}
+    ref_raw = reference.get("dimensions_mm") or {}
+    comparable = {"length": ref["length"], "width": ref["width"], "height": ref["height"],
+                  "diameter": _positive(ref_raw.get("diameter"))}
+    ratios = [value / comparable[key] for key, value in partial.items() if comparable.get(key)]
+    factor = sum(ratios) / len(ratios) if ratios else _relative_factor(str(target.get("name") or ""))
+    copied = {key: round(value * factor, 2) for key, value in ref.items()}
+    copied.update({key: round(value, 2) for key, value in partial.items() if key in copied})
+    return copied
+
+
+def _reference_candidates(cv: dict, target: dict) -> list[dict]:
+    """Prefer semantic same-type suggestions, then the closest measured shape in the supplied photos."""
+    components = list(cv.get("components") or [])
+    name = target.get("name")
+    names = set()
+    for group in cv.get("type_groups") or []:
+        members = group.get("members") if isinstance(group, dict) else None
+        if isinstance(members, list) and name in members:
+            names.update(str(member) for member in members if member != name)
+    for pending in cv.get("unresolved_same_type_candidates") or []:
+        if isinstance(pending, dict) and name in (pending.get("components") or []):
+            names.update(str(member) for member in pending.get("possible_same_as") or [])
+    measured = [c for c in components if _photo_measured(c) and usable_dims(c)]
+    preferred = [c for c in measured if c.get("name") in names]
+    if preferred:
+        return preferred
+    shape = str(target.get("shape") or "")
+    same_shape = [c for c in measured if c is not target and str(c.get("shape") or "") == shape]
+    return same_shape or [c for c in measured if c is not target]
+
+
+def _last_resort_dimensions(c: dict) -> tuple[dict, str]:
+    """The deliberately fixed emergency fallback; use only after every image-based path fails."""
+    return ({"diameter": LAST_RESORT_CYLINDER_DIAMETER_MM, "height": LAST_RESORT_CYLINDER_HEIGHT_MM},
+            "the emergency 20 mm diameter × 30 mm height cylinder")
+
+
+def complete_dimensions(cv: dict) -> tuple[dict, list[str]]:
+    """Make every component's dimensions explicit before grouping, retaining an audit trail.
+
+    This deliberately mirrors the CV script's order: measured footprint → cylinder/flat approximation →
+    same-type relative size → a named, conservative final approximation.  It never hides an inference as a
+    photo measurement.
+    """
+    cv = copy.deepcopy(cv)
+    warnings = []
+    for i, c in enumerate(cv.get("components") or [], 1):
+        if usable_dims(c):
+            continue
+        raw = c.get("dimensions_mm") if isinstance(c.get("dimensions_mm"), dict) else {}
+        length, width, height, diameter = (_positive(raw.get(key)) for key in ("length", "width", "height", "diameter"))
+        kind = _flat_kind(c)
+        method = note = None
+        # Directly measurable footprint: use the same explicit fallbacks as the CV script.
+        if length is not None and width is not None and height is None:
+            if kind:
+                dimensions = {"length": length, "width": width, "height": DEFAULT_THICKNESS_MM[kind]}
+                method, note = ("assumed_card_thickness" if kind == "card" else "assumed_4mm_thickness",
+                                f"Measured footprint; assumed documented {DEFAULT_THICKNESS_MM[kind]:g} mm {kind} thickness.")
+            else:
+                dimensions = {"diameter": min(length, width), "height": max(length, width)}
+                method, note = ("assumed_cylinder_from_footprint",
+                                "Measured footprint; used cylinder approximation (short side = diameter, long side = height).")
+        elif diameter is not None and height is None:
+            dimensions = {"length": diameter, "width": diameter, "height": diameter}
+            method, note = "assumed_cylinder_from_diameter", "Measured diameter; used a cylinder with equal axial height."
+        else:
+            references = _reference_candidates(cv, c)
+            if references:
+                ref = references[0]
+                dimensions = _copy_scaled_dimensions(ref, c)
+                method, note = ("relative_token_size_inference",
+                                f"No complete direct measurement; inferred relative size from '{ref.get('name')}'.")
+            else:
+                dimensions, basis = _last_resort_dimensions(c)
+                c["shape"] = "cylinder"
+                method, note = "last_resort_20x30mm_cylinder", f"Every image-based option was exhausted; used {basis}."
+        c["dimensions_mm"] = dimensions
+        c["confidence"] = "inferred"
+        c["estimated_error_pct"] = None
+        c["measurement_method"] = method
+        c.setdefault("measurement", {}).update({"dimensions_inferred": True, "inference_method": method})
+        c["notes"] = note
+        warnings.append(f"{c.get('name') or f'component {i}'}: {note}")
+    return cv, warnings
 
 
 def set_heights(grouping: dict, heights: dict) -> dict:

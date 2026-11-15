@@ -9,6 +9,7 @@
 | ``ITB_COMPACT`` | ``0`` | ``1``: boxes sized to their contents instead of filling the game box. |
 | ``ITB_CV_SCRIPT`` / ``ITB_GROUPING_SCRIPT`` | ``pipeline/…`` | live-mode stage scripts. |
 | ``ITB_STAGE_TIMEOUT_S`` | ``1800`` | live mode: give up on a stage script after this many seconds. |
+| ``ITB_FIT_RETRIES`` | ``2`` | live mode: regroup after a ``does_not_fit`` result, at most this many times. |
 | ``ITB_CORS_ORIGINS`` | ``http://localhost:8000,http://127.0.0.1:8000`` | extra origins allowed to call the API (the backend also serves the frontend itself). |
 | ``ITB_FIXTURES`` | — | JSON file with extra fixture games: ``{"<name>": {"title", "grouping", "dimensions"?}}``, paths relative to it. |
 """
@@ -85,6 +86,7 @@ class Config:
     grouping_command: list = field(default_factory=lambda: _script(
         "ITB_GROUPING_SCRIPT", ROOT / "pipeline" / "organize_game_boxes.py"))
     stage_timeout_s: float = 1800.0
+    fit_retries: int = 2
     min_photos: int = 2                  # reference photos per job (the web UI reads these limits)
     max_photos: int = 6
     max_photo_bytes: int = 25 * 1024 * 1024
@@ -94,6 +96,8 @@ class Config:
     def __post_init__(self):
         if self.mode not in MODES:
             raise ValueError(f"pipeline mode must be one of {', '.join(MODES)}, got {self.mode!r}")
+        if not 0 <= self.fit_retries <= 3:
+            raise ValueError("fit_retries must be between 0 and 3")
         self.jobs_dir = Path(self.jobs_dir)
 
     @staticmethod
@@ -115,6 +119,8 @@ class Config:
             kw["compact"] = os.environ["ITB_COMPACT"].strip().lower() in ("1", "true", "yes")
         if os.environ.get("ITB_STAGE_TIMEOUT_S"):
             kw["stage_timeout_s"] = float(os.environ["ITB_STAGE_TIMEOUT_S"])
+        if os.environ.get("ITB_FIT_RETRIES"):
+            kw["fit_retries"] = int(os.environ["ITB_FIT_RETRIES"])
         if os.environ.get("ITB_CORS_ORIGINS"):
             kw["cors_origins"] = [o.strip() for o in os.environ["ITB_CORS_ORIGINS"].split(",") if o.strip()]
         extra = overrides.pop("fixtures_file", None) or os.environ.get("ITB_FIXTURES")
