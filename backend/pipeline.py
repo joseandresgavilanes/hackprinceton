@@ -109,12 +109,15 @@ def measure(job: Job, store: JobStore, config) -> None:
                          + ". Retake the photos with each piece flat and fully visible next to the whole ruler, "
                            "plus at least one side view for heights.",
                          code="missing_measurements", http_status=422, details=missing)
+    cv, thickness, thickness_warnings = measurement.default_thickness(cv)
+    job.warnings.extend(thickness_warnings)
     job.warnings.extend(measurement.low_confidence(cv))
     question = measurement.scale_question(cv)
     if question:
-        store.update(job, cv=cv, status="needs_measurement", stage="waiting_for_measurement", question=question)
+        store.update(job, cv=cv, thickness=thickness, status="needs_measurement", stage="waiting_for_measurement",
+                     question=question)
         return
-    store.update(job, cv=cv, cv_done=True)
+    store.update(job, cv=cv, thickness=thickness, cv_done=True)
 
 
 def group(job: Job, store: JobStore, config) -> dict:
@@ -122,6 +125,8 @@ def group(job: Job, store: JobStore, config) -> dict:
     if config.mode == "fixtures":
         fx = find_fixture(config, job.game_name)
         grouping = _load_json(config.fixture_path(fx["grouping"]), "grouping fixture")
+        if job.thickness:
+            grouping = measurement.set_heights(grouping, job.thickness)
         if job.scale:
             grouping = measurement.rescale_grouping(grouping, job.scale["ratio"], job.scale["ids"])
         job.notes.append(f"Fixtures mode: grouping from {fx['grouping']} (no AI call).")

@@ -49,7 +49,7 @@ stage also still works as its own command-line script (§10).
 | `organizer/gltf.py` | Writes the GLB from the exact STL triangles. |
 | `organizer/pipeline.py` | Orchestration (`plan_layout`, `generate`), layout validation (incl. rim support), `layout.json`, failure `report.json`. |
 | `frontend/viewer/` | Shared three.js 0.160 viewer: `organizer-viewer.js` draws each STL placed by `layout.json` (stacked boxes keep their height) with selection, details panel + STL download, isolate/hide, dimension lines, Iso/Top/Front, fit/reset, explode + assembly, game box toggle, filament colours; `contents.js` computes approximate non-printed stand-ins for the stored pieces (tested in `tests/js/`). Visual only. |
-| `tests/` | pytest suite (118 tests, one of them runs the viewer's JS tests with Node): engine, converter, backend API and the viewer's contents module. Nothing tests the CV or grouping scripts or the web UI's interaction code (checked by hand in a browser). |
+| `tests/` | pytest suite (120 tests, one of them runs the viewer's JS tests with Node): engine, converter, backend API and the viewer's contents module. Nothing tests the CV or grouping scripts or the web UI's interaction code (checked by hand in a browser). |
 | `examples/` | Inputs: Holden's grouping JSONs (`king_of_tokyo_grouping.json` = 5 sets, `ttr_london_grouping.json` = Ticket to Ride: London with 6 sets, `holden_boxes_grouping.json` = Hypothetical Battle Game with 4 sets), the TTR London CV output (`ttr_london_dimensions.json`), hand-written plans (`organizer_plan_example.json`, `typed_demo_plan.json`, `stacked_demo_plan.json`) and the ruler test photos (`photos/`). The backend's fixtures mode reads these. |
 | `tests/fixtures/layouts/` | Generated `layout.json` files the viewer's JS tests read (King of Tokyo, TTR London, both battle-game groupings, the stacked tray demo). |
 | `README_STL_ENGINE.md` | User docs for the engine, including running Holden's grouping data. |
@@ -341,7 +341,7 @@ mkdir -p out/king_of_tokyo
 python convert_grouping_output.py examples/king_of_tokyo_grouping.json --bed 256 256 256 -o out/king_of_tokyo/plan.json
 python generate_organizer_stl.py out/king_of_tokyo/plan.json -o out/king_of_tokyo
 python generate_organizer_stl.py <plan.json> --check          # validate + pack only, no CAD
-python -m pytest tests -q    # 118 tests, ~35 s with CadQuery (Node runs tests/js)
+python -m pytest tests -q    # 120 tests, ~35 s with CadQuery (Node runs tests/js)
 ```
 
 The whole journey in the browser (no terminal steps after this one):
@@ -383,7 +383,7 @@ Other CLI flags: `--allow-partial` (skip broken compartments), `--no-glb`, `--no
 
 ## 12. Current state
 
-**Works and is tested (118 tests):**
+**Works and is tested (120 tests):**
 - Holden's grouping JSON → converter → one plain open box per set → packed, validated STL + GLB +
   `layout.json`, for all four committed grouping outputs (3, 4, 6 and 5 sets), default and `--compact`.
 - One-layer, column and bridge layouts; same-size twins and similar-name groups; full-floor filling;
@@ -425,8 +425,10 @@ finished jobs' files downloadable after a restart; one real live run (§12).
 2. **Assumed thicknesses decide the box height without saying so.** CV fell back to 0.4 mm per card and
    4 mm for the board and the rulebook (`measurement.height_assumed: true`); the board + rulebook thickness
    becomes the headroom, so it sets every box's height (an earlier run measured the rulebook at 12.1 mm).
-   Name assumed heights in the job warnings, ask for the rulebook/board thickness, and show the job's
-   `warnings` in the web UI (it shows none today).
+   The backend now also uses those defaults when the photos could not calculate a card's, board's or
+   rulebook's thickness (uncertainty ≥ the value; Magical Athlete's board came back as 24.1 ± 28.7 mm and
+   left 7 mm for the boxes) and names it in the job warnings. Still open: show the job's `warnings` in the
+   web UI (it shows none today).
 
 **P1: correctness and consistency**
 2. ~~Pick one canonical version of each script~~ Done: `pipeline/` holds the only CV and grouping scripts

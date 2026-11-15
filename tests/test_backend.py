@@ -248,6 +248,58 @@ def test_scale_question_and_answer(make_client, tmp_path):
     assert "Grouping: Test warning from the grouping step." in body["warnings"]
 
 
+def flat_piece(index, name, height, error, method="multi_angle_silhouette", assumed=False):
+    return {"index": index, "name": name, "quantity": 1, "shape": "rectangular_prism",
+            "dimensions_mm": {"length": 140.0, "width": 140.0, "height": height}, "confidence": "low",
+            "estimated_error_mm": {"long": 5.0, "short": 5.0, "height": error}, "measurement_method": "photos",
+            "measurement": {"height_method": method, "height_assumed": assumed}}
+
+
+def test_uncalculated_thickness_gets_the_cv_default():
+    from backend import measurement
+    cv = cv_json()
+    cv["components"] += [flat_piece(3, "Race track board", 24.1, 28.7),       # ± larger than the value
+                         flat_piece(4, "Rulebook", 15.9, 16.5),
+                         flat_piece(5, "Rule leaflet (rulebook)", 12.1, 8.1),  # calculated: kept, even if odd
+                         flat_piece(6, "Upright board", 9.0, 12.0, method="upright_ruler"),
+                         flat_piece(7, "Wooden star", 4.0, 6.0),               # not a card, board or rulebook
+                         flat_piece(8, "Action card", 0.4, None, method="assumed_card_thickness", assumed=True)]
+    new, heights, warnings = measurement.default_thickness(cv)
+    assert heights == {"component_3": 4.0, "component_4": 4.0}
+    by_name = {c["name"]: c for c in new["components"]}
+    assert by_name["Race track board"]["dimensions_mm"]["height"] == 4.0
+    assert by_name["Race track board"]["measurement"]["height_assumed"] is True
+    assert by_name["Race track board"]["measurement"]["uncalculated_height_mm"] == 24.1
+    assert [by_name[n]["dimensions_mm"]["height"] for n in
+            ("Rule leaflet (rulebook)", "Upright board", "Wooden star", "Action card")] == [12.1, 9.0, 4.0, 0.4]
+    assert cv["components"][2]["dimensions_mm"]["height"] == 24.1          # the input is not modified
+    assert warnings == ["Race track board: the photos could not calculate its thickness (24.1 ± 28.7 mm), so the "
+                        "default 4 mm for a board was used.",
+                        "Rulebook: the photos could not calculate its thickness (15.9 ± 16.5 mm), so the "
+                        "default 4 mm for a rulebook was used."]
+
+
+@needs_cad
+def test_board_without_a_calculated_thickness_does_not_eat_the_box_height(make_client, tmp_path):
+    """A 34 ± 40 mm board on top would leave 3 mm for the boxes; its 4 mm default leaves room for them."""
+    cv = cv_json()
+    cv["components"].append(flat_piece(3, "Game board", 34.0, 40.0))
+    grouping = grouping_json()
+    grouping["excluded"] = [{"component_id": "component_3", "quantity": 1, "reason": "test", "name": "Game board",
+                             "shape": "rectangular_prism",
+                             "dimensions_mm": {"length": 140.0, "width": 140.0, "height": 34.0}}]
+    client = make_client(**test_fixtures(tmp_path, cv=cv, grouping=grouping))
+    r = wait(client, start(client, "Test Game").json()["job_id"])
+    body = r.json()
+    assert r.status_code == 200 and body["status"] == "complete", body
+    assert any(w.startswith("Game board: the photos could not calculate its thickness (34 ± 40 mm)")
+               for w in body["warnings"])
+    job_dir = tmp_path / "jobs" / body["job_id"]
+    plan = json.loads((job_dir / "output" / "plan.json").read_text())
+    assert plan["settings"]["headroom_mm"] == 4.0
+    assert json.loads((job_dir / "grouping.json").read_text())["excluded"][0]["dimensions_mm"]["height"] == 4.0
+
+
 @needs_cad
 @pytest.mark.parametrize("n", [2, 6])
 def test_two_to_six_photos_make_a_job(make_client, tmp_path, n):

@@ -8,15 +8,32 @@ Rules (a dimension is never guessed):
   "assumed_length"), the whole reconstruction may be off by a few percent. The user is asked to measure the
   width of one reference component (a card if there is one, else the widest measured piece). The answer
   rescales every photo measurement by the same ratio.
+* If the photos could not calculate the thickness of a card, board or rulebook (the fitted height's
+  uncertainty is at least as large as the height itself), the CV script's own default thickness is used
+  instead: 4 mm for a board or rulebook, 0.4 mm for a card (``assumed_dimensions`` in
+  ``pipeline/boardgame_dimensions_ruler_v7.py``). This is listed in the job's warnings.
 * Low-confidence components are reported as warnings; they do not stop the job.
 """
 from __future__ import annotations
 
 import copy
 import math
+import re
 
 TRUSTED_SCALE = {"ticks"}
 MAX_RATIO = 2.0           # an answer more than 2× off the measured width is almost certainly a units mistake
+# The CV script's fallback thicknesses, and how it recognises those pieces by name.
+DEFAULT_THICKNESS_MM = {"rulebook": 4.0, "board": 4.0, "card": 0.4}
+FLAT_KINDS = (
+    ("rulebook", re.compile(r"\b(?:rule\s*books?|instruction(?:s| manuals?| booklets?)?|rules booklets?|manuals?)\b", re.I)),
+    ("board", re.compile(r"\b(?:boards?|cardboard)\b", re.I)),
+    ("card", re.compile(r"\bcards?\b", re.I)),
+)
+
+
+def component_id(c: dict, i: int) -> str:
+    """The id the grouping step gives a CV component (``organize_game_boxes.load_game``)."""
+    return c.get("id") or f"component_{c.get('index', i)}"
 
 
 def usable_dims(c: dict) -> dict | None:
@@ -49,6 +66,46 @@ def missing_components(cv: dict) -> list[str]:
         elif not isinstance(q, int) or isinstance(q, bool) or q <= 0:
             out.append(f"{name}: no quantity")
     return out
+
+
+def thickness_not_calculated(c: dict) -> bool:
+    """The photos gave a height, but its uncertainty is at least as large as the height itself."""
+    d, m = usable_dims(c), c.get("measurement") or {}
+    err = (c.get("estimated_error_mm") or {}).get("height")
+    if d is None or m.get("height_assumed") or m.get("height_method") == "upright_ruler":
+        return False
+    return isinstance(err, (int, float)) and not isinstance(err, bool) and err >= d["height"]
+
+
+def default_thickness(cv: dict) -> tuple[dict, dict, list[str]]:
+    """Cards, boards and rulebooks whose thickness could not be calculated get the CV script's default.
+
+    Returns (new cv, {component id: height used}, warnings). Every other measurement is left as it is.
+    """
+    cv = copy.deepcopy(cv)
+    heights, warnings = {}, []
+    for i, c in enumerate(cv.get("components") or [], 1):
+        kind = next((k for k, rx in FLAT_KINDS if rx.search(str(c.get("name") or ""))), None)
+        if kind is None or not thickness_not_calculated(c):
+            continue
+        old, err, new = c["dimensions_mm"]["height"], c["estimated_error_mm"]["height"], DEFAULT_THICKNESS_MM[kind]
+        c["dimensions_mm"]["height"] = new
+        c.setdefault("measurement", {}).update({
+            "height_method": "assumed_card_thickness" if kind == "card" else "assumed_4mm_thickness",
+            "height_assumed": True, "uncalculated_height_mm": old, "uncalculated_height_error_mm": err})
+        heights[component_id(c, i)] = new
+        warnings.append(f"{c.get('name')}: the photos could not calculate its thickness ({old:g} ± {err:g} mm), "
+                        f"so the default {new:g} mm for a {kind} was used.")
+    return cv, heights, warnings
+
+
+def set_heights(grouping: dict, heights: dict) -> dict:
+    """Apply ``default_thickness`` results to a grouping JSON whose members carry the CV dimensions."""
+    grouping = copy.deepcopy(grouping)
+    for m in [m for s in grouping.get("sets") or [] for m in s.get("members") or []] + list(grouping.get("excluded") or []):
+        if m.get("component_id") in heights and isinstance(m.get("dimensions_mm"), dict):
+            m["dimensions_mm"] = {**m["dimensions_mm"], "height": heights[m["component_id"]]}
+    return grouping
 
 
 def low_confidence(cv: dict) -> list[str]:

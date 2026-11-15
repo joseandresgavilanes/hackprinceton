@@ -58,6 +58,7 @@ class Job:
     cv: dict | None = None               # CV measurement after checks (corrected once the user answered)
     cv_done: bool = False
     scale: dict | None = None            # {"ratio", "ids"} once a scale correction was applied
+    thickness: dict = field(default_factory=dict)   # {component id: default thickness used} (measurement.py)
 
     @property
     def output_dir(self) -> Path:
