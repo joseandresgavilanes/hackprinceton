@@ -4,9 +4,8 @@
 > **millimetres**. "Box" means the board game's cardboard box; "storage box" / "tray" means a
 > 3D-printed part that goes inside it.
 >
-> **Status:** `main` at `92d09d2` (2026-11-14), after PR #1 (organizer engine v2, including the King of
-> Tokyo fix) and PR #2 (web UI), plus uncommitted work on branch `fix-viewer-z-and-tight-pack` (viewer fix,
-> `tight_pack`, backend). §12 says what works today; §13 lists what is still missing.
+> **Status:** 2026-11-14, after PR #1 (organizer engine v2, including the King of Tokyo fix), PR #2 (web UI)
+> and PR #3 (backend, viewer stacking fix, `tight_pack`, first live run). §12 says what works today; §13 lists what is still missing.
 
 ## 1. What the project does
 
@@ -53,7 +52,7 @@ stage also still works as its own command-line script (§10).
 | `organizer/pipeline.py` | Orchestration (`plan_layout`, `generate`), layout validation (incl. rim support), `layout.json`, failure `report.json`. |
 | `organizer/cv_adapter.py` | CV dimensions JSON → draft *tray-mode* plan (bypasses grouping). Never fills gaps. |
 | `preview/index.html` | three.js 0.160 viewer (`?glb=` URL parameter). Renders stacked layers correctly. |
-| `tests/` | pytest suite (119 tests): engine, converter and backend API. Nothing tests the CV or grouping scripts or the frontend's JavaScript. |
+| `tests/` | pytest suite (120 tests): engine, converter and backend API. Nothing tests the CV or grouping scripts or the frontend's JavaScript. |
 | `examples/` | Sample plans, Holden's grouping JSONs (`holden_boxes_grouping.json` = 4 sets, `ttr_london_grouping.json` = Ticket to Ride: London). |
 | `exoutput.json`, `ttrloutput.json`, `kotoutput.json` | Holden's grouping outputs: 3 sets ("divider"), TTR London with 6 sets, King of Tokyo with 5 sets. |
 | `holden_final/` | **Current** generated results for every grouping JSON (§7), plus a compact TTR variant. |
@@ -346,7 +345,7 @@ python convert_grouping_output.py kotoutput.json --bed 256 256 256 -o holden_fin
 python generate_organizer_stl.py holden_final/king_of_tokyo_5_boxes/plan.json -o holden_final/king_of_tokyo_5_boxes
 python generate_organizer_stl.py <plan.json> --check          # validate + pack only, no CAD
 python generate_organizer_stl.py --from-cv dims.json --box W L H --bed W L H -o out   # tray mode straight from CV output
-python -m pytest tests -q    # 119 tests, ~35 s with CadQuery
+python -m pytest tests -q    # 120 tests, ~35 s with CadQuery
 ```
 
 The whole journey in the browser (no terminal steps after this one):
@@ -390,7 +389,7 @@ Other CLI flags: `--allow-partial` (skip broken compartments), `--no-glb`, `--no
 
 ## 12. Current state
 
-**Works and is tested (119 tests):**
+**Works and is tested (120 tests):**
 - Holden's grouping JSON → converter → one plain open box per set → packed, validated STL + GLB +
   `layout.json`, for all four committed grouping outputs (3, 4, 6 and 5 sets), default and `--compact`.
 - One-layer, column and bridge layouts; same-size twins and similar-name groups; full-floor filling;
@@ -406,25 +405,34 @@ Other CLI flags: `--allow-partial` (skip broken compartments), `--no-glb`, `--no
 - The 3D preview (`preview/`) and the web UI viewer render every output, including stacked layers, and the
   web UI viewer swaps models when the user starts another game.
 
-**Wired, but not run against the real API:**
-- Live mode: the backend runs `Final stuff/boardgame_dimensions_ruler_v7.py … --no-prompt` and
-  `Final stuff/organize_game_boxes.py` as subprocesses with the server's key. Tested only with stand-in
-  scripts (arguments, key passed to the scripts but kept out of logs and responses, failures reported).
-- The CV and grouping scripts themselves (both need an Anthropic key; grouping also uses web search). The
+**Live mode, run once against the real API (2026-11-14):**
+- Ticket to Ride: London, 4 real ruler photos, through the web UI: 6 sets → 6 validated boxes in one layer,
+  3D preview and STL downloads in **156 s** (CV measurement 95 s, grouping + web research 55 s, conversion
+  < 1 s, CAD 5 s). 12 API calls on `claude-sonnet-5-5`, 130 k input / 15 k output tokens (≈ $0.41) + 6 web
+  searches, no retries. Every photo was scaled from the ruler's ticks, so no measurement was asked.
+- It needs `brotli>=1.2.0` (an old Brotli makes every API call fail as a "Connection error") and a `scipy`
+  built for the installed NumPy; see `backend/README.md` → Live-mode environment problems.
+- The CV and grouping scripts are not tested in the repo; live mode's wiring is (stand-in scripts). The
   grouping script reads the CV JSON directly (`load_game` maps `index` → `id`, `edition_assumed`).
 
 ## 13. What is missing to make it complete
 
-*Done on branch `fix-viewer-z-and-tight-pack`, not committed yet:* the backend job server and its tests;
-the scale-measurement question; the web UI viewer's `position_mm.z` and its refresh between jobs; the
-backend's stage text, error messages and measurement prompt in the UI; `tight_pack`;
-`BACKEND_INTEGRATION.md` §5; `requirements-backend.txt` and `requirements-live.txt`.
+*Done in PR #3:* the backend job server and its tests; the scale-measurement question; the web UI viewer's
+`position_mm.z` and its refresh between jobs; the backend's stage text, error messages and measurement prompt
+in the UI; `tight_pack`; `BACKEND_INTEGRATION.md` §5; `requirements-backend.txt` / `requirements-live.txt`;
+finished jobs' files downloadable after a restart; one real live run (§12).
 
-**P0: before a demo with real photos**
-1. **Run live mode once with the real API.** Take 4 photos per the CV photo rules, start
-   `python -m backend --mode live` with `ANTHROPIC_API_KEY` in `.env`, and check that both stage scripts
-   succeed from the backend, how long they take (the UI polls without a limit; each stage times out after
-   30 min) and what they cost. Install `requirements-live.txt` in a clean environment first.
+**P0: before printing anything from live mode**
+1. **Measurement accuracy.** All 6 components of the live run were low confidence, and two CV runs on the same
+   photos disagree by up to 12 % (Destination Ticket card 69.0 vs 77.0 mm long, scoring marker 14.7 vs
+   17.9 mm). The backend only asks for a measurement when a photo's scale was estimated, so nothing was asked.
+   Ask for one reference measurement also when the pieces that size the boxes (cards, tokens) are low
+   confidence, and measure a card by hand before printing.
+2. **Assumed thicknesses decide the box height without saying so.** CV fell back to 0.4 mm per card and
+   4 mm for the board and the rulebook (`measurement.height_assumed: true`); the board + rulebook thickness
+   becomes the headroom, so it sets every box's height (an earlier run measured the rulebook at 12.1 mm).
+   Name assumed heights in the job warnings, ask for the rulebook/board thickness, and show the job's
+   `warnings` in the web UI (it shows none today).
 
 **P1: correctness and consistency**
 2. **Pick one canonical version of each script** and archive the rest: CV exists as root
@@ -435,12 +443,14 @@ backend's stage text, error messages and measurement prompt in the UI; `tight_pa
 3. **The measurement question only covers the image scale.** Missing dimensions stop the job (the UI can
    ask for one width only), and low-confidence pieces are only listed as warnings. A UI for a few answers
    (e.g. a missing height) would let those jobs continue instead of asking for new photos.
-4. **The backend is a local single-user server:** job status lives in memory (a restart forgets jobs; their
-   folders stay), jobs run one at a time, old job folders are never deleted, and there is no
+4. **The backend is a local single-user server:** job status lives in memory (a restart forgets it; finished
+   jobs' files stay downloadable), jobs run one at a time, old job folders are never deleted, and there is no
    authentication or rate limiting. Don't expose it to the internet as is.
 5. **Web UI demo data:** point the static demo at a boxes-mode result (e.g. `holden_final/…`), not the
    legacy tray demo, and stop hard-coding "SUMMIT SUPPLIES" (the tray count now comes from the job).
-6. **Model IDs:** CV uses `claude-sonnet-5-5`, grouping defaults to `claude-sonnet-4-6`.
+6. **Model IDs:** CV uses `claude-sonnet-5-5` (hard-coded), grouping defaults to `claude-sonnet-4-6` unless
+   `ANTHROPIC_MODEL` is set (the live run set it to `claude-sonnet-5-5`). On Sonnet 5.5, LangChain cannot force
+   the structured-output tool call; it worked on every call, but a reply without it fails the CV stage.
 7. `convert_grouping_output.py -o dir/plan.json` should create `dir/`.
 
 **P2: quality and confidence**
