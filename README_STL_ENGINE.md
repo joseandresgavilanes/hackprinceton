@@ -78,7 +78,7 @@ Flags: `--check`, `--allow-partial` (skip compartments that have errors, generat
 | `dice` | `piece_mm {edge}` (or width/length/height), `quantity`, optional `pockets: true` | Scooped bin (dice in a grid, up to 2 deep) or one pocket per die. |
 | `bits` | `piece_mm {width, length, height}` + `quantity`, **or** `required_mm`; optional `cells: n` | Scooped bin (rounded bottom edges). Size from piece boxes uses `bulk_packing_efficiency` and is reported as an assumption. |
 | `generic` | `required_mm {width, length, height}` | Rectangular bin with a shallow rim notch (the v1 behaviour). |
-| `set` | `storage_style` (`loose`/`stack`/`card_stack`) + `members[] {name, quantity, shape, dimensions_mm {length, width, height}}`, or `required_mm` | One plain open rectangular cavity for the whole set (see organizer `boxes`). |
+| `set` | `storage_style` (`loose`/`stack`/`card_stack`/`tight_pack`) + `members[] {name, quantity, shape, dimensions_mm {length, width, height}}`, or `required_mm` | One plain open rectangular cavity for the whole set (see organizer `boxes`). |
 
 Common optional fields: `"tray": "Player pieces"` puts several compartments in one tray, separated by
 dividers (e.g. one cell per player colour); `"layer": "top" | "bottom"` hints the stacking order.
@@ -110,6 +110,9 @@ grouping decided upstream is used as-is:
   overlap (one layer, more only if one layer can't fit), + clearance. The arrangement is written to
   `layout.json` (`cells[].contents.arrangement_mm`). Pieces poured in at random may need settling, so
   physical fit is reported as not verified;
+- `tight_pack`: block-like pieces (`rectangular_prism`, `square_prism` or `cube` only; other shapes are an
+  error) placed by hand in identical grid layers. Same arrangement as `loose`, but it uses as many layers
+  as give the smallest footprint (a compact block), and reports that the pieces must be placed, not poured;
 - the boxes together fit the game box: by default (`fill_height`/`fill_box` true) every box is the full
   usable height (flush with the lid) and the boxes grow to cover the floor area. Each box's single cavity
   grows and deepens with it, so walls stay `wall_mm` and the floor stays `floor_mm` thick (no solid fill). Set
@@ -240,7 +243,7 @@ The grouping JSON is the single source of truth:
 - `box.dimensions_mm` is the space the boxes must fit in (used as the inside size; an estimated size is
   flagged);
 - every entry of `sets` becomes exactly one `set` box (names, quantities, dimensions, shapes and
-  `storage_style` — `loose`, `stack` or `card_stack` — copied verbatim), for `organizer: "boxes"` and
+  `storage_style` — `loose`, `stack`, `card_stack` or `tight_pack` — copied verbatim), for `organizer: "boxes"` and
   `"divider"` alike. No sets are added, merged or split;
 - everything in `excluded` is **ignored**: no container, no floor space and no fit check. It is listed in
   `conversion_notes` and `source.excluded_ignored`. The one exception is height: an excluded **board or

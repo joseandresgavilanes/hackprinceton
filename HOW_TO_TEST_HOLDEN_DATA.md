@@ -20,6 +20,8 @@ No manual edits to these files are needed.
   - `loose`: the cavity fits every piece's bounding box laid out side by side (assumption reported).
   - `stack`: one vertical stack of the pieces.
   - `card_stack`: one deck lying flat; depth = quantity × card thickness.
+  - `tight_pack`: block-like pieces (rectangular prisms, square prisms, cubes) placed by hand in
+    identical grid layers, as compact as the height allows.
 - Sets that hold the same thing (e.g. the four player bus sets) always get boxes of exactly the same size.
 - Similarly named sets ("Transportation Card Deck" / "Destination Ticket Card Deck", "Shared Supply: …")
   share one box shape and size, big enough for each of them (`size_group` in `layout.json`).
