@@ -1,0 +1,247 @@
+{
+  "game": "King of Tokyo",
+  "edition": "Second Edition (IELLO, 2016)",
+  "organizer": "divider",
+  "selection_reason": "5 sets fit the divider count limit of 5.",
+  "divider_set_limit": 5,
+  "set_count": 5,
+  "physical_fit_verified": false,
+  "box": {
+    "dimensions_mm": {
+      "length": 250.0,
+      "width": 250.0,
+      "height": 67.0
+    },
+    "basis": "estimated_from_external",
+    "source_url": "https://foldedspace.com/product/king-of-tokyo",
+    "explanation": "External box confirmed as 254\u00d7254\u00d770 mm from multiple independent sources (Folded Space, Amazon.se, Noble Knight Games). Internal dimensions estimated by subtracting 4 mm from each horizontal axis and 3 mm from height, yielding approximately 250\u00d7250\u00d767 mm. No measured internal dimensions were found; treat as an engineering estimate only and verify by direct measurement before designing inserts."
+  },
+  "sets": [
+    {
+      "name": "Power Card Deck",
+      "reason": "All 66 power cards form a single shared draw deck per the rulebook. Cards are shuffled together and dealt face-up to a central market; there is no basis for splitting the deck. Cards are 89.4\u00d767.3 mm and can be stored as a card stack.",
+      "storage_style": "card_stack",
+      "members": [
+        {
+          "component_id": "component_6",
+          "quantity": 66,
+          "name": "Power card",
+          "shape": "rectangular_prism",
+          "dimensions_mm": {
+            "length": 89.4,
+            "width": 67.3,
+            "height": 0.4
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dice Pool",
+      "reason": "All 6 black dice and 2 green dice are shared central resources used by all players on their turn. Grouped together for quick access and setup. Cylinders of varying sizes are stored loosely together.",
+      "storage_style": "loose",
+      "members": [
+        {
+          "component_id": "component_7",
+          "quantity": 6,
+          "name": "Black die (custom-engraved)",
+          "shape": "cylinder",
+          "dimensions_mm": {
+            "length": 19.9,
+            "width": 19.9,
+            "height": 21.9
+          }
+        },
+        {
+          "component_id": "component_8",
+          "quantity": 2,
+          "name": "Green die (custom-engraved)",
+          "shape": "cylinder",
+          "dimensions_mm": {
+            "length": 27.9,
+            "width": 27.9,
+            "height": 35.0
+          }
+        }
+      ]
+    },
+    {
+      "name": "Energy Cubes",
+      "reason": "50 energy cubes form a shared central supply pool. All are identical cylinders (10.1\u00d710.1\u00d714.0 mm) and can be stacked in a cylindrical slot prism arrangement, though loose storage is more practical for a large bulk supply.",
+      "storage_style": "loose",
+      "members": [
+        {
+          "component_id": "component_9",
+          "quantity": 50,
+          "name": "Energy cube",
+          "shape": "cylinder",
+          "dimensions_mm": {
+            "length": 10.1,
+            "width": 10.1,
+            "height": 14.0
+          }
+        }
+      ]
+    },
+    {
+      "name": "Status & Special Tokens",
+      "reason": "Poison tokens (\u00d712), Shrink tokens (\u00d712), Smoke tokens (\u00d73), and Mimic token (\u00d71) are all shared card-effect tokens drawn from a central supply during play. They are rarely accessed, low in count, and while individually cylindrical their differing diameters (13.9\u201318.3 mm) and heights make dedicated stacking impractical across types. Grouping them in one loose compartment is practical and they are accessed as a collective supply.",
+      "storage_style": "loose",
+      "members": [
+        {
+          "component_id": "component_10",
+          "quantity": 12,
+          "name": "Poison token",
+          "shape": "cylinder",
+          "dimensions_mm": {
+            "length": 13.9,
+            "width": 13.9,
+            "height": 19.6
+          }
+        },
+        {
+          "component_id": "component_11",
+          "quantity": 12,
+          "name": "Shrink token",
+          "shape": "cylinder",
+          "dimensions_mm": {
+            "length": 15.1,
+            "width": 15.1,
+            "height": 20.0
+          }
+        },
+        {
+          "component_id": "component_12",
+          "quantity": 3,
+          "name": "Smoke token",
+          "shape": "cylinder",
+          "dimensions_mm": {
+            "length": 18.0,
+            "width": 18.0,
+            "height": 4.0
+          }
+        },
+        {
+          "component_id": "component_13",
+          "quantity": 1,
+          "name": "Mimic token",
+          "shape": "cylinder",
+          "dimensions_mm": {
+            "length": 18.3,
+            "width": 18.3,
+            "height": 3.1
+          }
+        }
+      ]
+    },
+    {
+      "name": "Monster Kits (All Players)",
+      "reason": "Each player's kit comprises one Monster board, one cardboard monster figure, and one plastic figure stand \u2014 three physically distinct component types. These are grouped together as a collective set of 6 player kits (6 boards + 6 figures + 6 stands). Because the boards, cardboard figures and cylindrical stands are physically heterogeneous, loose storage is appropriate for this combined player-kit compartment.",
+      "storage_style": "loose",
+      "members": [
+        {
+          "component_id": "component_3",
+          "quantity": 6,
+          "name": "Monster board",
+          "shape": "rectangular_prism",
+          "dimensions_mm": {
+            "length": 127.7,
+            "width": 95.1,
+            "height": 4.0
+          }
+        },
+        {
+          "component_id": "component_4",
+          "quantity": 6,
+          "name": "Cardboard monster figure",
+          "shape": "rectangular_prism",
+          "dimensions_mm": {
+            "length": 75.5,
+            "width": 66.0,
+            "height": 4.3
+          }
+        },
+        {
+          "component_id": "component_5",
+          "quantity": 6,
+          "name": "Plastic figure stand",
+          "shape": "cylinder",
+          "dimensions_mm": {
+            "length": 27.6,
+            "width": 27.6,
+            "height": 5.0
+          }
+        }
+      ]
+    }
+  ],
+  "excluded": [
+    {
+      "component_id": "component_1",
+      "quantity": 1,
+      "reason": "Rulebook is an oversized flat document (253.3\u00d7250.7\u00d74.0 mm) that lies flat in the box lid or under components and is not assigned to a storage compartment.",
+      "name": "Rulebook",
+      "shape": "rectangular_prism",
+      "dimensions_mm": {
+        "length": 253.3,
+        "width": 250.7,
+        "height": 4.0
+      }
+    },
+    {
+      "component_id": "component_2",
+      "quantity": 1,
+      "reason": "Tokyo board (216.2\u00d7210.2\u00d74.0 mm) is a large flat game board placed centrally during play and stored flat in the box; it is not assigned to a storage compartment.",
+      "name": "Tokyo board (Tokyo City and Tokyo Bay)",
+      "shape": "rectangular_prism",
+      "dimensions_mm": {
+        "length": 216.2,
+        "width": 210.2,
+        "height": 4.0
+      }
+    }
+  ],
+  "warnings": [
+    "Internal box dimensions were not found in any publisher or retailer source. The dimensions reported here are estimated from confirmed external dimensions (254\u00d7254\u00d770 mm) by subtracting 4 mm per horizontal axis and 3 mm from height. Do not use for precision insert design without direct measurement.",
+    "The dice are described as 'cylinder' shapes in the inventory. Standard game dice are cubes; the cylinder envelope is an approximation of the rounded-corner cubic form. Storage style 'loose' is used rather than 'stack' since mixed sizes and cube-like geometry make cylindrical stacking impractical.",
+    "Edition ambiguity: Multiple second-edition variants exist (standard 2016, Monster Box bundle, award editions). This inventory has been treated as the standard IELLO 2016 second edition as specified. Component counts (66 power cards, 6 monsters) are consistent with this edition.",
+    "The Power Up! expansion adds per-monster Evolution decks that must be kept separate from each other and from the Power card deck if added later. No separation is needed for this base-game inventory.",
+    "Poison tokens (h=19.6 mm) and Shrink tokens (h=20.0 mm) are described as cylinders but their height-to-diameter ratios suggest they may be chunky cylindrical pieces rather than flat tokens. Physical form should be verified before choosing a dedicated stack slot.",
+    "Smoke tokens (18.0 mm diameter, 4.0 mm height) and Mimic token (18.3 mm, 3.1 mm) appear to be flat disc tokens and could be stacked separately, but given their very low quantities (3 and 1) merging them with the other status tokens in a loose compartment is more practical."
+  ],
+  "research_notes": "I'll research the game rules, component roles, and box dimensions simultaneously.\nNow let me search specifically for the internal box dimensions of the King of Tokyo 2016 second edition:\nI now have all the evidence needed. Here are the concise research notes:\n\n---\n\n# Research Notes: King of Tokyo \u2014 Second Edition (IELLO, 2016)\n\n---\n\n## 1. Edition Confirmation\n\n\nThis new edition boasts new artwork, clearer rules, and revamped card abilities.\n \nThe second edition features new artwork and introduces two new monsters Cyber Kitty and Space Penguin, replacing Cyber Bunny and Kraken.\n The user-specified edition (IELLO, 2016) is unambiguous and well-documented.\n\n---\n\n## 2. Box Dimensions\n\n**Internal dimensions: NOT FOUND in any source.** No publisher specification or reliable measured internal dimension was located.\n\n**External dimensions (confirmed from multiple independent sources):**\n\n- \nThe Folded Space insert product page (foldedspace.com) states: **game box dimensions: 25.4 \u00d7 25.4 \u00d7 7.0 cm**, explicitly noting the insert is designed for games with **external** box dimensions of 25.4 \u00d7 25.4 \u00d7 7.0 cm.\n\n- \nAmazon Sweden lists item dimensions as **25.4 \u00d7 7 \u00d7 25.4 cm**.\n\n- \nNoble Knight Games lists the box as **10 \u00d7 10 \u00d7 3 inches** (\u2248 254 \u00d7 254 \u00d7 76 mm).\n\n\n**\u26a0\ufe0f Inference only (not verified):** A typical square game box of 254 \u00d7 254 \u00d7 70 mm external, with ~3 mm walls, would yield an internal cavity of roughly **248 \u00d7 248 \u00d7 64 mm**. This is an engineering estimate only \u2014 treat with caution and do not use for precision insert design without direct measurement.\n\n---\n\n## 3. Component Ownership & Setup Distribution\n\n| Component | Ownership / Distribution |\n|---|---|\n| **Rulebook (\u00d71)** | Shared/neutral \u2014 not assigned to any player |\n| **Tokyo board (\u00d71)** | Shared/neutral \u2014 placed centrally |\n| **Monster board (\u00d76)** | **Per-player** \u2014 one per active player (up to 6) |\n| **Cardboard monster figure (\u00d76)** | **Per-player** \u2014 matches chosen monster |\n| **Plastic figure stand (\u00d76)** | **Per-player** \u2014 attaches to that player's monster figure |\n| **Power cards (\u00d766)** | **Shared deck** \u2014 shuffled together, 3 face-up market, remainder as draw pile |\n| **Black dice (\u00d76)** | Shared pool \u2014 all players roll the same 6 dice on their turn |\n| **Green dice (\u00d72)** | Shared reserve \u2014 set aside at start |\n| **Energy cubes (\u00d750)** | Shared supply \u2014 players take/return as needed |\n| **Poison tokens (\u00d712)** | Shared supply \u2014 placed on players by card effects |\n| **Shrink tokens (\u00d712)** | Shared supply \u2014 placed on players by card effects |\n| **Smoke tokens (\u00d73)** | Shared supply \u2014 placed on the board by card effects |\n| **Mimic token (\u00d71)** | Shared supply \u2014 placed by specific card effect |\n\n**Sources:**\n- \nEach player chooses a Monster, takes its figure, its Monster board and sets its Life Points to 10 and its Victory Points to 0.\n\n- \nShuffle the cards to form a deck and deal the first three cards face up on the table next to the deck and the counters.\n\n- \nPut the 6 black dice at the center of the table and set the green ones aside (they will be used only with special cards). Finally, form a pool with all the Energy cubes.\n\n- \nThe tokens and green dice are used with certain Power cards.\n\n\n---\n\n## 4. Gameplay Roles\n\n### Tokyo Board\n\nThe Tokyo board represents the city of Tokyo split into two locations \u2014 Tokyo City and Tokyo Bay.\n \nIf this is your first game or if there are 4 players or less, you will only use \"Tokyo City\". For a 5 or 6 player game, also use \"Tokyo Bay\".\n\n\n### Monster Boards\n\nThe Monster board is used to keep track of Monster Life Points and Victory Points.\n\n\n### Monster Figures\n\nThe monster figure is used to represent the monster's location (inside or outside of Tokyo).\n\n\n### Black Dice (\u00d76)\n\nEach player rolls the 6 black dice; whoever has the most [claw] results goes first.\n These are the core action dice used every turn by every player.\n\n### Green Dice (\u00d72)\n\nThe six Black dice and two Green dice are separated and placed into two piles. The six black dice are the standard ammunition to attempt dominance. Certain power cards will allow monsters to add (green) dice to their rolls.\n\n\n### Power Cards (\u00d766)\n\nIn the 2016 Edition there are 66 power cards (64 different \u2014 Extra Head and Evacuation Orders are doubles).\n \nPower cards that say KEEP are placed in front of you and have ongoing effects. Power cards that say DISCARD are resolved immediately.\n\n\n### Energy Cubes (\u00d750)\n\nFor each Lightning symbol, you gain 1 energy cube. These energy cubes accumulate from turn to turn and can be spent to buy special cards from the central card market (of three cards).\n\n\n### Status Tokens (Poison \u00d712, Shrink \u00d712)\n\nPoison Spit: if its associated cards are discarded, the tokens remain in play. The tokens cannot be removed while the monster is in Tokyo.\n \nShrink Ray: if its associated cards are discarded, the tokens remain in play. The tokens cannot be removed while the monster is in Tokyo.\n Both are placed *on individual monsters* by specific power card effects \u2014 they are not generic resources freely chosen by players.\n\n### Smoke Tokens (\u00d73) & Mimic Token (\u00d71)\n\nThe tokens and green dice are used with certain Power cards.\n These are specific-effect tokens triggered only by particular cards; they enter play only when the relevant card is purchased/activated.\n\n---\n\n## 5. Deck Separation Requirements\n\n**Base game only (this inventory):** There is **one single Power card deck** \u2014 all 66 cards are shuffled together.\n\n> \u26a0\ufe0f **Important separation note for expansion compatibility:** The Power Up! expansion (not in this inventory) adds per-monster Evolution card decks that **must remain separate** from each other and from the Power card deck. \nBy default, each player should use the deck matching their monster.\n Since Power Up! is not in the user's inventory, this applies only if expansions are added later. For this base-game inventory alone, **no deck separation is required**.\n\n---\n\n## 6. Simultaneous Independent Access Requirements\n\n\nEnergy cubes and tokens are placed in accessible piles for all players. These cubes are used to purchase power cards and other tokens are used to represent certain game effects.\n\n\n| Supply | Simultaneous Independent Access Needed? |\n|---|---|\n| **Energy cubes (\u00d750)** | **Yes** \u2014 players accumulate these between turns and spend them on their own turn; the pool must be reachable by all players. However, only the active player transacts per turn, so true simultaneous access is not required \u2014 shared central access suffices. |\n| **Power card market (3 face-up)** | Shared/central \u2014 accessed by the active player only during their Buy step |\n| **Poison / Shrink tokens** | No simultaneous access needed \u2014 only the active player places or removes tokens on a given turn |\n| **Smoke / Mimic tokens** | No \u2014 rare, single-use, card-triggered |\n| **Black dice** | No \u2014 rolled by one player at a time |\n| **Green dice** | No \u2014 only by active player when card-permitted |\n\n**Conclusion:** No component in the base game requires two players to independently access the same supply **at the same time**. All transactions occur during a single active player's turn. Central, shared placement of all supplies is rules-compliant and sufficient.\n\n---\n\n## 7. Summary of Key Facts vs. Inferences\n\n| Item | Status |\n|---|---|\n| External box \u2248 254 \u00d7 254 \u00d7 70 mm | **Known fact** \u2014 multiple independent sources |\n| Internal box dimensions | **Not found** \u2014 no publisher or measured data located; do not invent |\n| Estimated internal ~248 \u00d7 248 \u00d7 64 mm | **Inference only** (standard wall deduction) \u2014 verify by direct measurement |\n| 66 power cards = 1 shared deck | **Known fact** \u2014 IELLO rulebook PDF + postal rules site |\n| Monster boards/figures are per-player | **Known fact** \u2014 IELLO rulebook PDF |\n| Energy cubes/tokens = shared central pool | **Known fact** \u2014 IELLO rulebook PDF |\n| Green dice set aside at start | **Known fact** \u2014 IELLO rulebook PDF |\n| No deck separation in base game | **Known fact** \u2014 Power Up! expansion (separate product) is not in this inventory |\n\n---\n\n**Sources:**\n- IELLO official rulebook PDF: https://cdn.1j1ju.com/medias/f9/2f/9b-king-of-tokyo-rulebook.pdf\n- IELLO Monster Box rulebook PDF (rules identical to 2nd ed base): https://iellogames.com/wp-content/uploads/2021/12/KOT-Monster-Box_Rulebook_US_Light.pdf\n- Folded Space insert page (external box dimensions): https://foldedspace.com/product/king-of-tokyo\n- Noble Knight Games listing: https://www.nobleknight.com/P/2147633985/King-of-Tokyo-2nd-Edition\n- Amazon.se listing (external dimensions): https://www.amazon.se/-/en/Iello-Tokyo-Players-Minutes-Playing/dp/B01F46RPS4\n- BoardGameGeek version page: https://boardgamegeek.com/boardgameversion/169827/english-second-edition\n- King of Tokyo fandom wiki (Power Up! rules): https://king-of-tokyo.fandom.com/wiki/King_of_Tokyo:_Power_Up!\n",
+  "sources": {
+    "https://www.amazon.co.uk/Iello-King-Tokyo-2016/dp/B08SLDL481": "IELLO",
+    "https://en.wikipedia.org/wiki/King_of_Tokyo": "King of Tokyo",
+    "https://iellogames.com/wp-content/uploads/2021/12/KOT-Monster-Box_Rulebook_US_Light.pdf": "' You are a gigantic Monster willing to do anything to become King of Tokyo",
+    "https://www.board-game.co.uk/product/king-of-tokyo/": "King of Tokyo Second Edition",
+    "https://shelfgamer.com/reviews/king-of-tokyo/": "King of Tokyo Review",
+    "https://cdn.1j1ju.com/medias/f9/2f/9b-king-of-tokyo-rulebook.pdf": "King of Tokyo is a game for 2 to 6 players where",
+    "https://groupgames101.com/king-of-tokyo-rules/": "King Of Tokyo Rules: Basics of How to Play - Group Games 101",
+    "https://jlnelson73.wordpress.com/2016/07/01/king-of-tokyo-2016-edition-review/": "King of Tokyo (2016 edition) Review",
+    "https://www.rulespal.com/king-of-tokyo/rulebook": "King of Tokyo Rulebook",
+    "https://boardgamegeek.com/boardgameaccessory/326368/king-of-tokyo-folded-space-insert-second-edition": "King of Tokyo: Folded Space Insert (Second edition)",
+    "https://boardgamegeek.com/boardgameversion/261671/english-second-edition": "King of Tokyo: Power Up! (English second edition)",
+    "https://boardgamegeek.com/boardgameversion/336249/english-second-edition": "King of Tokyo: Power Up! (English second edition)",
+    "https://boardgamegeek.com/boardgameversion/207665/english-second-edition-with-3-awards": "King of Tokyo (English second edition with 3 awards)",
+    "https://boardgamegeek.com/boardgameversion/169827/english-second-edition": "King of Tokyo (English second edition)",
+    "https://www.nobleknight.com/P/2147633985/King-of-Tokyo-2nd-Edition": "King of Tokyo (2nd Edition) (Board Game) - New & Used",
+    "https://thebattlestandard.com/product/king-of-tokyo-2nd-edition/": "King of Tokyo 2nd Edition",
+    "https://www.sleeveyourgames.com/sleeves/8731/king-of-tokyo-monster-box": "King of Tokyo: Monster Box Card Sleeve Sizes",
+    "https://king-of-tokyo.fandom.com/wiki/King_of_Tokyo:_Power_Up!": "King of Tokyo: Power Up!",
+    "https://boardgamereview.co.uk/game-reviews/king-of-tokyo-2nd-edition-review/": "King of Tokyo 2nd Edition Review - Board Game Review",
+    "https://iellogames.com/wp-content/uploads/2021/10/KOT_Rules_EN_11-2023_Light.pdf": "King of Tokyo King of Tokyo is a game for 2 to 6 players where",
+    "http://variablepig.org/rules/kingoftokyo.html": "King Of Tokyo Postal Rules",
+    "https://fgbradleys.com/wp-content/uploads/rules/KingofTokyo.pdf": "King of Tokyo is a game for 2 to 6 players where",
+    "https://en.boardgamearena.com/gamepanel?game=kingoftokyo": "Play King of Tokyo online on Board Game Arena \u2022 Board Game Arena",
+    "https://www.amazon.se/-/en/Iello-Tokyo-Players-Minutes-Playing/dp/B01F46RPS4": "Iello, King of Tokyo Game (2016 Edition), Board Game, Ages 8+, 2-6 Players, 30 Minutes Playing Time : Amazon.se: Toys",
+    "https://www.amazon.co.uk/IELLO-51876-Monster-French-version/dp/B09Q62J8FJ": "IELLO - 51876 - King of Tokyo: Monster Box : Amazon.co.uk: Toys & Games",
+    "https://www.nobleknight.com/P/2148192811/King-of-Tokyo-1st-Edition-w-King-of-New-York--Broken-Token-Insert": "King of Tokyo (1st Edition) w/King of New York + Broken Token Insert - Board Game - Iello - Noble Knight Games",
+    "https://morethanmeeples.com.au/product/king-of-tokyo-monster-box-board-game/": "King of Tokyo Monster Box Board Game",
+    "https://www.redesigninsert.com/en/products/en-redesign-insert-king-of-tokyo-duel": "ReDesign Insert for King of Tokyo Duel",
+    "https://foldedspace.com/product/king-of-tokyo": "Folded Space Insert for King of Tokyo",
+    "https://www.nobleknight.com/P/2147924281/King-of-Tokyo---Monster-Box": "King of Tokyo - Monster Box (Board Game)",
+    "https://www.atomicempire.com/Item/283795": "Box Insert: King of Tokyo and Expansions (Revised Edition) - Atomic Empire",
+    "https://www.amazon.ie/IELLO-Monster-Players-Minutes-Playing/dp/B09FY921Z8": "IELLO",
+    "https://www.customeeple.com/product/kingsburg-v2-compatible-insert-copia/": "King of Tokyo compatible Insert"
+  }
+}

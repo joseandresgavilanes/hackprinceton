@@ -1,0 +1,1074 @@
+{
+  "schema_version": 2,
+  "engine": "inside-the-box organizer 2.0.0",
+  "status": "ok",
+  "game": "Hypothetical Battle Game",
+  "units": "mm",
+  "method": "rectpack_MaxRectsBlsf + fill_box",
+  "box_inner_mm": {
+    "width": 250.0,
+    "length": 250.0,
+    "height": 65.0
+  },
+  "usable_height_mm": 57.0,
+  "printer_bed_mm": {
+    "width": 256.0,
+    "length": 256.0,
+    "height": 256.0
+  },
+  "constraints": {
+    "wall_mm": 2.4,
+    "floor_mm": 2.0,
+    "clearance_mm": 1.0,
+    "tray_gap_mm": 1.0,
+    "box_margin_mm": 1.0,
+    "divider_mm": 1.6,
+    "min_feature_mm": 1.2,
+    "headroom_mm": 8.0,
+    "fill_height": true,
+    "fill_box": true,
+    "max_layers": 3
+  },
+  "coordinate_system": {
+    "origin": "lower-left corner of the box interior floor",
+    "axes": "x = box width, y = box length, z = up (millimetres)",
+    "stl_frame": "each STL is centred on x/y = 0 with its base at z = 0",
+    "placement": "rotate the STL by rotation_degrees counter-clockwise about +z, then translate it to center_mm (equivalently apply transform_mm, a row-major 4×4 matrix)",
+    "position_mm": "lower-left corner of the rotated footprint (schema v1 meaning)",
+    "glb": "organizer.glb root node converts this Z-up mm frame to glTF Y-up metres; tray nodes use the same mm values as this file"
+  },
+  "files": {
+    "stl": [
+      "01_red_player_components.stl",
+      "02_blue_player_components.stl",
+      "03_shared_dice_and_battle_tokens.stl"
+    ],
+    "glb": "organizer.glb",
+    "layout": "layout.json"
+  },
+  "stats": {
+    "trays": 3,
+    "layers": 1,
+    "floor_coverage": 0.969,
+    "tray_volume_fraction": 0.969,
+    "min_floor_area_needed_mm2": 10663
+  },
+  "notes": [
+    "Trays are separate open-top parts. Trays with layer > 0 rest directly on the tray below (same footprint).",
+    "Print each STL as exported: flat side down, z = 0 on the build plate. Units are millimetres.",
+    "Raised floors and thickened walls are solid in CAD; the slicer fills them with infill (10–15% is plenty).",
+    "required_mm (when used) is the bounding box of the whole stored group, not one piece.",
+    "The packing heuristic is not guaranteed optimal. Verify slicer checks and a physical test fit before a full print."
+  ],
+  "assumptions": [
+    "Red player pawns: bin sized from 6 × 15×15×25 mm bounding boxes at 60% loose-pile packing efficiency (settings.bulk_packing_efficiency); verify with a test pile or give required_mm",
+    "Red player point markers: bin sized from 3 × 10×10×10 mm bounding boxes at 60% loose-pile packing efficiency (settings.bulk_packing_efficiency); verify with a test pile or give required_mm",
+    "Blue player pawns: bin sized from 6 × 15×15×25 mm bounding boxes at 60% loose-pile packing efficiency (settings.bulk_packing_efficiency); verify with a test pile or give required_mm",
+    "Blue player point markers: bin sized from 3 × 10×10×10 mm bounding boxes at 60% loose-pile packing efficiency (settings.bulk_packing_efficiency); verify with a test pile or give required_mm"
+  ],
+  "warnings": [],
+  "skipped_compartments": [],
+  "validation": {
+    "layout": {
+      "ok": true,
+      "problems": [],
+      "collisions": 0,
+      "unsupported_trays": 0,
+      "min_wall_mm": 2.4,
+      "min_divider_mm": 1.6,
+      "min_floor_mm": 15.014
+    },
+    "meshes_ok": true
+  },
+  "trays": [
+    {
+      "name": "Red Player Components",
+      "stl": "01_red_player_components.stl",
+      "position_mm": {
+        "x": 1.5,
+        "y": 1.5,
+        "z": 0.0
+      },
+      "rotation_degrees": 0,
+      "outer_mm": {
+        "width": 108.29,
+        "length": 184.49,
+        "height": 57.0
+      },
+      "footprint_in_box_mm": {
+        "width": 108.29,
+        "length": 184.49
+      },
+      "cavity_mm": {
+        "width": 65.95,
+        "length": 102.54,
+        "depth": 41.99
+      },
+      "id": 1,
+      "type": "bits",
+      "compartments": [
+        "Red player pawns",
+        "Red player point markers"
+      ],
+      "layer": 0,
+      "column": 0,
+      "center_mm": {
+        "x": 55.64,
+        "y": 93.75,
+        "z": 0.0
+      },
+      "transform_mm": [
+        [
+          1.0,
+          -0.0,
+          0.0,
+          55.644
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          93.747
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "assembled_position_mm": [
+        55.64,
+        93.75,
+        0.0
+      ],
+      "exploded_position_mm": [
+        31.37,
+        82.81,
+        95.0
+      ],
+      "assembly_order": 0,
+      "min_outer_mm": {
+        "width": 45.75,
+        "length": 81.47,
+        "height": 43.99
+      },
+      "cells": [
+        {
+          "name": "Red player pawns",
+          "component": "Red player pawns",
+          "type": "bits",
+          "shape": "rect",
+          "cavity_center_mm": [
+            -18.77,
+            -38.58
+          ],
+          "cavity_mm": {
+            "width": 65.95,
+            "length": 102.54,
+            "depth": 41.99
+          },
+          "floor_thickness_mm": 15.01,
+          "spare": false,
+          "grows_to_fill": true,
+          "contents": {
+            "piece_mm": {
+              "width": 15.0,
+              "length": 15.0,
+              "height": 25.0
+            },
+            "quantity": 6,
+            "estimated_volume_mm3": 56250
+          }
+        },
+        {
+          "name": "Red player pawns (spare)",
+          "component": "Red player pawns",
+          "type": "spare",
+          "shape": "rect",
+          "cavity_center_mm": [
+            33.77,
+            -38.58
+          ],
+          "cavity_mm": {
+            "width": 35.94,
+            "length": 102.54,
+            "depth": 41.99
+          },
+          "floor_thickness_mm": 15.01,
+          "spare": true,
+          "grows_to_fill": true
+        },
+        {
+          "name": "Red player point markers",
+          "component": "Red player point markers",
+          "type": "bits",
+          "shape": "rect",
+          "cavity_center_mm": [
+            -29.47,
+            52.07
+          ],
+          "cavity_mm": {
+            "width": 44.55,
+            "length": 75.56,
+            "depth": 19.37
+          },
+          "floor_thickness_mm": 37.63,
+          "spare": false,
+          "grows_to_fill": true,
+          "contents": {
+            "piece_mm": {
+              "width": 10.0,
+              "length": 10.0,
+              "height": 10.0
+            },
+            "quantity": 3,
+            "estimated_volume_mm3": 5000
+          }
+        },
+        {
+          "name": "Red player point markers (spare)",
+          "component": "Red player point markers",
+          "type": "spare",
+          "shape": "rect",
+          "cavity_center_mm": [
+            23.07,
+            52.07
+          ],
+          "cavity_mm": {
+            "width": 57.34,
+            "length": 75.56,
+            "depth": 20.0
+          },
+          "floor_thickness_mm": 37.0,
+          "spare": true,
+          "grows_to_fill": true
+        }
+      ],
+      "features": [
+        {
+          "kind": "cavity",
+          "cell": "Red player pawns",
+          "size_mm": [
+            65.95,
+            102.54,
+            41.99
+          ],
+          "scoop_radius_mm": 8.9
+        },
+        {
+          "kind": "spare_pocket",
+          "cell": "Red player pawns (spare)",
+          "size_mm": [
+            35.94,
+            102.54,
+            41.99
+          ],
+          "scoop_radius_mm": 8.99
+        },
+        {
+          "kind": "cavity",
+          "cell": "Red player point markers",
+          "size_mm": [
+            44.55,
+            75.56,
+            19.37
+          ],
+          "scoop_radius_mm": 4.25
+        },
+        {
+          "kind": "spare_pocket",
+          "cell": "Red player point markers (spare)",
+          "size_mm": [
+            57.34,
+            75.56,
+            20.0
+          ],
+          "scoop_radius_mm": 7.0
+        },
+        {
+          "kind": "dividers",
+          "count": 3,
+          "thickness_mm": 1.6
+        }
+      ],
+      "solid_volume_cm3": 561.772,
+      "mesh_validation": {
+        "triangles": 1028,
+        "watertight": true,
+        "manifold": true,
+        "consistent_winding": true,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "inconsistent_edges": 0,
+        "degenerate_triangles": 0,
+        "shells": 1,
+        "euler_characteristic": 2,
+        "volume_mm3": 561816.72,
+        "outward_normals": true,
+        "bbox_mm": [
+          108.288,
+          184.494,
+          57.0
+        ],
+        "bbox_deviation_mm": 0.0,
+        "volume_vs_cad": 8e-05,
+        "min_thickness": {
+          "x": {
+            "min_mm": 1.6,
+            "at_mm": [
+              -7.2,
+              14.53,
+              45.41
+            ]
+          },
+          "y": {
+            "min_mm": 1.6,
+            "at_mm": [
+              -51.74,
+              12.69,
+              41.98
+            ]
+          },
+          "z": {
+            "min_mm": 15.014,
+            "at_mm": [
+              -41.3,
+              -79.45,
+              0.0
+            ]
+          },
+          "overall_min_mm": 1.6
+        },
+        "problems": [],
+        "ok": true
+      }
+    },
+    {
+      "name": "Blue Player Components",
+      "stl": "02_blue_player_components.stl",
+      "position_mm": {
+        "x": 110.79,
+        "y": 1.5,
+        "z": 0.0
+      },
+      "rotation_degrees": 0,
+      "outer_mm": {
+        "width": 137.71,
+        "length": 184.49,
+        "height": 57.0
+      },
+      "footprint_in_box_mm": {
+        "width": 137.71,
+        "length": 184.49
+      },
+      "cavity_mm": {
+        "width": 65.95,
+        "length": 102.54,
+        "depth": 41.99
+      },
+      "id": 2,
+      "type": "bits",
+      "compartments": [
+        "Blue player pawns",
+        "Blue player point markers"
+      ],
+      "layer": 0,
+      "column": 1,
+      "center_mm": {
+        "x": 179.64,
+        "y": 93.75,
+        "z": 0.0
+      },
+      "transform_mm": [
+        [
+          1.0,
+          -0.0,
+          0.0,
+          179.644
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          93.747
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "assembled_position_mm": [
+        179.64,
+        93.75,
+        0.0
+      ],
+      "exploded_position_mm": [
+        198.77,
+        82.81,
+        95.0
+      ],
+      "assembly_order": 1,
+      "min_outer_mm": {
+        "width": 45.75,
+        "length": 81.47,
+        "height": 43.99
+      },
+      "cells": [
+        {
+          "name": "Blue player pawns",
+          "component": "Blue player pawns",
+          "type": "bits",
+          "shape": "rect",
+          "cavity_center_mm": [
+            -33.48,
+            -38.58
+          ],
+          "cavity_mm": {
+            "width": 65.95,
+            "length": 102.54,
+            "depth": 41.99
+          },
+          "floor_thickness_mm": 15.01,
+          "spare": false,
+          "grows_to_fill": true,
+          "contents": {
+            "piece_mm": {
+              "width": 15.0,
+              "length": 15.0,
+              "height": 25.0
+            },
+            "quantity": 6,
+            "estimated_volume_mm3": 56250
+          }
+        },
+        {
+          "name": "Blue player pawns (spare)",
+          "component": "Blue player pawns",
+          "type": "spare",
+          "shape": "rect",
+          "cavity_center_mm": [
+            33.77,
+            -38.58
+          ],
+          "cavity_mm": {
+            "width": 65.37,
+            "length": 102.54,
+            "depth": 41.99
+          },
+          "floor_thickness_mm": 15.01,
+          "spare": true,
+          "grows_to_fill": true
+        },
+        {
+          "name": "Blue player point markers",
+          "component": "Blue player point markers",
+          "type": "bits",
+          "shape": "rect",
+          "cavity_center_mm": [
+            -44.18,
+            52.07
+          ],
+          "cavity_mm": {
+            "width": 44.55,
+            "length": 75.56,
+            "depth": 19.37
+          },
+          "floor_thickness_mm": 37.63,
+          "spare": false,
+          "grows_to_fill": true,
+          "contents": {
+            "piece_mm": {
+              "width": 10.0,
+              "length": 10.0,
+              "height": 10.0
+            },
+            "quantity": 3,
+            "estimated_volume_mm3": 5000
+          }
+        },
+        {
+          "name": "Blue player point markers (spare)",
+          "component": "Blue player point markers",
+          "type": "spare",
+          "shape": "rect",
+          "cavity_center_mm": [
+            23.07,
+            52.07
+          ],
+          "cavity_mm": {
+            "width": 86.76,
+            "length": 75.56,
+            "depth": 20.0
+          },
+          "floor_thickness_mm": 37.0,
+          "spare": true,
+          "grows_to_fill": true
+        }
+      ],
+      "features": [
+        {
+          "kind": "cavity",
+          "cell": "Blue player pawns",
+          "size_mm": [
+            65.95,
+            102.54,
+            41.99
+          ],
+          "scoop_radius_mm": 8.9
+        },
+        {
+          "kind": "spare_pocket",
+          "cell": "Blue player pawns (spare)",
+          "size_mm": [
+            65.37,
+            102.54,
+            41.99
+          ],
+          "scoop_radius_mm": 12.0
+        },
+        {
+          "kind": "cavity",
+          "cell": "Blue player point markers",
+          "size_mm": [
+            44.55,
+            75.56,
+            19.37
+          ],
+          "scoop_radius_mm": 4.25
+        },
+        {
+          "kind": "spare_pocket",
+          "cell": "Blue player point markers (spare)",
+          "size_mm": [
+            86.76,
+            75.56,
+            20.0
+          ],
+          "scoop_radius_mm": 7.0
+        },
+        {
+          "kind": "dividers",
+          "count": 3,
+          "thickness_mm": 1.6
+        }
+      ],
+      "solid_volume_cm3": 705.87,
+      "mesh_validation": {
+        "triangles": 1044,
+        "watertight": true,
+        "manifold": true,
+        "consistent_winding": true,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "inconsistent_edges": 0,
+        "degenerate_triangles": 0,
+        "shells": 1,
+        "euler_characteristic": 2,
+        "volume_mm3": 705927.9,
+        "outward_normals": true,
+        "bbox_mm": [
+          137.712,
+          184.494,
+          57.0
+        ],
+        "bbox_deviation_mm": 0.0,
+        "volume_vs_cad": 8e-05,
+        "min_thickness": {
+          "x": {
+            "min_mm": 1.6,
+            "at_mm": [
+              -0.51,
+              -89.12,
+              28.52
+            ]
+          },
+          "y": {
+            "min_mm": 1.6,
+            "at_mm": [
+              -66.16,
+              12.69,
+              41.88
+            ]
+          },
+          "z": {
+            "min_mm": 15.014,
+            "at_mm": [
+              -54.43,
+              -80.89,
+              0.0
+            ]
+          },
+          "overall_min_mm": 1.6
+        },
+        "problems": [],
+        "ok": true
+      }
+    },
+    {
+      "name": "Shared Dice and Battle Tokens",
+      "stl": "03_shared_dice_and_battle_tokens.stl",
+      "position_mm": {
+        "x": 1.5,
+        "y": 186.99,
+        "z": 0.0
+      },
+      "rotation_degrees": 0,
+      "outer_mm": {
+        "width": 247.0,
+        "length": 61.51,
+        "height": 57.0
+      },
+      "footprint_in_box_mm": {
+        "width": 247.0,
+        "length": 61.51
+      },
+      "cavity_mm": {
+        "width": 22.0,
+        "length": 22.0,
+        "depth": 41.0
+      },
+      "id": 3,
+      "type": "mixed",
+      "compartments": [
+        "Shared dice",
+        "Shared battle tokens"
+      ],
+      "layer": 0,
+      "column": 2,
+      "center_mm": {
+        "x": 125.0,
+        "y": 217.75,
+        "z": 0.0
+      },
+      "transform_mm": [
+        [
+          1.0,
+          -0.0,
+          0.0,
+          125.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          217.747
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "assembled_position_mm": [
+        125.0,
+        217.75,
+        0.0
+      ],
+      "exploded_position_mm": [
+        125.0,
+        250.21,
+        95.0
+      ],
+      "assembly_order": 2,
+      "min_outer_mm": {
+        "width": 105.2,
+        "length": 26.8,
+        "height": 43.0
+      },
+      "cells": [
+        {
+          "name": "Shared dice #1",
+          "component": "Shared dice",
+          "type": "dice",
+          "shape": "rect",
+          "cavity_center_mm": [
+            -97.92,
+            -19.35
+          ],
+          "cavity_mm": {
+            "width": 18.0,
+            "length": 18.0,
+            "depth": 17.0
+          },
+          "floor_thickness_mm": 40.0,
+          "spare": false,
+          "grows_to_fill": false,
+          "contents": {
+            "edge_mm": 16.0,
+            "quantity": 1
+          }
+        },
+        {
+          "name": "Shared dice #1 (spare)",
+          "component": "Shared dice",
+          "type": "spare",
+          "shape": "rect",
+          "cavity_center_mm": [
+            -97.92,
+            9.8
+          ],
+          "cavity_mm": {
+            "width": 46.36,
+            "length": 37.11,
+            "depth": 20.0
+          },
+          "floor_thickness_mm": 37.0,
+          "spare": true,
+          "grows_to_fill": true
+        },
+        {
+          "name": "Shared dice #2",
+          "component": "Shared dice",
+          "type": "dice",
+          "shape": "rect",
+          "cavity_center_mm": [
+            -49.96,
+            -19.35
+          ],
+          "cavity_mm": {
+            "width": 18.0,
+            "length": 18.0,
+            "depth": 17.0
+          },
+          "floor_thickness_mm": 40.0,
+          "spare": false,
+          "grows_to_fill": false,
+          "contents": {
+            "edge_mm": 16.0,
+            "quantity": 1
+          }
+        },
+        {
+          "name": "Shared dice #2 (spare)",
+          "component": "Shared dice",
+          "type": "spare",
+          "shape": "rect",
+          "cavity_center_mm": [
+            -49.96,
+            9.8
+          ],
+          "cavity_mm": {
+            "width": 46.36,
+            "length": 37.11,
+            "depth": 20.0
+          },
+          "floor_thickness_mm": 37.0,
+          "spare": true,
+          "grows_to_fill": true
+        },
+        {
+          "name": "Shared dice #3",
+          "component": "Shared dice",
+          "type": "dice",
+          "shape": "rect",
+          "cavity_center_mm": [
+            -2.0,
+            -19.35
+          ],
+          "cavity_mm": {
+            "width": 18.0,
+            "length": 18.0,
+            "depth": 17.0
+          },
+          "floor_thickness_mm": 40.0,
+          "spare": false,
+          "grows_to_fill": false,
+          "contents": {
+            "edge_mm": 16.0,
+            "quantity": 1
+          }
+        },
+        {
+          "name": "Shared dice #3 (spare)",
+          "component": "Shared dice",
+          "type": "spare",
+          "shape": "rect",
+          "cavity_center_mm": [
+            -2.0,
+            9.8
+          ],
+          "cavity_mm": {
+            "width": 46.36,
+            "length": 37.11,
+            "depth": 20.0
+          },
+          "floor_thickness_mm": 37.0,
+          "spare": true,
+          "grows_to_fill": true
+        },
+        {
+          "name": "Shared dice #4",
+          "component": "Shared dice",
+          "type": "dice",
+          "shape": "rect",
+          "cavity_center_mm": [
+            45.96,
+            -19.35
+          ],
+          "cavity_mm": {
+            "width": 18.0,
+            "length": 18.0,
+            "depth": 17.0
+          },
+          "floor_thickness_mm": 40.0,
+          "spare": false,
+          "grows_to_fill": false,
+          "contents": {
+            "edge_mm": 16.0,
+            "quantity": 1
+          }
+        },
+        {
+          "name": "Shared dice #4 (spare)",
+          "component": "Shared dice",
+          "type": "spare",
+          "shape": "rect",
+          "cavity_center_mm": [
+            45.96,
+            9.8
+          ],
+          "cavity_mm": {
+            "width": 46.36,
+            "length": 37.11,
+            "depth": 20.0
+          },
+          "floor_thickness_mm": 37.0,
+          "spare": true,
+          "grows_to_fill": true
+        },
+        {
+          "name": "Shared battle tokens",
+          "component": "Shared battle tokens",
+          "type": "round_tokens",
+          "shape": "wells",
+          "cavity_center_mm": [
+            95.92,
+            -17.35
+          ],
+          "cavity_mm": {
+            "width": 22.0,
+            "length": 22.0,
+            "depth": 41.0
+          },
+          "floor_thickness_mm": 16.0,
+          "spare": false,
+          "grows_to_fill": false,
+          "wells_mm": [
+            [
+              95.92,
+              -17.35
+            ]
+          ],
+          "well_diameter_mm": 22.0,
+          "contents": {
+            "piece_mm": {
+              "diameter": 20.0,
+              "thickness": 2.0
+            },
+            "quantity": 20,
+            "stacks": 1,
+            "per_stack": 20
+          }
+        },
+        {
+          "name": "Shared battle tokens (spare)",
+          "component": "Shared battle tokens",
+          "type": "spare",
+          "shape": "rect",
+          "cavity_center_mm": [
+            95.92,
+            11.8
+          ],
+          "cavity_mm": {
+            "width": 50.36,
+            "length": 33.11,
+            "depth": 41.0
+          },
+          "floor_thickness_mm": 16.0,
+          "spare": true,
+          "grows_to_fill": true
+        }
+      ],
+      "features": [
+        {
+          "kind": "cavity",
+          "cell": "Shared dice #1",
+          "size_mm": [
+            18.0,
+            18.0,
+            17.0
+          ]
+        },
+        {
+          "kind": "spare_pocket",
+          "cell": "Shared dice #1 (spare)",
+          "size_mm": [
+            46.36,
+            37.11,
+            20.0
+          ],
+          "scoop_radius_mm": 7.0
+        },
+        {
+          "kind": "cavity",
+          "cell": "Shared dice #2",
+          "size_mm": [
+            18.0,
+            18.0,
+            17.0
+          ]
+        },
+        {
+          "kind": "spare_pocket",
+          "cell": "Shared dice #2 (spare)",
+          "size_mm": [
+            46.36,
+            37.11,
+            20.0
+          ],
+          "scoop_radius_mm": 7.0
+        },
+        {
+          "kind": "cavity",
+          "cell": "Shared dice #3",
+          "size_mm": [
+            18.0,
+            18.0,
+            17.0
+          ]
+        },
+        {
+          "kind": "spare_pocket",
+          "cell": "Shared dice #3 (spare)",
+          "size_mm": [
+            46.36,
+            37.11,
+            20.0
+          ],
+          "scoop_radius_mm": 7.0
+        },
+        {
+          "kind": "cavity",
+          "cell": "Shared dice #4",
+          "size_mm": [
+            18.0,
+            18.0,
+            17.0
+          ]
+        },
+        {
+          "kind": "spare_pocket",
+          "cell": "Shared dice #4 (spare)",
+          "size_mm": [
+            46.36,
+            37.11,
+            20.0
+          ],
+          "scoop_radius_mm": 7.0
+        },
+        {
+          "kind": "token_wells",
+          "cell": "Shared battle tokens",
+          "count": 1,
+          "diameter_mm": 22.0,
+          "depth_mm": 41.0
+        },
+        {
+          "kind": "finger_slots",
+          "cell": "Shared battle tokens",
+          "count": 1,
+          "width_mm": 9.0,
+          "depth_mm": 24.6
+        },
+        {
+          "kind": "spare_pocket",
+          "cell": "Shared battle tokens (spare)",
+          "size_mm": [
+            50.36,
+            33.11,
+            41.0
+          ],
+          "scoop_radius_mm": 8.28
+        },
+        {
+          "kind": "dividers",
+          "count": 9,
+          "thickness_mm": 1.6
+        }
+      ],
+      "solid_volume_cm3": 630.434,
+      "mesh_validation": {
+        "triangles": 1558,
+        "watertight": true,
+        "manifold": true,
+        "consistent_winding": true,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "inconsistent_edges": 0,
+        "degenerate_triangles": 0,
+        "shells": 1,
+        "euler_characteristic": 2,
+        "volume_mm3": 630483.16,
+        "outward_normals": true,
+        "bbox_mm": [
+          247.0,
+          61.506,
+          57.0
+        ],
+        "bbox_deviation_mm": 0.0,
+        "volume_vs_cad": 8e-05,
+        "min_thickness": {
+          "x": {
+            "min_mm": 1.6,
+            "at_mm": [
+              -74.74,
+              -8.42,
+              44.56
+            ]
+          },
+          "y": {
+            "min_mm": 1.6,
+            "at_mm": [
+              -105.67,
+              -10.35,
+              46.34
+            ]
+          },
+          "z": {
+            "min_mm": 16.0,
+            "at_mm": [
+              80.29,
+              3.87,
+              0.0
+            ]
+          },
+          "overall_min_mm": 1.6
+        },
+        "problems": [],
+        "ok": true
+      }
+    }
+  ]
+}

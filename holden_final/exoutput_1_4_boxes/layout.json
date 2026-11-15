@@ -1,0 +1,1026 @@
+{
+  "schema_version": 2,
+  "engine": "inside-the-box organizer 2.0.0",
+  "status": "ok",
+  "game": "Hypothetical Battle Game",
+  "units": "mm",
+  "method": "blocks + fill_box",
+  "box_inner_mm": {
+    "width": 250.0,
+    "length": 250.0,
+    "height": 65.0
+  },
+  "usable_height_mm": 57.0,
+  "organizer_mode": "boxes",
+  "floor_offset_mm": 0.0,
+  "bottom_layer": [],
+  "printer_bed_mm": {
+    "width": 256.0,
+    "length": 256.0,
+    "height": 256.0
+  },
+  "constraints": {
+    "wall_mm": 2.4,
+    "floor_mm": 2.0,
+    "clearance_mm": 1.0,
+    "tray_gap_mm": 1.0,
+    "box_margin_mm": 1.0,
+    "divider_mm": 1.6,
+    "min_feature_mm": 1.2,
+    "headroom_mm": 8.0,
+    "fill_height": true,
+    "fill_box": true,
+    "max_layers": 2
+  },
+  "coordinate_system": {
+    "origin": "lower-left corner of the box interior floor",
+    "axes": "x = box width, y = box length, z = up (millimetres)",
+    "stl_frame": "each STL is centred on x/y = 0 with its base at z = 0",
+    "placement": "rotate the STL by rotation_degrees counter-clockwise about +z, then translate it to center_mm (equivalently apply transform_mm, a row-major 4×4 matrix)",
+    "position_mm": "lower-left corner of the rotated footprint (schema v1 meaning); z includes the bottom layer (floor_offset_mm) the trays rest on",
+    "glb": "organizer.glb root node converts this Z-up mm frame to glTF Y-up metres; tray nodes use the same mm values as this file"
+  },
+  "files": {
+    "stl": [
+      "01_red_player_kit.stl",
+      "02_blue_player_kit.stl",
+      "03_shared_supply_dice.stl",
+      "04_shared_supply_battle_tokens.stl"
+    ],
+    "glb": "organizer.glb",
+    "layout": "layout.json"
+  },
+  "stats": {
+    "trays": 4,
+    "layers": 1,
+    "floor_coverage": 0.968,
+    "tray_volume_fraction": 0.968,
+    "min_floor_area_needed_mm2": 7916
+  },
+  "notes": [
+    "Trays are separate open-top parts. Trays with layer > 0 rest directly on the tray below (same footprint).",
+    "Print each STL as exported: flat side down, z = 0 on the build plate. Units are millimetres.",
+    "Raised floors and thickened walls are solid in CAD; the slicer fills them with infill (10–15% is plenty).",
+    "required_mm (when used) is the bounding box of the whole stored group, not one piece.",
+    "The packing heuristic is not guaranteed optimal. Verify slicer checks and a physical test fit before a full print.",
+    "Similar names, same box shape and size (at least 36.8 × 61.8 × 28.0 mm, what the largest needs): 'Red Player Kit', 'Blue Player Kit'",
+    "Similar names, same box shape and size (at least 38.8 × 38.8 × 43.0 mm, what the largest needs): 'Shared Supply: Dice', 'Shared Supply: Battle Tokens'",
+    "Each kind of set is one block of equal boxes; the blocks fill the whole box floor"
+  ],
+  "assumptions": [
+    "Red Player Kit: loose box sized so every piece's bounding box fits in 1 arranged layer(s) of 30.0 × 55.0 mm; pieces poured in at random may need settling. Physical fit is not verified.",
+    "Blue Player Kit: loose box sized so every piece's bounding box fits in 1 arranged layer(s) of 30.0 × 55.0 mm; pieces poured in at random may need settling. Physical fit is not verified.",
+    "Shared Supply: Dice: loose box sized so every piece's bounding box fits in 1 arranged layer(s) of 32.0 × 32.0 mm; pieces poured in at random may need settling. Physical fit is not verified."
+  ],
+  "warnings": [],
+  "skipped_compartments": [],
+  "validation": {
+    "layout": {
+      "ok": true,
+      "problems": [],
+      "collisions": 0,
+      "unsupported_trays": 0,
+      "min_wall_mm": 2.4,
+      "min_divider_mm": null,
+      "min_floor_mm": 2.0,
+      "min_board_support_fraction": null
+    },
+    "meshes_ok": true
+  },
+  "trays": [
+    {
+      "name": "Red Player Kit",
+      "stl": "01_red_player_kit.stl",
+      "position_mm": {
+        "x": 1.5,
+        "y": 1.5,
+        "z": 0.0
+      },
+      "rotation_degrees": 90,
+      "outer_mm": {
+        "width": 123.0,
+        "length": 150.8,
+        "height": 57.0
+      },
+      "footprint_in_box_mm": {
+        "width": 150.8,
+        "length": 123.0
+      },
+      "cavity_mm": {
+        "width": 118.2,
+        "length": 146.0,
+        "depth": 55.0
+      },
+      "id": 1,
+      "type": "set",
+      "compartments": [
+        "Red Player Kit"
+      ],
+      "storage_style": "loose",
+      "contents": "6× Red player pawns, 3× Red player point markers",
+      "layer": 0,
+      "column": 0,
+      "center_mm": {
+        "x": 76.9,
+        "y": 63.0,
+        "z": 0.0
+      },
+      "transform_mm": [
+        [
+          0.0,
+          -1.0,
+          0.0,
+          76.899
+        ],
+        [
+          1.0,
+          0.0,
+          0.0,
+          63.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "assembled_position_mm": [
+        76.9,
+        63.0,
+        0.0
+      ],
+      "exploded_position_mm": [
+        60.06,
+        41.3,
+        95.0
+      ],
+      "assembly_order": 0,
+      "min_outer_mm": {
+        "width": 36.8,
+        "length": 61.8,
+        "height": 28.0
+      },
+      "size_group": "player kit",
+      "cells": [
+        {
+          "name": "Red Player Kit",
+          "component": "Red Player Kit",
+          "type": "set",
+          "shape": "rect",
+          "cavity_center_mm": [
+            0.0,
+            0.0
+          ],
+          "cavity_mm": {
+            "width": 118.2,
+            "length": 146.0,
+            "depth": 55.0
+          },
+          "floor_thickness_mm": 2.0,
+          "grows_to_fill": true,
+          "contents": {
+            "storage_style": "loose",
+            "members": [
+              {
+                "name": "Red player pawns",
+                "component_id": "red_pawns",
+                "quantity": 6,
+                "shape": "cylinder",
+                "dimensions_mm": {
+                  "length": 15.0,
+                  "width": 15.0,
+                  "height": 25.0
+                }
+              },
+              {
+                "name": "Red player point markers",
+                "component_id": "red_markers",
+                "quantity": 3,
+                "shape": "rectangular_prism",
+                "dimensions_mm": {
+                  "length": 10.0,
+                  "width": 10.0,
+                  "height": 10.0
+                }
+              }
+            ],
+            "layers": 1,
+            "fit_basis": "bounding boxes arranged without overlap",
+            "arrangement_mm": [
+              {
+                "member": "Red player pawns",
+                "x": 0.0,
+                "y": 0.0,
+                "w": 15.0,
+                "l": 15.0
+              },
+              {
+                "member": "Red player pawns",
+                "x": 15.0,
+                "y": 0.0,
+                "w": 15.0,
+                "l": 15.0
+              },
+              {
+                "member": "Red player pawns",
+                "x": 0.0,
+                "y": 15.0,
+                "w": 15.0,
+                "l": 15.0
+              },
+              {
+                "member": "Red player pawns",
+                "x": 15.0,
+                "y": 15.0,
+                "w": 15.0,
+                "l": 15.0
+              },
+              {
+                "member": "Red player pawns",
+                "x": 0.0,
+                "y": 30.0,
+                "w": 15.0,
+                "l": 15.0
+              },
+              {
+                "member": "Red player pawns",
+                "x": 15.0,
+                "y": 30.0,
+                "w": 15.0,
+                "l": 15.0
+              },
+              {
+                "member": "Red player point markers",
+                "x": 0.0,
+                "y": 45.0,
+                "w": 10.0,
+                "l": 10.0
+              },
+              {
+                "member": "Red player point markers",
+                "x": 10.0,
+                "y": 45.0,
+                "w": 10.0,
+                "l": 10.0
+              },
+              {
+                "member": "Red player point markers",
+                "x": 20.0,
+                "y": 45.0,
+                "w": 10.0,
+                "l": 10.0
+              }
+            ]
+          }
+        }
+      ],
+      "features": [
+        {
+          "kind": "cavity",
+          "cell": "Red Player Kit",
+          "size_mm": [
+            118.2,
+            146.0,
+            55.0
+          ]
+        }
+      ],
+      "solid_volume_cm3": 108.062,
+      "mesh_validation": {
+        "triangles": 284,
+        "watertight": true,
+        "manifold": true,
+        "consistent_winding": true,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "inconsistent_edges": 0,
+        "degenerate_triangles": 0,
+        "shells": 1,
+        "euler_characteristic": 2,
+        "volume_mm3": 108062.24,
+        "outward_normals": true,
+        "bbox_mm": [
+          123.0,
+          150.797,
+          57.0
+        ],
+        "bbox_deviation_mm": 0.0,
+        "volume_vs_cad": 0.0,
+        "min_thickness": {
+          "x": {
+            "min_mm": 2.4,
+            "at_mm": [
+              -61.5,
+              -72.59,
+              2.87
+            ]
+          },
+          "y": {
+            "min_mm": 2.4,
+            "at_mm": [
+              -58.96,
+              -75.4,
+              2.54
+            ]
+          },
+          "z": {
+            "min_mm": 2.0,
+            "at_mm": [
+              -57.38,
+              -71.26,
+              0.0
+            ]
+          },
+          "overall_min_mm": 2.0
+        },
+        "problems": [],
+        "ok": true,
+        "single_open_cavity": {
+          "ok": true,
+          "cavity_points": 16965,
+          "rim_points": 803,
+          "cavity_points_not_on_floor": 0,
+          "rim_points_below_top": 0,
+          "cavity_floor_z_mm": 2.0
+        }
+      }
+    },
+    {
+      "name": "Blue Player Kit",
+      "stl": "02_blue_player_kit.stl",
+      "position_mm": {
+        "x": 1.5,
+        "y": 125.5,
+        "z": 0.0
+      },
+      "rotation_degrees": 90,
+      "outer_mm": {
+        "width": 123.0,
+        "length": 150.8,
+        "height": 57.0
+      },
+      "footprint_in_box_mm": {
+        "width": 150.8,
+        "length": 123.0
+      },
+      "cavity_mm": {
+        "width": 118.2,
+        "length": 146.0,
+        "depth": 55.0
+      },
+      "id": 2,
+      "type": "set",
+      "compartments": [
+        "Blue Player Kit"
+      ],
+      "storage_style": "loose",
+      "contents": "6× Blue player pawns, 3× Blue player point markers",
+      "layer": 0,
+      "column": 1,
+      "center_mm": {
+        "x": 76.9,
+        "y": 187.0,
+        "z": 0.0
+      },
+      "transform_mm": [
+        [
+          0.0,
+          -1.0,
+          0.0,
+          76.899
+        ],
+        [
+          1.0,
+          0.0,
+          0.0,
+          187.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "assembled_position_mm": [
+        76.9,
+        187.0,
+        0.0
+      ],
+      "exploded_position_mm": [
+        60.06,
+        208.7,
+        95.0
+      ],
+      "assembly_order": 1,
+      "min_outer_mm": {
+        "width": 36.8,
+        "length": 61.8,
+        "height": 28.0
+      },
+      "size_group": "player kit",
+      "cells": [
+        {
+          "name": "Blue Player Kit",
+          "component": "Blue Player Kit",
+          "type": "set",
+          "shape": "rect",
+          "cavity_center_mm": [
+            0.0,
+            0.0
+          ],
+          "cavity_mm": {
+            "width": 118.2,
+            "length": 146.0,
+            "depth": 55.0
+          },
+          "floor_thickness_mm": 2.0,
+          "grows_to_fill": true,
+          "contents": {
+            "storage_style": "loose",
+            "members": [
+              {
+                "name": "Blue player pawns",
+                "component_id": "blue_pawns",
+                "quantity": 6,
+                "shape": "cylinder",
+                "dimensions_mm": {
+                  "length": 15.0,
+                  "width": 15.0,
+                  "height": 25.0
+                }
+              },
+              {
+                "name": "Blue player point markers",
+                "component_id": "blue_markers",
+                "quantity": 3,
+                "shape": "rectangular_prism",
+                "dimensions_mm": {
+                  "length": 10.0,
+                  "width": 10.0,
+                  "height": 10.0
+                }
+              }
+            ],
+            "layers": 1,
+            "fit_basis": "bounding boxes arranged without overlap",
+            "arrangement_mm": [
+              {
+                "member": "Blue player pawns",
+                "x": 0.0,
+                "y": 0.0,
+                "w": 15.0,
+                "l": 15.0
+              },
+              {
+                "member": "Blue player pawns",
+                "x": 15.0,
+                "y": 0.0,
+                "w": 15.0,
+                "l": 15.0
+              },
+              {
+                "member": "Blue player pawns",
+                "x": 0.0,
+                "y": 15.0,
+                "w": 15.0,
+                "l": 15.0
+              },
+              {
+                "member": "Blue player pawns",
+                "x": 15.0,
+                "y": 15.0,
+                "w": 15.0,
+                "l": 15.0
+              },
+              {
+                "member": "Blue player pawns",
+                "x": 0.0,
+                "y": 30.0,
+                "w": 15.0,
+                "l": 15.0
+              },
+              {
+                "member": "Blue player pawns",
+                "x": 15.0,
+                "y": 30.0,
+                "w": 15.0,
+                "l": 15.0
+              },
+              {
+                "member": "Blue player point markers",
+                "x": 0.0,
+                "y": 45.0,
+                "w": 10.0,
+                "l": 10.0
+              },
+              {
+                "member": "Blue player point markers",
+                "x": 10.0,
+                "y": 45.0,
+                "w": 10.0,
+                "l": 10.0
+              },
+              {
+                "member": "Blue player point markers",
+                "x": 20.0,
+                "y": 45.0,
+                "w": 10.0,
+                "l": 10.0
+              }
+            ]
+          }
+        }
+      ],
+      "features": [
+        {
+          "kind": "cavity",
+          "cell": "Blue Player Kit",
+          "size_mm": [
+            118.2,
+            146.0,
+            55.0
+          ]
+        }
+      ],
+      "solid_volume_cm3": 108.062,
+      "mesh_validation": {
+        "triangles": 284,
+        "watertight": true,
+        "manifold": true,
+        "consistent_winding": true,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "inconsistent_edges": 0,
+        "degenerate_triangles": 0,
+        "shells": 1,
+        "euler_characteristic": 2,
+        "volume_mm3": 108062.24,
+        "outward_normals": true,
+        "bbox_mm": [
+          123.0,
+          150.797,
+          57.0
+        ],
+        "bbox_deviation_mm": 0.0,
+        "volume_vs_cad": 0.0,
+        "min_thickness": {
+          "x": {
+            "min_mm": 2.4,
+            "at_mm": [
+              -61.5,
+              -72.59,
+              2.87
+            ]
+          },
+          "y": {
+            "min_mm": 2.4,
+            "at_mm": [
+              -58.96,
+              -75.4,
+              2.54
+            ]
+          },
+          "z": {
+            "min_mm": 2.0,
+            "at_mm": [
+              -57.38,
+              -71.26,
+              0.0
+            ]
+          },
+          "overall_min_mm": 2.0
+        },
+        "problems": [],
+        "ok": true,
+        "single_open_cavity": {
+          "ok": true,
+          "cavity_points": 16965,
+          "rim_points": 803,
+          "cavity_points_not_on_floor": 0,
+          "rim_points_below_top": 0,
+          "cavity_floor_z_mm": 2.0
+        }
+      }
+    },
+    {
+      "name": "Shared Supply: Dice",
+      "stl": "03_shared_supply_dice.stl",
+      "position_mm": {
+        "x": 153.3,
+        "y": 1.5,
+        "z": 0.0
+      },
+      "rotation_degrees": 0,
+      "outer_mm": {
+        "width": 95.2,
+        "length": 123.0,
+        "height": 57.0
+      },
+      "footprint_in_box_mm": {
+        "width": 95.2,
+        "length": 123.0
+      },
+      "cavity_mm": {
+        "width": 90.4,
+        "length": 118.2,
+        "depth": 55.0
+      },
+      "id": 3,
+      "type": "set",
+      "compartments": [
+        "Shared Supply: Dice"
+      ],
+      "storage_style": "loose",
+      "contents": "4× Shared dice",
+      "layer": 0,
+      "column": 2,
+      "center_mm": {
+        "x": 200.9,
+        "y": 63.0,
+        "z": 0.0
+      },
+      "transform_mm": [
+        [
+          1.0,
+          -0.0,
+          0.0,
+          200.899
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          63.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "assembled_position_mm": [
+        200.9,
+        63.0,
+        0.0
+      ],
+      "exploded_position_mm": [
+        227.46,
+        41.3,
+        95.0
+      ],
+      "assembly_order": 2,
+      "min_outer_mm": {
+        "width": 38.8,
+        "length": 38.8,
+        "height": 19.0
+      },
+      "size_group": "shared supply",
+      "cells": [
+        {
+          "name": "Shared Supply: Dice",
+          "component": "Shared Supply: Dice",
+          "type": "set",
+          "shape": "rect",
+          "cavity_center_mm": [
+            0.0,
+            0.0
+          ],
+          "cavity_mm": {
+            "width": 90.4,
+            "length": 118.2,
+            "depth": 55.0
+          },
+          "floor_thickness_mm": 2.0,
+          "grows_to_fill": true,
+          "contents": {
+            "storage_style": "loose",
+            "members": [
+              {
+                "name": "Shared dice",
+                "component_id": "dice",
+                "quantity": 4,
+                "shape": "rectangular_prism",
+                "dimensions_mm": {
+                  "length": 16.0,
+                  "width": 16.0,
+                  "height": 16.0
+                }
+              }
+            ],
+            "layers": 1,
+            "fit_basis": "bounding boxes arranged without overlap",
+            "arrangement_mm": [
+              {
+                "member": "Shared dice",
+                "x": 0.0,
+                "y": 0.0,
+                "w": 16.0,
+                "l": 16.0
+              },
+              {
+                "member": "Shared dice",
+                "x": 16.0,
+                "y": 0.0,
+                "w": 16.0,
+                "l": 16.0
+              },
+              {
+                "member": "Shared dice",
+                "x": 0.0,
+                "y": 16.0,
+                "w": 16.0,
+                "l": 16.0
+              },
+              {
+                "member": "Shared dice",
+                "x": 16.0,
+                "y": 16.0,
+                "w": 16.0,
+                "l": 16.0
+              }
+            ]
+          }
+        }
+      ],
+      "features": [
+        {
+          "kind": "cavity",
+          "cell": "Shared Supply: Dice",
+          "size_mm": [
+            90.4,
+            118.2,
+            55.0
+          ]
+        }
+      ],
+      "solid_volume_cm3": 79.709,
+      "mesh_validation": {
+        "triangles": 284,
+        "watertight": true,
+        "manifold": true,
+        "consistent_winding": true,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "inconsistent_edges": 0,
+        "degenerate_triangles": 0,
+        "shells": 1,
+        "euler_characteristic": 2,
+        "volume_mm3": 79708.96,
+        "outward_normals": true,
+        "bbox_mm": [
+          95.203,
+          123.0,
+          57.0
+        ],
+        "bbox_deviation_mm": 0.0,
+        "volume_vs_cad": 0.0,
+        "min_thickness": {
+          "x": {
+            "min_mm": 2.4,
+            "at_mm": [
+              -47.6,
+              -58.96,
+              2.54
+            ]
+          },
+          "y": {
+            "min_mm": 2.4,
+            "at_mm": [
+              -43.87,
+              -61.5,
+              2.27
+            ]
+          },
+          "z": {
+            "min_mm": 2.0,
+            "at_mm": [
+              -44.26,
+              -58.18,
+              0.0
+            ]
+          },
+          "overall_min_mm": 2.0
+        },
+        "problems": [],
+        "ok": true,
+        "single_open_cavity": {
+          "ok": true,
+          "cavity_points": 10413,
+          "rim_points": 757,
+          "cavity_points_not_on_floor": 0,
+          "rim_points_below_top": 0,
+          "cavity_floor_z_mm": 2.0
+        }
+      }
+    },
+    {
+      "name": "Shared Supply: Battle Tokens",
+      "stl": "04_shared_supply_battle_tokens.stl",
+      "position_mm": {
+        "x": 153.3,
+        "y": 125.5,
+        "z": 0.0
+      },
+      "rotation_degrees": 0,
+      "outer_mm": {
+        "width": 95.2,
+        "length": 123.0,
+        "height": 57.0
+      },
+      "footprint_in_box_mm": {
+        "width": 95.2,
+        "length": 123.0
+      },
+      "cavity_mm": {
+        "width": 90.4,
+        "length": 118.2,
+        "depth": 55.0
+      },
+      "id": 4,
+      "type": "set",
+      "compartments": [
+        "Shared Supply: Battle Tokens"
+      ],
+      "storage_style": "stack",
+      "contents": "20× Shared battle tokens",
+      "layer": 0,
+      "column": 3,
+      "center_mm": {
+        "x": 200.9,
+        "y": 187.0,
+        "z": 0.0
+      },
+      "transform_mm": [
+        [
+          1.0,
+          -0.0,
+          0.0,
+          200.899
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          187.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "assembled_position_mm": [
+        200.9,
+        187.0,
+        0.0
+      ],
+      "exploded_position_mm": [
+        227.46,
+        208.7,
+        95.0
+      ],
+      "assembly_order": 3,
+      "min_outer_mm": {
+        "width": 26.8,
+        "length": 26.8,
+        "height": 43.0
+      },
+      "size_group": "shared supply",
+      "cells": [
+        {
+          "name": "Shared Supply: Battle Tokens",
+          "component": "Shared Supply: Battle Tokens",
+          "type": "set",
+          "shape": "rect",
+          "cavity_center_mm": [
+            0.0,
+            0.0
+          ],
+          "cavity_mm": {
+            "width": 90.4,
+            "length": 118.2,
+            "depth": 55.0
+          },
+          "floor_thickness_mm": 2.0,
+          "grows_to_fill": true,
+          "contents": {
+            "storage_style": "stack",
+            "members": [
+              {
+                "name": "Shared battle tokens",
+                "component_id": "battle_tokens",
+                "quantity": 20,
+                "shape": "cylinder",
+                "dimensions_mm": {
+                  "length": 20.0,
+                  "width": 20.0,
+                  "height": 2.0
+                }
+              }
+            ],
+            "stack_height_mm": 40.0,
+            "fit_basis": "one vertical stack of all listed pieces"
+          }
+        }
+      ],
+      "features": [
+        {
+          "kind": "cavity",
+          "cell": "Shared Supply: Battle Tokens",
+          "size_mm": [
+            90.4,
+            118.2,
+            55.0
+          ]
+        }
+      ],
+      "solid_volume_cm3": 79.709,
+      "mesh_validation": {
+        "triangles": 284,
+        "watertight": true,
+        "manifold": true,
+        "consistent_winding": true,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "inconsistent_edges": 0,
+        "degenerate_triangles": 0,
+        "shells": 1,
+        "euler_characteristic": 2,
+        "volume_mm3": 79708.96,
+        "outward_normals": true,
+        "bbox_mm": [
+          95.203,
+          123.0,
+          57.0
+        ],
+        "bbox_deviation_mm": 0.0,
+        "volume_vs_cad": 0.0,
+        "min_thickness": {
+          "x": {
+            "min_mm": 2.4,
+            "at_mm": [
+              -47.6,
+              -58.96,
+              2.54
+            ]
+          },
+          "y": {
+            "min_mm": 2.4,
+            "at_mm": [
+              -43.87,
+              -61.5,
+              2.27
+            ]
+          },
+          "z": {
+            "min_mm": 2.0,
+            "at_mm": [
+              -44.26,
+              -58.18,
+              0.0
+            ]
+          },
+          "overall_min_mm": 2.0
+        },
+        "problems": [],
+        "ok": true,
+        "single_open_cavity": {
+          "ok": true,
+          "cavity_points": 10413,
+          "rim_points": 757,
+          "cavity_points_not_on_floor": 0,
+          "rim_points_below_top": 0,
+          "cavity_floor_z_mm": 2.0
+        }
+      }
+    }
+  ]
+}

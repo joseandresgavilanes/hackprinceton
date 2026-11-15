@@ -1,0 +1,2183 @@
+{
+  "schema_version": 2,
+  "engine": "inside-the-box organizer 2.0.0",
+  "status": "ok",
+  "game": "Illustrative stacking demo — same components in a smaller box (made-up dimensions)",
+  "units": "mm",
+  "method": "maxrects_cp/length + fill_box",
+  "box_inner_mm": {
+    "width": 220.0,
+    "length": 220.0,
+    "height": 80.0
+  },
+  "usable_height_mm": 72.0,
+  "printer_bed_mm": {
+    "width": 256.0,
+    "length": 256.0,
+    "height": 256.0
+  },
+  "constraints": {
+    "wall_mm": 2.0,
+    "floor_mm": 1.6,
+    "clearance_mm": 1.0,
+    "tray_gap_mm": 1.0,
+    "box_margin_mm": 1.0,
+    "divider_mm": 1.6,
+    "min_feature_mm": 1.2,
+    "headroom_mm": 8.0,
+    "fill_height": true,
+    "fill_box": true,
+    "max_layers": 3
+  },
+  "coordinate_system": {
+    "origin": "lower-left corner of the box interior floor",
+    "axes": "x = box width, y = box length, z = up (millimetres)",
+    "stl_frame": "each STL is centred on x/y = 0 with its base at z = 0",
+    "placement": "rotate the STL by rotation_degrees counter-clockwise about +z, then translate it to center_mm (equivalently apply transform_mm, a row-major 4×4 matrix)",
+    "position_mm": "lower-left corner of the rotated footprint (schema v1 meaning)",
+    "glb": "organizer.glb root node converts this Z-up mm frame to glTF Y-up metres; tray nodes use the same mm values as this file"
+  },
+  "files": {
+    "stl": [
+      "01_market_cards.stl",
+      "02_event_cards.stl",
+      "03_land_tiles.stl",
+      "04_coins.stl",
+      "05_victory_tokens.stl",
+      "06_dice.stl",
+      "07_player_pieces.stl",
+      "08_resource_cubes.stl",
+      "09_first_player_marker.stl"
+    ],
+    "glb": "organizer.glb",
+    "layout": "layout.json"
+  },
+  "stats": {
+    "trays": 9,
+    "layers": 2,
+    "floor_coverage": 0.954,
+    "tray_volume_fraction": 0.954,
+    "min_floor_area_needed_mm2": 44943
+  },
+  "notes": [
+    "Trays are separate open-top parts. Trays with layer > 0 rest directly on the tray below (same footprint).",
+    "Print each STL as exported: flat side down, z = 0 on the build plate. Units are millimetres.",
+    "Raised floors and thickened walls are solid in CAD; the slicer fills them with infill (10–15% is plenty).",
+    "required_mm (when used) is the bounding box of the whole stored group, not one piece.",
+    "The packing heuristic is not guaranteed optimal. Verify slicer checks and a physical test fit before a full print.",
+    "Stacked 'Land tiles' on 'Event cards' to save floor space"
+  ],
+  "assumptions": [
+    "Red workers: bin sized from 8 × 16×16×10 mm bounding boxes at 60% loose-pile packing efficiency (settings.bulk_packing_efficiency); verify with a test pile or give required_mm",
+    "Blue workers: bin sized from 8 × 16×16×10 mm bounding boxes at 60% loose-pile packing efficiency (settings.bulk_packing_efficiency); verify with a test pile or give required_mm",
+    "Green workers: bin sized from 8 × 16×16×10 mm bounding boxes at 60% loose-pile packing efficiency (settings.bulk_packing_efficiency); verify with a test pile or give required_mm",
+    "Yellow workers: bin sized from 8 × 16×16×10 mm bounding boxes at 60% loose-pile packing efficiency (settings.bulk_packing_efficiency); verify with a test pile or give required_mm",
+    "Resource cubes: bin sized from 60 × 8×8×8 mm bounding boxes at 60% loose-pile packing efficiency (settings.bulk_packing_efficiency); verify with a test pile or give required_mm"
+  ],
+  "warnings": [],
+  "skipped_compartments": [],
+  "validation": {
+    "layout": {
+      "ok": true,
+      "problems": [],
+      "collisions": 0,
+      "unsupported_trays": 0,
+      "min_wall_mm": 2.0,
+      "min_divider_mm": 1.6,
+      "min_floor_mm": 1.6
+    },
+    "meshes_ok": true
+  },
+  "trays": [
+    {
+      "name": "Market cards",
+      "stl": "01_market_cards.stl",
+      "position_mm": {
+        "x": 1.5,
+        "y": 1.5,
+        "z": 0.0
+      },
+      "rotation_degrees": 0,
+      "outer_mm": {
+        "width": 79.26,
+        "length": 191.95,
+        "height": 72.0
+      },
+      "footprint_in_box_mm": {
+        "width": 79.26,
+        "length": 191.95
+      },
+      "cavity_mm": {
+        "width": 68.0,
+        "length": 93.0,
+        "depth": 43.0
+      },
+      "id": 1,
+      "type": "cards",
+      "compartments": [
+        "Market cards"
+      ],
+      "layer": 0,
+      "column": 0,
+      "center_mm": {
+        "x": 41.13,
+        "y": 97.48,
+        "z": 0.0
+      },
+      "transform_mm": [
+        [
+          1.0,
+          -0.0,
+          0.0,
+          41.129
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          97.477
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "assembled_position_mm": [
+        41.13,
+        97.48,
+        0.0
+      ],
+      "exploded_position_mm": [
+        17.02,
+        93.09,
+        110.0
+      ],
+      "assembly_order": 0,
+      "min_outer_mm": {
+        "width": 72.0,
+        "length": 191.6,
+        "height": 44.6
+      },
+      "cells": [
+        {
+          "name": "Market cards #1",
+          "component": "Market cards",
+          "type": "cards",
+          "shape": "rect",
+          "cavity_center_mm": [
+            0.0,
+            -47.39
+          ],
+          "cavity_mm": {
+            "width": 68.0,
+            "length": 93.0,
+            "depth": 43.0
+          },
+          "floor_thickness_mm": 29.0,
+          "grows_to_fill": false,
+          "contents": {
+            "piece_mm": {
+              "width": 66.0,
+              "length": 91.0,
+              "thickness": 0.6
+            },
+            "quantity": 70,
+            "stack_height_mm": 42.0,
+            "sleeved": true
+          }
+        },
+        {
+          "name": "Market cards #2",
+          "component": "Market cards",
+          "type": "cards",
+          "shape": "rect",
+          "cavity_center_mm": [
+            0.0,
+            47.39
+          ],
+          "cavity_mm": {
+            "width": 68.0,
+            "length": 93.0,
+            "depth": 43.0
+          },
+          "floor_thickness_mm": 29.0,
+          "grows_to_fill": false,
+          "contents": {
+            "piece_mm": {
+              "width": 66.0,
+              "length": 91.0,
+              "thickness": 0.6
+            },
+            "quantity": 70,
+            "stack_height_mm": 42.0,
+            "sleeved": true
+          }
+        }
+      ],
+      "features": [
+        {
+          "kind": "cavity",
+          "cell": "Market cards #1",
+          "size_mm": [
+            68.0,
+            93.0,
+            43.0
+          ]
+        },
+        {
+          "kind": "finger_notch",
+          "cell": "Market cards #1",
+          "side": "-x",
+          "width_mm": 20.0,
+          "depth_mm": 25.8
+        },
+        {
+          "kind": "finger_notch",
+          "cell": "Market cards #1",
+          "side": "+x",
+          "width_mm": 20.0,
+          "depth_mm": 25.8
+        },
+        {
+          "kind": "cavity",
+          "cell": "Market cards #2",
+          "size_mm": [
+            68.0,
+            93.0,
+            43.0
+          ]
+        },
+        {
+          "kind": "finger_notch",
+          "cell": "Market cards #2",
+          "side": "-x",
+          "width_mm": 20.0,
+          "depth_mm": 25.8
+        },
+        {
+          "kind": "finger_notch",
+          "cell": "Market cards #2",
+          "side": "+x",
+          "width_mm": 20.0,
+          "depth_mm": 25.8
+        },
+        {
+          "kind": "dividers",
+          "count": 1,
+          "thickness_mm": 1.6
+        }
+      ],
+      "solid_volume_cm3": 540.831,
+      "mesh_validation": {
+        "triangles": 860,
+        "watertight": true,
+        "manifold": true,
+        "consistent_winding": true,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "inconsistent_edges": 0,
+        "degenerate_triangles": 0,
+        "shells": 1,
+        "euler_characteristic": 2,
+        "volume_mm3": 540836.48,
+        "outward_normals": true,
+        "bbox_mm": [
+          79.258,
+          191.954,
+          72.0
+        ],
+        "bbox_deviation_mm": 0.0,
+        "volume_vs_cad": 1e-05,
+        "min_thickness": {
+          "x": {
+            "min_mm": 5.629,
+            "at_mm": [
+              -39.63,
+              -92.41,
+              30.02
+            ]
+          },
+          "y": {
+            "min_mm": 1.777,
+            "at_mm": [
+              -32.75,
+              -0.89,
+              29.9
+            ]
+          },
+          "z": {
+            "min_mm": 29.0,
+            "at_mm": [
+              -33.42,
+              -92.21,
+              0.0
+            ]
+          },
+          "overall_min_mm": 1.777
+        },
+        "problems": [],
+        "ok": true
+      }
+    },
+    {
+      "name": "Event cards",
+      "stl": "02_event_cards.stl",
+      "position_mm": {
+        "x": 125.75,
+        "y": 1.5,
+        "z": 50.6
+      },
+      "rotation_degrees": 0,
+      "outer_mm": {
+        "width": 56.17,
+        "length": 148.47,
+        "height": 21.4
+      },
+      "footprint_in_box_mm": {
+        "width": 56.17,
+        "length": 148.47
+      },
+      "cavity_mm": {
+        "width": 46.0,
+        "length": 70.0,
+        "depth": 13.0
+      },
+      "id": 2,
+      "type": "cards",
+      "compartments": [
+        "Event cards"
+      ],
+      "layer": 1,
+      "column": 7,
+      "center_mm": {
+        "x": 153.84,
+        "y": 75.74,
+        "z": 50.6
+      },
+      "transform_mm": [
+        [
+          1.0,
+          -0.0,
+          0.0,
+          153.839
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          75.737
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          50.6
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "assembled_position_mm": [
+        153.84,
+        75.74,
+        50.6
+      ],
+      "exploded_position_mm": [
+        169.18,
+        63.75,
+        190.6
+      ],
+      "assembly_order": 8,
+      "min_outer_mm": {
+        "width": 50.0,
+        "length": 74.0,
+        "height": 14.6
+      },
+      "cells": [
+        {
+          "name": "Event cards",
+          "component": "Event cards",
+          "type": "cards",
+          "shape": "rect",
+          "cavity_center_mm": [
+            0.0,
+            0.0
+          ],
+          "cavity_mm": {
+            "width": 46.0,
+            "length": 70.0,
+            "depth": 13.0
+          },
+          "floor_thickness_mm": 8.4,
+          "grows_to_fill": false,
+          "contents": {
+            "piece_mm": {
+              "width": 44.0,
+              "length": 68.0,
+              "thickness": 0.3
+            },
+            "quantity": 40,
+            "stack_height_mm": 12.0,
+            "sleeved": false
+          }
+        }
+      ],
+      "features": [
+        {
+          "kind": "cavity",
+          "cell": "Event cards",
+          "size_mm": [
+            46.0,
+            70.0,
+            13.0
+          ]
+        },
+        {
+          "kind": "finger_notch",
+          "cell": "Event cards",
+          "side": "-x",
+          "width_mm": 20.0,
+          "depth_mm": 7.8
+        },
+        {
+          "kind": "finger_notch",
+          "cell": "Event cards",
+          "side": "+x",
+          "width_mm": 20.0,
+          "depth_mm": 7.8
+        }
+      ],
+      "solid_volume_cm3": 135.443,
+      "mesh_validation": {
+        "triangles": 508,
+        "watertight": true,
+        "manifold": true,
+        "consistent_winding": true,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "inconsistent_edges": 0,
+        "degenerate_triangles": 0,
+        "shells": 1,
+        "euler_characteristic": 2,
+        "volume_mm3": 135445.06,
+        "outward_normals": true,
+        "bbox_mm": [
+          56.17,
+          148.474,
+          21.4
+        ],
+        "bbox_deviation_mm": 0.0,
+        "volume_vs_cad": 2e-05,
+        "min_thickness": {
+          "x": {
+            "min_mm": 5.085,
+            "at_mm": [
+              -28.08,
+              -34.29,
+              8.94
+            ]
+          },
+          "y": {
+            "min_mm": 39.237,
+            "at_mm": [
+              -22.55,
+              -74.24,
+              8.69
+            ]
+          },
+          "z": {
+            "min_mm": 8.4,
+            "at_mm": [
+              -21.51,
+              -34.8,
+              0.0
+            ]
+          },
+          "overall_min_mm": 5.085
+        },
+        "problems": [],
+        "ok": true
+      }
+    },
+    {
+      "name": "Land tiles",
+      "stl": "03_land_tiles.stl",
+      "position_mm": {
+        "x": 125.75,
+        "y": 1.5,
+        "z": 0.0
+      },
+      "rotation_degrees": 90,
+      "outer_mm": {
+        "width": 148.47,
+        "length": 56.17,
+        "height": 50.6
+      },
+      "footprint_in_box_mm": {
+        "width": 56.17,
+        "length": 148.47
+      },
+      "cavity_mm": {
+        "width": 47.0,
+        "length": 47.0,
+        "depth": 49.0
+      },
+      "id": 3,
+      "type": "tiles",
+      "compartments": [
+        "Land tiles"
+      ],
+      "layer": 0,
+      "column": 7,
+      "center_mm": {
+        "x": 153.84,
+        "y": 75.74,
+        "z": 0.0
+      },
+      "transform_mm": [
+        [
+          0.0,
+          -1.0,
+          0.0,
+          153.839
+        ],
+        [
+          1.0,
+          0.0,
+          0.0,
+          75.737
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "assembled_position_mm": [
+        153.84,
+        75.74,
+        0.0
+      ],
+      "exploded_position_mm": [
+        169.18,
+        63.75,
+        110.0
+      ],
+      "assembly_order": 1,
+      "min_outer_mm": {
+        "width": 148.2,
+        "length": 51.0,
+        "height": 50.6
+      },
+      "cells": [
+        {
+          "name": "Land tiles #1",
+          "component": "Land tiles",
+          "type": "tiles",
+          "shape": "rect",
+          "cavity_center_mm": [
+            -48.69,
+            0.0
+          ],
+          "cavity_mm": {
+            "width": 47.0,
+            "length": 47.0,
+            "depth": 49.0
+          },
+          "floor_thickness_mm": 1.6,
+          "grows_to_fill": false,
+          "contents": {
+            "piece_mm": {
+              "width": 45.0,
+              "length": 45.0,
+              "thickness": 2.0
+            },
+            "quantity": 24,
+            "stack_height_mm": 48.0,
+            "sleeved": false
+          }
+        },
+        {
+          "name": "Land tiles #2",
+          "component": "Land tiles",
+          "type": "tiles",
+          "shape": "rect",
+          "cavity_center_mm": [
+            -0.0,
+            0.0
+          ],
+          "cavity_mm": {
+            "width": 47.0,
+            "length": 47.0,
+            "depth": 49.0
+          },
+          "floor_thickness_mm": 1.6,
+          "grows_to_fill": false,
+          "contents": {
+            "piece_mm": {
+              "width": 45.0,
+              "length": 45.0,
+              "thickness": 2.0
+            },
+            "quantity": 24,
+            "stack_height_mm": 48.0,
+            "sleeved": false
+          }
+        },
+        {
+          "name": "Land tiles #3",
+          "component": "Land tiles",
+          "type": "tiles",
+          "shape": "rect",
+          "cavity_center_mm": [
+            48.69,
+            0.0
+          ],
+          "cavity_mm": {
+            "width": 47.0,
+            "length": 47.0,
+            "depth": 49.0
+          },
+          "floor_thickness_mm": 1.6,
+          "grows_to_fill": false,
+          "contents": {
+            "piece_mm": {
+              "width": 45.0,
+              "length": 45.0,
+              "thickness": 2.0
+            },
+            "quantity": 24,
+            "stack_height_mm": 48.0,
+            "sleeved": false
+          }
+        }
+      ],
+      "features": [
+        {
+          "kind": "cavity",
+          "cell": "Land tiles #1",
+          "size_mm": [
+            47.0,
+            47.0,
+            49.0
+          ]
+        },
+        {
+          "kind": "finger_notch",
+          "cell": "Land tiles #1",
+          "side": "-x",
+          "width_mm": 20.0,
+          "depth_mm": 29.4
+        },
+        {
+          "kind": "cavity",
+          "cell": "Land tiles #2",
+          "size_mm": [
+            47.0,
+            47.0,
+            49.0
+          ]
+        },
+        {
+          "kind": "finger_notch",
+          "cell": "Land tiles #2",
+          "side": "-y",
+          "width_mm": 20.0,
+          "depth_mm": 29.4
+        },
+        {
+          "kind": "finger_notch",
+          "cell": "Land tiles #2",
+          "side": "+y",
+          "width_mm": 20.0,
+          "depth_mm": 29.4
+        },
+        {
+          "kind": "cavity",
+          "cell": "Land tiles #3",
+          "size_mm": [
+            47.0,
+            47.0,
+            49.0
+          ]
+        },
+        {
+          "kind": "finger_notch",
+          "cell": "Land tiles #3",
+          "side": "+x",
+          "width_mm": 20.0,
+          "depth_mm": 29.4
+        },
+        {
+          "kind": "dividers",
+          "count": 2,
+          "thickness_mm": 1.6
+        }
+      ],
+      "solid_volume_cm3": 90.006,
+      "mesh_validation": {
+        "triangles": 876,
+        "watertight": true,
+        "manifold": true,
+        "consistent_winding": true,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "inconsistent_edges": 0,
+        "degenerate_triangles": 0,
+        "shells": 1,
+        "euler_characteristic": 2,
+        "volume_mm3": 90009.58,
+        "outward_normals": true,
+        "bbox_mm": [
+          148.474,
+          56.17,
+          50.6
+        ],
+        "bbox_deviation_mm": 0.0,
+        "volume_vs_cad": 3e-05,
+        "min_thickness": {
+          "x": {
+            "min_mm": 1.691,
+            "at_mm": [
+              -25.19,
+              -23.21,
+              1.64
+            ]
+          },
+          "y": {
+            "min_mm": 4.585,
+            "at_mm": [
+              -71.63,
+              -28.08,
+              2.64
+            ]
+          },
+          "z": {
+            "min_mm": 1.6,
+            "at_mm": [
+              -71.47,
+              -23.38,
+              0.0
+            ]
+          },
+          "overall_min_mm": 1.6
+        },
+        "problems": [],
+        "ok": true
+      }
+    },
+    {
+      "name": "Coins",
+      "stl": "04_coins.stl",
+      "position_mm": {
+        "x": 182.92,
+        "y": 115.04,
+        "z": 0.0
+      },
+      "rotation_degrees": 90,
+      "outer_mm": {
+        "width": 72.01,
+        "length": 35.58,
+        "height": 72.0
+      },
+      "footprint_in_box_mm": {
+        "width": 35.58,
+        "length": 72.01
+      },
+      "cavity_mm": {
+        "width": 55.6,
+        "length": 27.0,
+        "depth": 45.0
+      },
+      "id": 4,
+      "type": "round_tokens",
+      "compartments": [
+        "Coins"
+      ],
+      "layer": 0,
+      "column": 1,
+      "center_mm": {
+        "x": 200.71,
+        "y": 151.04,
+        "z": 0.0
+      },
+      "transform_mm": [
+        [
+          0.0,
+          -1.0,
+          0.0,
+          200.712
+        ],
+        [
+          1.0,
+          0.0,
+          0.0,
+          151.039
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "assembled_position_mm": [
+        200.71,
+        151.04,
+        0.0
+      ],
+      "exploded_position_mm": [
+        232.46,
+        165.4,
+        110.0
+      ],
+      "assembly_order": 2,
+      "min_outer_mm": {
+        "width": 59.6,
+        "length": 31.0,
+        "height": 46.6
+      },
+      "cells": [
+        {
+          "name": "Coins",
+          "component": "Coins",
+          "type": "round_tokens",
+          "shape": "wells",
+          "cavity_center_mm": [
+            0.0,
+            0.0
+          ],
+          "cavity_mm": {
+            "width": 55.6,
+            "length": 27.0,
+            "depth": 45.0
+          },
+          "floor_thickness_mm": 27.0,
+          "grows_to_fill": false,
+          "wells_mm": [
+            [
+              -14.3,
+              0.0
+            ],
+            [
+              14.3,
+              0.0
+            ]
+          ],
+          "well_diameter_mm": 27.0,
+          "contents": {
+            "piece_mm": {
+              "diameter": 25.0,
+              "thickness": 2.2
+            },
+            "quantity": 40,
+            "stacks": 2,
+            "per_stack": 20
+          }
+        }
+      ],
+      "features": [
+        {
+          "kind": "token_wells",
+          "cell": "Coins",
+          "count": 2,
+          "diameter_mm": 27.0,
+          "depth_mm": 45.0
+        },
+        {
+          "kind": "finger_slots",
+          "cell": "Coins",
+          "count": 2,
+          "width_mm": 11.25,
+          "depth_mm": 27.0
+        }
+      ],
+      "solid_volume_cm3": 130.012,
+      "mesh_validation": {
+        "triangles": 800,
+        "watertight": true,
+        "manifold": true,
+        "consistent_winding": true,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "inconsistent_edges": 0,
+        "degenerate_triangles": 0,
+        "shells": 1,
+        "euler_characteristic": 2,
+        "volume_mm3": 130084.4,
+        "outward_normals": true,
+        "bbox_mm": [
+          72.006,
+          35.576,
+          72.0
+        ],
+        "bbox_deviation_mm": 0.0,
+        "volume_vs_cad": 0.00056,
+        "min_thickness": {
+          "x": {
+            "min_mm": 1.638,
+            "at_mm": [
+              -0.82,
+              -0.51,
+              68.47
+            ]
+          },
+          "y": {
+            "min_mm": 4.302,
+            "at_mm": [
+              13.7,
+              -17.79,
+              42.5
+            ]
+          },
+          "z": {
+            "min_mm": 27.0,
+            "at_mm": [
+              -27.37,
+              -2.59,
+              0.0
+            ]
+          },
+          "overall_min_mm": 1.638
+        },
+        "problems": [],
+        "ok": true
+      }
+    },
+    {
+      "name": "Victory tokens",
+      "stl": "05_victory_tokens.stl",
+      "position_mm": {
+        "x": 1.5,
+        "y": 194.45,
+        "z": 0.0
+      },
+      "rotation_degrees": 0,
+      "outer_mm": {
+        "width": 79.26,
+        "length": 24.05,
+        "height": 72.0
+      },
+      "footprint_in_box_mm": {
+        "width": 79.26,
+        "length": 24.05
+      },
+      "cavity_mm": {
+        "width": 63.2,
+        "length": 20.0,
+        "depth": 21.0
+      },
+      "id": 5,
+      "type": "round_tokens",
+      "compartments": [
+        "Victory tokens"
+      ],
+      "layer": 0,
+      "column": 2,
+      "center_mm": {
+        "x": 41.13,
+        "y": 206.48,
+        "z": 0.0
+      },
+      "transform_mm": [
+        [
+          1.0,
+          -0.0,
+          0.0,
+          41.129
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          206.477
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "assembled_position_mm": [
+        41.13,
+        206.48,
+        0.0
+      ],
+      "exploded_position_mm": [
+        17.02,
+        240.24,
+        110.0
+      ],
+      "assembly_order": 3,
+      "min_outer_mm": {
+        "width": 67.2,
+        "length": 24.0,
+        "height": 22.6
+      },
+      "cells": [
+        {
+          "name": "Victory tokens",
+          "component": "Victory tokens",
+          "type": "round_tokens",
+          "shape": "wells",
+          "cavity_center_mm": [
+            0.0,
+            0.0
+          ],
+          "cavity_mm": {
+            "width": 63.2,
+            "length": 20.0,
+            "depth": 21.0
+          },
+          "floor_thickness_mm": 51.0,
+          "grows_to_fill": false,
+          "wells_mm": [
+            [
+              -21.6,
+              0.0
+            ],
+            [
+              0.0,
+              0.0
+            ],
+            [
+              21.6,
+              0.0
+            ]
+          ],
+          "well_diameter_mm": 20.0,
+          "contents": {
+            "piece_mm": {
+              "diameter": 18.0,
+              "thickness": 2.0
+            },
+            "quantity": 30,
+            "stacks": 3,
+            "per_stack": 10
+          }
+        }
+      ],
+      "features": [
+        {
+          "kind": "token_wells",
+          "cell": "Victory tokens",
+          "count": 3,
+          "diameter_mm": 20.0,
+          "depth_mm": 21.0
+        },
+        {
+          "kind": "finger_slots",
+          "cell": "Victory tokens",
+          "count": 3,
+          "width_mm": 8.1,
+          "depth_mm": 12.6
+        }
+      ],
+      "solid_volume_cm3": 116.672,
+      "mesh_validation": {
+        "triangles": 1066,
+        "watertight": true,
+        "manifold": true,
+        "consistent_winding": true,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "inconsistent_edges": 0,
+        "degenerate_triangles": 0,
+        "shells": 1,
+        "euler_characteristic": 2,
+        "volume_mm3": 116700.04,
+        "outward_normals": true,
+        "bbox_mm": [
+          79.258,
+          24.046,
+          72.0
+        ],
+        "bbox_deviation_mm": 0.0,
+        "volume_vs_cad": 0.00024,
+        "min_thickness": {
+          "x": {
+            "min_mm": 1.637,
+            "at_mm": [
+              9.98,
+              -0.48,
+              51.52
+            ]
+          },
+          "y": {
+            "min_mm": 2.036,
+            "at_mm": [
+              -22.08,
+              -12.02,
+              59.0
+            ]
+          },
+          "z": {
+            "min_mm": 51.0,
+            "at_mm": [
+              -31.08,
+              -2.48,
+              0.0
+            ]
+          },
+          "overall_min_mm": 1.637
+        },
+        "problems": [],
+        "ok": true
+      }
+    },
+    {
+      "name": "Dice",
+      "stl": "06_dice.stl",
+      "position_mm": {
+        "x": 81.76,
+        "y": 188.04,
+        "z": 0.0
+      },
+      "rotation_degrees": 0,
+      "outer_mm": {
+        "width": 136.74,
+        "length": 30.46,
+        "height": 72.0
+      },
+      "footprint_in_box_mm": {
+        "width": 136.74,
+        "length": 30.46
+      },
+      "cavity_mm": {
+        "width": 18.0,
+        "length": 18.0,
+        "depth": 17.0
+      },
+      "id": 6,
+      "type": "dice",
+      "compartments": [
+        "Dice"
+      ],
+      "layer": 0,
+      "column": 3,
+      "center_mm": {
+        "x": 150.13,
+        "y": 203.27,
+        "z": 0.0
+      },
+      "transform_mm": [
+        [
+          1.0,
+          -0.0,
+          0.0,
+          150.129
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          203.271
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "assembled_position_mm": [
+        150.13,
+        203.27,
+        0.0
+      ],
+      "exploded_position_mm": [
+        164.17,
+        235.92,
+        110.0
+      ],
+      "assembly_order": 4,
+      "min_outer_mm": {
+        "width": 120.0,
+        "length": 22.0,
+        "height": 18.6
+      },
+      "cells": [
+        {
+          "name": "Dice #1",
+          "component": "Dice",
+          "type": "dice",
+          "shape": "rect",
+          "cavity_center_mm": [
+            -55.98,
+            0.0
+          ],
+          "cavity_mm": {
+            "width": 18.0,
+            "length": 18.0,
+            "depth": 17.0
+          },
+          "floor_thickness_mm": 55.0,
+          "grows_to_fill": false,
+          "contents": {
+            "edge_mm": 16.0,
+            "quantity": 1
+          }
+        },
+        {
+          "name": "Dice #2",
+          "component": "Dice",
+          "type": "dice",
+          "shape": "rect",
+          "cavity_center_mm": [
+            -33.59,
+            0.0
+          ],
+          "cavity_mm": {
+            "width": 18.0,
+            "length": 18.0,
+            "depth": 17.0
+          },
+          "floor_thickness_mm": 55.0,
+          "grows_to_fill": false,
+          "contents": {
+            "edge_mm": 16.0,
+            "quantity": 1
+          }
+        },
+        {
+          "name": "Dice #3",
+          "component": "Dice",
+          "type": "dice",
+          "shape": "rect",
+          "cavity_center_mm": [
+            -11.2,
+            0.0
+          ],
+          "cavity_mm": {
+            "width": 18.0,
+            "length": 18.0,
+            "depth": 17.0
+          },
+          "floor_thickness_mm": 55.0,
+          "grows_to_fill": false,
+          "contents": {
+            "edge_mm": 16.0,
+            "quantity": 1
+          }
+        },
+        {
+          "name": "Dice #4",
+          "component": "Dice",
+          "type": "dice",
+          "shape": "rect",
+          "cavity_center_mm": [
+            11.2,
+            0.0
+          ],
+          "cavity_mm": {
+            "width": 18.0,
+            "length": 18.0,
+            "depth": 17.0
+          },
+          "floor_thickness_mm": 55.0,
+          "grows_to_fill": false,
+          "contents": {
+            "edge_mm": 16.0,
+            "quantity": 1
+          }
+        },
+        {
+          "name": "Dice #5",
+          "component": "Dice",
+          "type": "dice",
+          "shape": "rect",
+          "cavity_center_mm": [
+            33.59,
+            0.0
+          ],
+          "cavity_mm": {
+            "width": 18.0,
+            "length": 18.0,
+            "depth": 17.0
+          },
+          "floor_thickness_mm": 55.0,
+          "grows_to_fill": false,
+          "contents": {
+            "edge_mm": 16.0,
+            "quantity": 1
+          }
+        },
+        {
+          "name": "Dice #6",
+          "component": "Dice",
+          "type": "dice",
+          "shape": "rect",
+          "cavity_center_mm": [
+            55.98,
+            0.0
+          ],
+          "cavity_mm": {
+            "width": 18.0,
+            "length": 18.0,
+            "depth": 17.0
+          },
+          "floor_thickness_mm": 55.0,
+          "grows_to_fill": false,
+          "contents": {
+            "edge_mm": 16.0,
+            "quantity": 1
+          }
+        }
+      ],
+      "features": [
+        {
+          "kind": "cavity",
+          "cell": "Dice #1",
+          "size_mm": [
+            18.0,
+            18.0,
+            17.0
+          ]
+        },
+        {
+          "kind": "cavity",
+          "cell": "Dice #2",
+          "size_mm": [
+            18.0,
+            18.0,
+            17.0
+          ]
+        },
+        {
+          "kind": "cavity",
+          "cell": "Dice #3",
+          "size_mm": [
+            18.0,
+            18.0,
+            17.0
+          ]
+        },
+        {
+          "kind": "cavity",
+          "cell": "Dice #4",
+          "size_mm": [
+            18.0,
+            18.0,
+            17.0
+          ]
+        },
+        {
+          "kind": "cavity",
+          "cell": "Dice #5",
+          "size_mm": [
+            18.0,
+            18.0,
+            17.0
+          ]
+        },
+        {
+          "kind": "cavity",
+          "cell": "Dice #6",
+          "size_mm": [
+            18.0,
+            18.0,
+            17.0
+          ]
+        },
+        {
+          "kind": "dividers",
+          "count": 5,
+          "thickness_mm": 1.6
+        }
+      ],
+      "solid_volume_cm3": 266.772,
+      "mesh_validation": {
+        "triangles": 364,
+        "watertight": true,
+        "manifold": true,
+        "consistent_winding": true,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "inconsistent_edges": 0,
+        "degenerate_triangles": 0,
+        "shells": 1,
+        "euler_characteristic": 2,
+        "volume_mm3": 266771.36,
+        "outward_normals": true,
+        "bbox_mm": [
+          136.742,
+          30.458,
+          72.0
+        ],
+        "bbox_deviation_mm": 0.0,
+        "volume_vs_cad": 0.0,
+        "min_thickness": {
+          "x": {
+            "min_mm": 3.395,
+            "at_mm": [
+              -68.37,
+              -8.61,
+              55.52
+            ]
+          },
+          "y": {
+            "min_mm": 6.229,
+            "at_mm": [
+              -63.33,
+              -15.23,
+              55.02
+            ]
+          },
+          "z": {
+            "min_mm": 55.0,
+            "at_mm": [
+              -63.84,
+              -7.92,
+              0.0
+            ]
+          },
+          "overall_min_mm": 3.395
+        },
+        "problems": [],
+        "ok": true
+      }
+    },
+    {
+      "name": "Player pieces",
+      "stl": "07_player_pieces.stl",
+      "position_mm": {
+        "x": 81.76,
+        "y": 1.5,
+        "z": 0.0
+      },
+      "rotation_degrees": 0,
+      "outer_mm": {
+        "width": 43.0,
+        "length": 185.54,
+        "height": 72.0
+      },
+      "footprint_in_box_mm": {
+        "width": 43.0,
+        "length": 185.54
+      },
+      "cavity_mm": {
+        "width": 39.0,
+        "length": 44.19,
+        "depth": 35.72
+      },
+      "id": 7,
+      "type": "bits",
+      "compartments": [
+        "Red workers",
+        "Blue workers",
+        "Green workers",
+        "Yellow workers"
+      ],
+      "layer": 0,
+      "column": 4,
+      "center_mm": {
+        "x": 103.26,
+        "y": 94.27,
+        "z": 0.0
+      },
+      "transform_mm": [
+        [
+          1.0,
+          -0.0,
+          0.0,
+          103.256
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          94.271
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "assembled_position_mm": [
+        103.26,
+        94.27,
+        0.0
+      ],
+      "exploded_position_mm": [
+        100.9,
+        88.77,
+        110.0
+      ],
+      "assembly_order": 5,
+      "min_outer_mm": {
+        "width": 39.02,
+        "length": 183.01,
+        "height": 37.32
+      },
+      "cells": [
+        {
+          "name": "Red workers",
+          "component": "Red workers",
+          "type": "bits",
+          "shape": "rect",
+          "cavity_center_mm": [
+            0.0,
+            -68.68
+          ],
+          "cavity_mm": {
+            "width": 39.0,
+            "length": 44.19,
+            "depth": 35.72
+          },
+          "floor_thickness_mm": 36.28,
+          "grows_to_fill": true,
+          "contents": {
+            "piece_mm": {
+              "width": 16.0,
+              "length": 16.0,
+              "height": 10.0
+            },
+            "quantity": 8,
+            "estimated_volume_mm3": 34133
+          }
+        },
+        {
+          "name": "Blue workers",
+          "component": "Blue workers",
+          "type": "bits",
+          "shape": "rect",
+          "cavity_center_mm": [
+            0.0,
+            -22.89
+          ],
+          "cavity_mm": {
+            "width": 39.0,
+            "length": 44.19,
+            "depth": 35.72
+          },
+          "floor_thickness_mm": 36.28,
+          "grows_to_fill": true,
+          "contents": {
+            "piece_mm": {
+              "width": 16.0,
+              "length": 16.0,
+              "height": 10.0
+            },
+            "quantity": 8,
+            "estimated_volume_mm3": 34133
+          }
+        },
+        {
+          "name": "Green workers",
+          "component": "Green workers",
+          "type": "bits",
+          "shape": "rect",
+          "cavity_center_mm": [
+            0.0,
+            22.89
+          ],
+          "cavity_mm": {
+            "width": 39.0,
+            "length": 44.19,
+            "depth": 35.72
+          },
+          "floor_thickness_mm": 36.28,
+          "grows_to_fill": true,
+          "contents": {
+            "piece_mm": {
+              "width": 16.0,
+              "length": 16.0,
+              "height": 10.0
+            },
+            "quantity": 8,
+            "estimated_volume_mm3": 34133
+          }
+        },
+        {
+          "name": "Yellow workers",
+          "component": "Yellow workers",
+          "type": "bits",
+          "shape": "rect",
+          "cavity_center_mm": [
+            0.0,
+            68.68
+          ],
+          "cavity_mm": {
+            "width": 39.0,
+            "length": 44.19,
+            "depth": 35.72
+          },
+          "floor_thickness_mm": 36.28,
+          "grows_to_fill": true,
+          "contents": {
+            "piece_mm": {
+              "width": 16.0,
+              "length": 16.0,
+              "height": 10.0
+            },
+            "quantity": 8,
+            "estimated_volume_mm3": 34133
+          }
+        }
+      ],
+      "features": [
+        {
+          "kind": "cavity",
+          "cell": "Red workers",
+          "size_mm": [
+            39.0,
+            44.19,
+            35.72
+          ],
+          "scoop_radius_mm": 7.61
+        },
+        {
+          "kind": "cavity",
+          "cell": "Blue workers",
+          "size_mm": [
+            39.0,
+            44.19,
+            35.72
+          ],
+          "scoop_radius_mm": 7.61
+        },
+        {
+          "kind": "cavity",
+          "cell": "Green workers",
+          "size_mm": [
+            39.0,
+            44.19,
+            35.72
+          ],
+          "scoop_radius_mm": 7.61
+        },
+        {
+          "kind": "cavity",
+          "cell": "Yellow workers",
+          "size_mm": [
+            39.0,
+            44.19,
+            35.72
+          ],
+          "scoop_radius_mm": 7.61
+        },
+        {
+          "kind": "dividers",
+          "count": 3,
+          "thickness_mm": 1.6
+        }
+      ],
+      "solid_volume_cm3": 335.728,
+      "mesh_validation": {
+        "triangles": 1004,
+        "watertight": true,
+        "manifold": true,
+        "consistent_winding": true,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "inconsistent_edges": 0,
+        "degenerate_triangles": 0,
+        "shells": 1,
+        "euler_characteristic": 2,
+        "volume_mm3": 335753.1,
+        "outward_normals": true,
+        "bbox_mm": [
+          42.997,
+          185.542,
+          72.0
+        ],
+        "bbox_deviation_mm": 0.0,
+        "volume_vs_cad": 8e-05,
+        "min_thickness": {
+          "x": {
+            "min_mm": 2.0,
+            "at_mm": [
+              -21.5,
+              -89.27,
+              45.31
+            ]
+          },
+          "y": {
+            "min_mm": 1.6,
+            "at_mm": [
+              -18.65,
+              -0.8,
+              44.89
+            ]
+          },
+          "z": {
+            "min_mm": 36.278,
+            "at_mm": [
+              -11.2,
+              -82.94,
+              0.0
+            ]
+          },
+          "overall_min_mm": 1.6
+        },
+        "problems": [],
+        "ok": true
+      }
+    },
+    {
+      "name": "Resource cubes",
+      "stl": "08_resource_cubes.stl",
+      "position_mm": {
+        "x": 182.92,
+        "y": 1.5,
+        "z": 0.0
+      },
+      "rotation_degrees": 0,
+      "outer_mm": {
+        "width": 35.58,
+        "length": 112.54,
+        "height": 72.0
+      },
+      "footprint_in_box_mm": {
+        "width": 35.58,
+        "length": 112.54
+      },
+      "cavity_mm": {
+        "width": 31.58,
+        "length": 35.11,
+        "depth": 28.59
+      },
+      "id": 8,
+      "type": "bits",
+      "compartments": [
+        "Resource cubes"
+      ],
+      "layer": 0,
+      "column": 5,
+      "center_mm": {
+        "x": 200.71,
+        "y": 57.77,
+        "z": 0.0
+      },
+      "transform_mm": [
+        [
+          1.0,
+          -0.0,
+          0.0,
+          200.712
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          57.768
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "assembled_position_mm": [
+        200.71,
+        57.77,
+        0.0
+      ],
+      "exploded_position_mm": [
+        232.46,
+        39.49,
+        110.0
+      ],
+      "assembly_order": 6,
+      "min_outer_mm": {
+        "width": 32.27,
+        "length": 112.33,
+        "height": 30.19
+      },
+      "cells": [
+        {
+          "name": "Resource cubes #1",
+          "component": "Resource cubes",
+          "type": "bits",
+          "shape": "rect",
+          "cavity_center_mm": [
+            0.0,
+            -36.71
+          ],
+          "cavity_mm": {
+            "width": 31.58,
+            "length": 35.11,
+            "depth": 28.59
+          },
+          "floor_thickness_mm": 43.41,
+          "grows_to_fill": true,
+          "contents": {
+            "piece_mm": {
+              "width": 8.0,
+              "length": 8.0,
+              "height": 8.0
+            },
+            "quantity": 20,
+            "estimated_volume_mm3": 17067
+          }
+        },
+        {
+          "name": "Resource cubes #2",
+          "component": "Resource cubes",
+          "type": "bits",
+          "shape": "rect",
+          "cavity_center_mm": [
+            0.0,
+            0.0
+          ],
+          "cavity_mm": {
+            "width": 31.58,
+            "length": 35.11,
+            "depth": 28.59
+          },
+          "floor_thickness_mm": 43.41,
+          "grows_to_fill": true,
+          "contents": {
+            "piece_mm": {
+              "width": 8.0,
+              "length": 8.0,
+              "height": 8.0
+            },
+            "quantity": 20,
+            "estimated_volume_mm3": 17067
+          }
+        },
+        {
+          "name": "Resource cubes #3",
+          "component": "Resource cubes",
+          "type": "bits",
+          "shape": "rect",
+          "cavity_center_mm": [
+            0.0,
+            36.71
+          ],
+          "cavity_mm": {
+            "width": 31.58,
+            "length": 35.11,
+            "depth": 28.59
+          },
+          "floor_thickness_mm": 43.41,
+          "grows_to_fill": true,
+          "contents": {
+            "piece_mm": {
+              "width": 8.0,
+              "length": 8.0,
+              "height": 8.0
+            },
+            "quantity": 20,
+            "estimated_volume_mm3": 17067
+          }
+        }
+      ],
+      "features": [
+        {
+          "kind": "cavity",
+          "cell": "Resource cubes #1",
+          "size_mm": [
+            31.58,
+            35.11,
+            28.59
+          ],
+          "scoop_radius_mm": 6.15
+        },
+        {
+          "kind": "cavity",
+          "cell": "Resource cubes #2",
+          "size_mm": [
+            31.58,
+            35.11,
+            28.59
+          ],
+          "scoop_radius_mm": 6.15
+        },
+        {
+          "kind": "cavity",
+          "cell": "Resource cubes #3",
+          "size_mm": [
+            31.58,
+            35.11,
+            28.59
+          ],
+          "scoop_radius_mm": 6.15
+        },
+        {
+          "kind": "dividers",
+          "count": 2,
+          "thickness_mm": 1.6
+        }
+      ],
+      "solid_volume_cm3": 196.094,
+      "mesh_validation": {
+        "triangles": 820,
+        "watertight": true,
+        "manifold": true,
+        "consistent_winding": true,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "inconsistent_edges": 0,
+        "degenerate_triangles": 0,
+        "shells": 1,
+        "euler_characteristic": 2,
+        "volume_mm3": 196103.89,
+        "outward_normals": true,
+        "bbox_mm": [
+          35.576,
+          112.536,
+          72.0
+        ],
+        "bbox_deviation_mm": 0.0,
+        "volume_vs_cad": 5e-05,
+        "min_thickness": {
+          "x": {
+            "min_mm": 2.0,
+            "at_mm": [
+              -17.79,
+              -53.53,
+              51.32
+            ]
+          },
+          "y": {
+            "min_mm": 1.6,
+            "at_mm": [
+              -15.15,
+              -19.16,
+              50.22
+            ]
+          },
+          "z": {
+            "min_mm": 43.41,
+            "at_mm": [
+              -9.21,
+              -48.03,
+              0.0
+            ]
+          },
+          "overall_min_mm": 1.6
+        },
+        "problems": [],
+        "ok": true
+      }
+    },
+    {
+      "name": "First player marker",
+      "stl": "09_first_player_marker.stl",
+      "position_mm": {
+        "x": 125.75,
+        "y": 150.97,
+        "z": 0.0
+      },
+      "rotation_degrees": 0,
+      "outer_mm": {
+        "width": 56.17,
+        "length": 36.07,
+        "height": 72.0
+      },
+      "footprint_in_box_mm": {
+        "width": 56.17,
+        "length": 36.07
+      },
+      "cavity_mm": {
+        "width": 52.17,
+        "length": 32.07,
+        "depth": 21.0
+      },
+      "id": 9,
+      "type": "generic",
+      "compartments": [
+        "First player marker"
+      ],
+      "layer": 0,
+      "column": 6,
+      "center_mm": {
+        "x": 153.84,
+        "y": 169.01,
+        "z": 0.0
+      },
+      "transform_mm": [
+        [
+          1.0,
+          -0.0,
+          0.0,
+          153.839
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          169.008
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "assembled_position_mm": [
+        153.84,
+        169.01,
+        0.0
+      ],
+      "exploded_position_mm": [
+        169.18,
+        189.66,
+        110.0
+      ],
+      "assembly_order": 7,
+      "min_outer_mm": {
+        "width": 46.0,
+        "length": 36.0,
+        "height": 22.6
+      },
+      "cells": [
+        {
+          "name": "First player marker",
+          "component": "First player marker",
+          "type": "generic",
+          "shape": "rect",
+          "cavity_center_mm": [
+            0.0,
+            0.0
+          ],
+          "cavity_mm": {
+            "width": 52.17,
+            "length": 32.07,
+            "depth": 21.0
+          },
+          "floor_thickness_mm": 51.0,
+          "grows_to_fill": true,
+          "contents": {
+            "source": "required_mm",
+            "group_bbox_mm": {
+              "width": 40.0,
+              "length": 30.0,
+              "height": 20.0
+            }
+          }
+        }
+      ],
+      "features": [
+        {
+          "kind": "cavity",
+          "cell": "First player marker",
+          "size_mm": [
+            52.17,
+            32.07,
+            21.0
+          ]
+        },
+        {
+          "kind": "finger_notch",
+          "cell": "First player marker",
+          "side": "-y",
+          "width_mm": 16.0,
+          "depth_mm": 8.0
+        }
+      ],
+      "solid_volume_cm3": 110.484,
+      "mesh_validation": {
+        "triangles": 416,
+        "watertight": true,
+        "manifold": true,
+        "consistent_winding": true,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "inconsistent_edges": 0,
+        "degenerate_triangles": 0,
+        "shells": 1,
+        "euler_characteristic": 2,
+        "volume_mm3": 110483.67,
+        "outward_normals": true,
+        "bbox_mm": [
+          56.17,
+          36.068,
+          72.0
+        ],
+        "bbox_deviation_mm": 0.0,
+        "volume_vs_cad": 0.0,
+        "min_thickness": {
+          "x": {
+            "min_mm": 2.0,
+            "at_mm": [
+              -28.08,
+              -15.44,
+              51.97
+            ]
+          },
+          "y": {
+            "min_mm": 2.0,
+            "at_mm": [
+              -24.88,
+              -18.03,
+              52.1
+            ]
+          },
+          "z": {
+            "min_mm": 51.0,
+            "at_mm": [
+              -25.56,
+              -15.51,
+              0.0
+            ]
+          },
+          "overall_min_mm": 2.0
+        },
+        "problems": [],
+        "ok": true
+      }
+    }
+  ]
+}

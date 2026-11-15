@@ -1,0 +1,154 @@
+{
+  "game": "Hypothetical Battle Game",
+  "edition": null,
+  "organizer": "boxes",
+  "selection_reason": "Specialized storage coexists with other storage styles.",
+  "divider_set_limit": 5,
+  "set_count": 4,
+  "physical_fit_verified": false,
+  "box": {
+    "dimensions_mm": {
+      "length": 250.0,
+      "width": 250.0,
+      "height": 65.0
+    },
+    "basis": "user_supplied",
+    "source_url": null,
+    "explanation": "Input measurement."
+  },
+  "sets": [
+    {
+      "name": "Red Player Kit",
+      "reason": "All Red-owned pieces grouped together for fast player setup. The kit is physically heterogeneous (cylinders plus small cubes) so loose storage is appropriate; packing cylinders tightly with cubes is not practical.",
+      "storage_style": "loose",
+      "members": [
+        {
+          "component_id": "red_pawns",
+          "quantity": 6,
+          "name": "Red player pawns",
+          "shape": "cylinder",
+          "dimensions_mm": {
+            "length": 15.0,
+            "width": 15.0,
+            "height": 25.0
+          }
+        },
+        {
+          "component_id": "red_markers",
+          "quantity": 3,
+          "name": "Red player point markers",
+          "shape": "rectangular_prism",
+          "dimensions_mm": {
+            "length": 10.0,
+            "width": 10.0,
+            "height": 10.0
+          }
+        }
+      ]
+    },
+    {
+      "name": "Blue Player Kit",
+      "reason": "All Blue-owned pieces grouped together symmetrically with the Red kit for fast player setup. Same mixed shapes make loose storage the correct choice.",
+      "storage_style": "loose",
+      "members": [
+        {
+          "component_id": "blue_pawns",
+          "quantity": 6,
+          "name": "Blue player pawns",
+          "shape": "cylinder",
+          "dimensions_mm": {
+            "length": 15.0,
+            "width": 15.0,
+            "height": 25.0
+          }
+        },
+        {
+          "component_id": "blue_markers",
+          "quantity": 3,
+          "name": "Blue player point markers",
+          "shape": "rectangular_prism",
+          "dimensions_mm": {
+            "length": 10.0,
+            "width": 10.0,
+            "height": 10.0
+          }
+        }
+      ]
+    },
+    {
+      "name": "Shared Supply: Dice",
+      "reason": "Shared dice kept in their own compartment for easy central access by both players. Dice are uniform 16 mm cubes and could be tight-packed, but a small loose compartment is more practical for quick casual access during play.",
+      "storage_style": "loose",
+      "members": [
+        {
+          "component_id": "dice",
+          "quantity": 4,
+          "name": "Shared dice",
+          "shape": "rectangular_prism",
+          "dimensions_mm": {
+            "length": 16.0,
+            "width": 16.0,
+            "height": 16.0
+          }
+        }
+      ]
+    },
+    {
+      "name": "Shared Supply: Battle Tokens",
+      "reason": "20 flat cylindrical tokens of identical dimensions (20 mm dia x 2 mm) stored as a single stack. Stacking along the height axis is practical and space-efficient; a stack of 20 x 2 mm = 40 mm tall fits well in the 57 mm of height above the board.",
+      "storage_style": "stack",
+      "members": [
+        {
+          "component_id": "battle_tokens",
+          "quantity": 20,
+          "name": "Shared battle tokens",
+          "shape": "cylinder",
+          "dimensions_mm": {
+            "length": 20.0,
+            "width": 20.0,
+            "height": 2.0
+          }
+        }
+      ]
+    }
+  ],
+  "excluded": [
+    {
+      "component_id": "board",
+      "quantity": 1,
+      "reason": "Folded game board is a large flat mat (245x245x8 mm) that occupies the full base of the box and is not stored in a compartment.",
+      "name": "Folded game board",
+      "shape": "rectangular_prism",
+      "dimensions_mm": {
+        "length": 245.0,
+        "width": 245.0,
+        "height": 8.0
+      }
+    }
+  ],
+  "warnings": [
+    "This is a fictional/hypothetical game with no real publisher, rulebook, or BGG entry. All component ownership and gameplay role inferences are based solely on naming conventions in the supplied inventory.",
+    "Edition is unspecified (null). No edition-specific component differences can be identified.",
+    "Cylinder dimensions are interpreted as diameter (length=width=15 mm for pawns, 20 mm for battle tokens) per the schema description. Actual profiles are approximate envelopes; stack suitability for battle tokens assumes they are flat discs with consistent profiles.",
+    "The folded board footprint (245x245 mm) leaves only 5 mm clearance on each axis within the 250x250 mm box base. All compartments for smaller components must fit in the remaining ~57 mm of height above the board.",
+    "No cards or decks are present in the inventory; no deck-separation decisions were required.",
+    "Simultaneous access requirements for shared components are unknown due to absence of rules; a central shared layout is assumed."
+  ],
+  "research_notes": "I'll research this systematically. Since this is a **hypothetical/fictional game** with no edition specified, there are no real rulebooks, publisher data, or BoardGameGeek entries to find. I'll run searches to confirm this, then deliver research notes based entirely on the supplied data.\nThe searches confirm that **\"Hypothetical Battle Game\" does not exist** as a real published title \u2014 no publisher, no BGG listing, no rulebook, no edition data. All results returned unrelated games. No further searches are warranted or possible to make productive. All research notes below are derived exclusively from the **user-supplied inventory and dimensions**.\n\n---\n\n# \ud83d\uddd2\ufe0f Research Notes: Hypothetical Battle Game\n\n## 1. Game Identity & Source Verification\n\n| Field | Finding |\n|---|---|\n| **Game title** | \"Hypothetical Battle Game\" |\n| **Edition** | Not specified (`null`) |\n| **Publisher** | Unknown \u2014 not found |\n| **BGG entry** | None found |\n| **Rulebook source** | None found |\n| **Search verdict** | No real game by this title exists in any indexed source. All web searches returned unrelated games. |\n\n> \u26a0\ufe0f **This is a fictional/hypothetical game.** No rules, no publisher data, no BGG dimensions, and no edition information exist. Every finding below is derived solely from the user-supplied component inventory and box dimensions. Nothing is inferred from real-game rules.\n\n---\n\n## 2. Box Dimensions\n\n| Source | Dimensions |\n|---|---|\n| **Supplied by user (internal)** | 250 mm \u00d7 250 mm \u00d7 65 mm |\n| **External dimensions** | Not provided |\n| **BGG / publisher measured** | Not available (game does not exist) |\n\n> \u2705 The user explicitly provided these as **internal** dimensions. They are accepted as-is. No external-to-internal conversion is needed or applied.\n\n**Internal volume:** 250 \u00d7 250 \u00d7 65 mm = **4,062,500 mm\u00b3 (~4.06 L)**\n\n---\n\n## 3. Component Inventory (Verbatim \u2014 Not Modified)\n\n| ID | Name | Qty | Shape | L (mm) | W (mm) | H (mm) | Unit Vol. (mm\u00b3) | Total Vol. (mm\u00b3) |\n|---|---|---|---|---|---|---|---|---|\n| `red_pawns` | Red player pawns | 6 | Cylinder | 15 | 15 | 25 | \u22484,418 | \u224826,507 |\n| `red_markers` | Red player point markers | 3 | Rect. prism | 10 | 10 | 10 | 1,000 | 3,000 |\n| `blue_pawns` | Blue player pawns | 6 | Cylinder | 15 | 15 | 25 | \u22484,418 | \u224826,507 |\n| `blue_markers` | Blue player point markers | 3 | Rect. prism | 10 | 10 | 10 | 1,000 | 3,000 |\n| `dice` | Shared dice | 4 | Rect. prism | 16 | 16 | 16 | 4,096 | 16,384 |\n| `battle_tokens` | Shared battle tokens | 20 | Cylinder | 20 | 20 | 2 | \u2248628 | \u224812,566 |\n| `board` | Folded game board | 1 | Rect. prism | 245 | 245 | 8 | 480,200 | 480,200 |\n\n> \ud83d\udd35 Cylinder volume formula used: \u03c0 \u00d7 (d/2)\u00b2 \u00d7 h. The `length` and `width` fields for cylinders are treated as diameter (d), consistent with the shape description.\n\n**Approximate total component volume (all items):** ~568,164 mm\u00b3\n**Board footprint alone:** 245 \u00d7 245 mm \u2014 fits inside the 250 \u00d7 250 mm base with only **5 mm clearance on each axis**.\n\n---\n\n## 4. Component Ownership (Inferred from Component Names Only)\n\nNo rulebook exists. The following is **entirely inferred from naming conventions** in the supplied inventory:\n\n| Component | Inferred Owner | Basis |\n|---|---|---|\n| Red player pawns (\u00d76) | Red player | Named \"Red player pawns\" |\n| Red player point markers (\u00d73) | Red player | Named \"Red player point markers\" |\n| Blue player pawns (\u00d76) | Blue player | Named \"Blue player pawns\" |\n| Blue player point markers (\u00d73) | Blue player | Named \"Blue player point markers\" |\n| Shared dice (\u00d74) | Both players / neutral | Named \"Shared\" |\n| Shared battle tokens (\u00d720) | Both players / neutral | Named \"Shared\" |\n| Folded game board (\u00d71) | Shared play surface | Singular; universal in design |\n\n> \u26a0\ufe0f **Inference caveat:** The color-coded split (Red vs. Blue) and the \"Shared\" label are the **only** basis for ownership attribution. No rules exist to confirm how components are distributed at setup, whether players start with equal allocations, or whether any components migrate between players during play.\n\n---\n\n## 5. Gameplay Roles (Inferred)\n\n| Role | Evidence | Confidence |\n|---|---|---|\n| **2-player game** | Two distinct player colors (Red, Blue), each with identical pawn and marker counts | Moderate |\n| **Pawns = player units** | Named \"player pawns\"; cylinders (15 mm dia \u00d7 25 mm tall) are typical upright playing pieces | Low\u2013Moderate |\n| **Point markers = scoring** | Named \"point markers\"; 3 per player suggests a track or accumulation mechanic | Low\u2013Moderate |\n| **Battle tokens = shared resource or event markers** | 20 flat tokens (20 mm dia \u00d7 2 mm); \"battle\" label; shared ownership | Low |\n| **Dice = shared resolution** | 4 dice, explicitly shared; typical for combat or action resolution | Low\u2013Moderate |\n\n> \u26a0\ufe0f All roles are **speculative**. No rules exist. The word \"Battle\" in the game name is consistent with conflict-resolution mechanics, but no mechanic can be confirmed.\n\n---\n\n## 6. Setup Distribution (Inferred)\n\n| Component | Likely Setup Disposition | Notes |\n|---|---|---|\n| Red pawns (\u00d76) | Dealt entirely to Red player at start | Standard for player-owned pieces |\n| Red markers (\u00d73) | Dealt entirely to Red player at start | Standard for scoring tokens |\n| Blue pawns (\u00d76) | Dealt entirely to Blue player at start | Symmetric to Red |\n| Blue markers (\u00d73) | Dealt entirely to Blue player at start | Symmetric to Red |\n| Dice (\u00d74) | Placed in central/shared supply | Shared per label |\n| Battle tokens (\u00d720) | Placed in central/shared supply | Shared per label; likely drawn or placed during play |\n| Game board (\u00d71) | Unfolded in center of play area | Standard for a folded board |\n\n> \u26a0\ufe0f **No rules exist to confirm** starting quantities, reserve pools, draw mechanics, or whether tokens/markers are placed on the board during setup.\n\n---\n\n## 7. Decks \u2014 Separation Requirement\n\n**There are no cards or decks** in the supplied component inventory. This question is **not applicable** to this component set. No separation of decks is required.\n\n---\n\n## 8. Simultaneous Independent Access to Supplies\n\n| Component | Access Pattern | Notes |\n|---|---|---|\n| Red pawns & markers | Red player only | Player-owned; no shared access needed |\n| Blue pawns & markers | Blue player only | Player-owned; no shared access needed |\n| Shared dice | Both players need access | Likely alternating turns, not simultaneous |\n| Shared battle tokens (\u00d720) | Both players need access | Unknown if simultaneously accessed |\n\n> **Key storage design consideration:** The shared dice and battle tokens need to be reachable by **both players**, but no rules exist to determine whether they must be accessed **simultaneously** (i.e., both players reaching at the same time) or **sequentially** (turn-by-turn). A central shared compartment is the safe assumption. Player-colored components (pawns, markers) can be separated into individual player zones or bags.\n\n---\n\n## 9. Physical Fit Analysis\n\n| Item | Footprint / Size | Clearance vs. Box |\n|---|---|---|\n| Game board (folded) | 245 \u00d7 245 \u00d7 8 mm | 5 mm on L, 5 mm on W; sits flat as base layer |\n| Remaining height after board | 65 \u2212 8 = **57 mm** | Adequate for all other components |\n| Red/Blue pawns (upright) | 15 mm dia \u00d7 25 mm H | Fit well within 57 mm remaining height |\n| Dice | 16 mm cube | Fit easily |\n| Battle tokens (stacked, 20\u00d7) | 20 mm dia \u00d7 (2\u00d720=) 40 mm H | Fit if stacked; or spread flat |\n| Point markers | 10 mm cube | Fit easily |\n\n> \u2705 The board is the dominant footprint constraint: at 245 \u00d7 245 mm it leaves only 5 mm of clearance on each side within the 250 \u00d7 250 mm box. All remaining components comfortably fit in the 57 mm of height above the board.\n\n---\n\n## 10. Summary of Knowns vs. Inferences\n\n| Fact | Status | Source |\n|---|---|---|\n| Game title is \"Hypothetical Battle Game\" | \u2705 Known | User-supplied |\n| Edition is unspecified | \u2705 Known | User-supplied (`null`) |\n| Box internal dimensions: 250\u00d7250\u00d765 mm | \u2705 Known | User-supplied |\n| All component identities, quantities, shapes, dimensions | \u2705 Known | User-supplied |\n| No real publisher, rulebook, or BGG entry exists | \u2705 Confirmed | Web search (negative result) |\n| Component ownership (Red = Red player, etc.) | \u26a0\ufe0f Inferred | Naming convention only |\n| 2-player gameplay | \u26a0\ufe0f Inferred | Two player colors |\n| Pawns are player units; markers are score trackers | \u26a0\ufe0f Inferred | Naming convention |\n| Tokens and dice are central/shared supply | \u26a0\ufe0f Inferred | \"Shared\" label |\n| No decks exist; no deck separation needed | \u2705 Known | Inventory contains no cards |\n| Simultaneous access to shared supplies required | \u2753 Unknown | No rules exist to determine |\n| Board sits as bottom layer; 57 mm remains above it | \u2705 Known (geometry) | Dimensional math from supplied data |\n",
+  "sources": {
+    "https://en.wikipedia.org/wiki/Modern_Battles_II:_Four_Contemporary_Conflicts": "Modern Battles II: Four Contemporary Conflicts",
+    "https://boardgamegeek.com/thread/3507086/classifying-hypothetical-and-ahistorical-wargames": "Classifying hypothetical and ahistorical wargames",
+    "https://en.wikipedia.org/wiki/Modern_Battles:_Four_Contemporary_Conflicts": "Modern Battles: Four Contemporary Conflicts",
+    "https://en.wikipedia.org/wiki/Lost_Battles:_Operational_Combat_in_Russia": "Lost Battles: Operational Combat in Russia",
+    "https://en.wikipedia.org/wiki/Battle-Cry_(Milton_Bradley_game)": "Battle-Cry (Milton Bradley game)",
+    "https://en.wikipedia.org/wiki/Strike_Force_One": "Strike Force One",
+    "https://en.wikipedia.org/wiki/Battle_Over_Britain": "Battle Over Britain",
+    "https://en.wikipedia.org/wiki/Battle_Masters": "Battle Masters",
+    "https://www.tabletoptalk.com/?page_id=331": "Basic War Game Rules",
+    "https://boardgamegeek.com/wargames/browse/boardgame?sort=bggrating": "Browse Board Games",
+    "https://boardgamegeek.com/boardgame/474726/hypothetically": "Hypothetically",
+    "https://boardgamegeek.com/wargames/browse/boardgame?sort=rank&sortdir=desc": "Browse Board Games",
+    "https://en.wikipedia.org/wiki/Kriegspiel_(board_wargame)": "Kriegspiel (board wargame)",
+    "https://en.wikipedia.org/wiki/Lee_vs._Meade": "Lee vs. Meade"
+  }
+}

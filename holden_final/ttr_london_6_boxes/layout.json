@@ -1,0 +1,1779 @@
+{
+  "schema_version": 2,
+  "engine": "inside-the-box organizer 2.0.0",
+  "status": "ok",
+  "game": "Ticket to Ride: London",
+  "units": "mm",
+  "method": "blocks + fill_box",
+  "box_inner_mm": {
+    "width": 226.0,
+    "length": 226.0,
+    "height": 44.0
+  },
+  "usable_height_mm": 27.9,
+  "organizer_mode": "boxes",
+  "floor_offset_mm": 0.0,
+  "bottom_layer": [],
+  "printer_bed_mm": {
+    "width": 256.0,
+    "length": 256.0,
+    "height": 256.0
+  },
+  "constraints": {
+    "wall_mm": 2.4,
+    "floor_mm": 2.0,
+    "clearance_mm": 1.0,
+    "tray_gap_mm": 1.0,
+    "box_margin_mm": 1.0,
+    "divider_mm": 1.6,
+    "min_feature_mm": 1.2,
+    "headroom_mm": 16.1,
+    "fill_height": true,
+    "fill_box": true,
+    "max_layers": 2
+  },
+  "coordinate_system": {
+    "origin": "lower-left corner of the box interior floor",
+    "axes": "x = box width, y = box length, z = up (millimetres)",
+    "stl_frame": "each STL is centred on x/y = 0 with its base at z = 0",
+    "placement": "rotate the STL by rotation_degrees counter-clockwise about +z, then translate it to center_mm (equivalently apply transform_mm, a row-major 4×4 matrix)",
+    "position_mm": "lower-left corner of the rotated footprint (schema v1 meaning); z includes the bottom layer (floor_offset_mm) the trays rest on",
+    "glb": "organizer.glb root node converts this Z-up mm frame to glTF Y-up metres; tray nodes use the same mm values as this file"
+  },
+  "files": {
+    "stl": [
+      "01_player_1_bus_set_17_buses_1_scoring_marker.stl",
+      "02_player_2_bus_set_17_buses_1_scoring_marker.stl",
+      "03_player_3_bus_set_17_buses_1_scoring_marker.stl",
+      "04_player_4_bus_set_17_buses_1_scoring_marker.stl",
+      "05_transportation_card_deck.stl",
+      "06_destination_ticket_card_deck.stl"
+    ],
+    "glb": "organizer.glb",
+    "layout": "layout.json"
+  },
+  "stats": {
+    "trays": 6,
+    "layers": 1,
+    "floor_coverage": 0.961,
+    "tray_volume_fraction": 0.961,
+    "min_floor_area_needed_mm2": 22076
+  },
+  "notes": [
+    "Trays are separate open-top parts. Trays with layer > 0 rest directly on the tray below (same footprint).",
+    "Print each STL as exported: flat side down, z = 0 on the build plate. Units are millimetres.",
+    "Raised floors and thickened walls are solid in CAD; the slicer fills them with infill (10–15% is plenty).",
+    "required_mm (when used) is the bounding box of the whole stored group, not one piece.",
+    "The packing heuristic is not guaranteed optimal. Verify slicer checks and a physical test fit before a full print.",
+    "Similar names, same box shape and size (at least 47.5 × 71.7 × 18.1 mm, what the largest needs): 'Player 1 Bus Set (17 buses + 1 Scoring Marker)', 'Player 2 Bus Set (17 buses + 1 Scoring Marker)', 'Player 3 Bus Set (17 buses + 1 Scoring Marker)', 'Player 4 Bus Set (17 buses + 1 Scoring Marker)'",
+    "Similar names, same box shape and size (at least 50.9 × 75.8 × 20.6 mm, what the largest needs): 'Transportation Card Deck', 'Destination Ticket Card Deck'",
+    "Each kind of set is one block of equal boxes; the blocks fill the whole box floor"
+  ],
+  "assumptions": [
+    "Player 1 Bus Set (17 buses + 1 Scoring Marker): loose box sized so every piece's bounding box fits in 1 arranged layer(s) of 40.7 × 64.9 mm; pieces poured in at random may need settling. Physical fit is not verified.",
+    "Player 2 Bus Set (17 buses + 1 Scoring Marker): loose box sized so every piece's bounding box fits in 1 arranged layer(s) of 40.7 × 64.9 mm; pieces poured in at random may need settling. Physical fit is not verified.",
+    "Player 3 Bus Set (17 buses + 1 Scoring Marker): loose box sized so every piece's bounding box fits in 1 arranged layer(s) of 40.7 × 64.9 mm; pieces poured in at random may need settling. Physical fit is not verified.",
+    "Player 4 Bus Set (17 buses + 1 Scoring Marker): loose box sized so every piece's bounding box fits in 1 arranged layer(s) of 40.7 × 64.9 mm; pieces poured in at random may need settling. Physical fit is not verified."
+  ],
+  "warnings": [],
+  "skipped_compartments": [],
+  "validation": {
+    "layout": {
+      "ok": true,
+      "problems": [],
+      "collisions": 0,
+      "unsupported_trays": 0,
+      "min_wall_mm": 2.4,
+      "min_divider_mm": null,
+      "min_floor_mm": 2.0,
+      "min_board_support_fraction": null
+    },
+    "meshes_ok": true
+  },
+  "trays": [
+    {
+      "name": "Player 1 Bus Set (17 buses + 1 Scoring Marker)",
+      "stl": "01_player_1_bus_set_17_buses_1_scoring_marker.stl",
+      "position_mm": {
+        "x": 1.5,
+        "y": 1.5,
+        "z": 0.0
+      },
+      "rotation_degrees": 0,
+      "outer_mm": {
+        "width": 111.0,
+        "length": 81.54,
+        "height": 27.9
+      },
+      "footprint_in_box_mm": {
+        "width": 111.0,
+        "length": 81.54
+      },
+      "cavity_mm": {
+        "width": 106.2,
+        "length": 76.74,
+        "depth": 25.9
+      },
+      "id": 1,
+      "type": "set",
+      "compartments": [
+        "Player 1 Bus Set (17 buses + 1 Scoring Marker)"
+      ],
+      "storage_style": "loose",
+      "contents": "17× Plastic Bus piece, 1× Scoring Marker",
+      "layer": 0,
+      "column": 0,
+      "center_mm": {
+        "x": 57.0,
+        "y": 42.27,
+        "z": 0.0
+      },
+      "transform_mm": [
+        [
+          1.0,
+          -0.0,
+          0.0,
+          57.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          42.269
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "assembled_position_mm": [
+        57.0,
+        42.27,
+        0.0
+      ],
+      "exploded_position_mm": [
+        37.4,
+        17.51,
+        74.0
+      ],
+      "assembly_order": 0,
+      "min_outer_mm": {
+        "width": 47.5,
+        "length": 71.7,
+        "height": 18.1
+      },
+      "size_group": "player bus set",
+      "cells": [
+        {
+          "name": "Player 1 Bus Set (17 buses + 1 Scoring Marker)",
+          "component": "Player 1 Bus Set (17 buses + 1 Scoring Marker)",
+          "type": "set",
+          "shape": "rect",
+          "cavity_center_mm": [
+            0.0,
+            0.0
+          ],
+          "cavity_mm": {
+            "width": 106.2,
+            "length": 76.74,
+            "depth": 25.9
+          },
+          "floor_thickness_mm": 2.0,
+          "grows_to_fill": true,
+          "contents": {
+            "storage_style": "loose",
+            "members": [
+              {
+                "name": "Plastic Bus piece",
+                "component_id": "component_2",
+                "quantity": 17,
+                "shape": "rectangular_prism",
+                "dimensions_mm": {
+                  "length": 24.2,
+                  "width": 5.5,
+                  "height": 15.1
+                }
+              },
+              {
+                "name": "Scoring Marker",
+                "component_id": "component_5",
+                "quantity": 1,
+                "shape": "cylinder",
+                "dimensions_mm": {
+                  "length": 14.7,
+                  "width": 14.7,
+                  "height": 13.3
+                }
+              }
+            ],
+            "layers": 1,
+            "fit_basis": "bounding boxes arranged without overlap",
+            "arrangement_mm": [
+              {
+                "member": "Scoring Marker",
+                "x": 0.0,
+                "y": 0.0,
+                "w": 14.7,
+                "l": 14.7
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 14.7,
+                "y": 0.0,
+                "w": 24.2,
+                "l": 5.5
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 14.7,
+                "y": 5.5,
+                "w": 24.2,
+                "l": 5.5
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 14.7,
+                "y": 11.0,
+                "w": 24.2,
+                "l": 5.5
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 0.0,
+                "y": 16.5,
+                "w": 24.2,
+                "l": 5.5
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 0.0,
+                "y": 22.0,
+                "w": 24.2,
+                "l": 5.5
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 0.0,
+                "y": 27.5,
+                "w": 24.2,
+                "l": 5.5
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 0.0,
+                "y": 33.0,
+                "w": 24.2,
+                "l": 5.5
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 24.2,
+                "y": 16.5,
+                "w": 5.5,
+                "l": 24.2
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 29.7,
+                "y": 16.5,
+                "w": 5.5,
+                "l": 24.2
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 35.2,
+                "y": 16.5,
+                "w": 5.5,
+                "l": 24.2
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 0.0,
+                "y": 38.5,
+                "w": 24.2,
+                "l": 5.5
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 0.0,
+                "y": 44.0,
+                "w": 24.2,
+                "l": 5.5
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 0.0,
+                "y": 49.5,
+                "w": 24.2,
+                "l": 5.5
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 0.0,
+                "y": 55.0,
+                "w": 24.2,
+                "l": 5.5
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 24.2,
+                "y": 40.7,
+                "w": 5.5,
+                "l": 24.2
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 29.7,
+                "y": 40.7,
+                "w": 5.5,
+                "l": 24.2
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 35.2,
+                "y": 40.7,
+                "w": 5.5,
+                "l": 24.2
+              }
+            ]
+          }
+        }
+      ],
+      "features": [
+        {
+          "kind": "cavity",
+          "cell": "Player 1 Bus Set (17 buses + 1 Scoring Marker)",
+          "size_mm": [
+            106.2,
+            76.74,
+            25.9
+          ]
+        }
+      ],
+      "solid_volume_cm3": 41.417,
+      "mesh_validation": {
+        "triangles": 284,
+        "watertight": true,
+        "manifold": true,
+        "consistent_winding": true,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "inconsistent_edges": 0,
+        "degenerate_triangles": 0,
+        "shells": 1,
+        "euler_characteristic": 2,
+        "volume_mm3": 41417.04,
+        "outward_normals": true,
+        "bbox_mm": [
+          111.0,
+          81.538,
+          27.9
+        ],
+        "bbox_deviation_mm": 0.0,
+        "volume_vs_cad": 0.0,
+        "min_thickness": {
+          "x": {
+            "min_mm": 2.4,
+            "at_mm": [
+              -55.5,
+              -38.24,
+              2.61
+            ]
+          },
+          "y": {
+            "min_mm": 2.4,
+            "at_mm": [
+              -52.74,
+              -40.77,
+              2.93
+            ]
+          },
+          "z": {
+            "min_mm": 2.0,
+            "at_mm": [
+              -52.61,
+              -37.83,
+              0.0
+            ]
+          },
+          "overall_min_mm": 2.0
+        },
+        "problems": [],
+        "ok": true,
+        "single_open_cavity": {
+          "ok": true,
+          "cavity_points": 7875,
+          "rim_points": 560,
+          "cavity_points_not_on_floor": 0,
+          "rim_points_below_top": 0,
+          "cavity_floor_z_mm": 2.0
+        }
+      }
+    },
+    {
+      "name": "Player 2 Bus Set (17 buses + 1 Scoring Marker)",
+      "stl": "02_player_2_bus_set_17_buses_1_scoring_marker.stl",
+      "position_mm": {
+        "x": 113.5,
+        "y": 1.5,
+        "z": 0.0
+      },
+      "rotation_degrees": 0,
+      "outer_mm": {
+        "width": 111.0,
+        "length": 81.54,
+        "height": 27.9
+      },
+      "footprint_in_box_mm": {
+        "width": 111.0,
+        "length": 81.54
+      },
+      "cavity_mm": {
+        "width": 106.2,
+        "length": 76.74,
+        "depth": 25.9
+      },
+      "id": 2,
+      "type": "set",
+      "compartments": [
+        "Player 2 Bus Set (17 buses + 1 Scoring Marker)"
+      ],
+      "storage_style": "loose",
+      "contents": "17× Plastic Bus piece, 1× Scoring Marker",
+      "layer": 0,
+      "column": 1,
+      "center_mm": {
+        "x": 169.0,
+        "y": 42.27,
+        "z": 0.0
+      },
+      "transform_mm": [
+        [
+          1.0,
+          -0.0,
+          0.0,
+          169.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          42.269
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "assembled_position_mm": [
+        169.0,
+        42.27,
+        0.0
+      ],
+      "exploded_position_mm": [
+        188.6,
+        17.51,
+        74.0
+      ],
+      "assembly_order": 1,
+      "min_outer_mm": {
+        "width": 47.5,
+        "length": 71.7,
+        "height": 18.1
+      },
+      "size_group": "player bus set",
+      "cells": [
+        {
+          "name": "Player 2 Bus Set (17 buses + 1 Scoring Marker)",
+          "component": "Player 2 Bus Set (17 buses + 1 Scoring Marker)",
+          "type": "set",
+          "shape": "rect",
+          "cavity_center_mm": [
+            0.0,
+            0.0
+          ],
+          "cavity_mm": {
+            "width": 106.2,
+            "length": 76.74,
+            "depth": 25.9
+          },
+          "floor_thickness_mm": 2.0,
+          "grows_to_fill": true,
+          "contents": {
+            "storage_style": "loose",
+            "members": [
+              {
+                "name": "Plastic Bus piece",
+                "component_id": "component_2",
+                "quantity": 17,
+                "shape": "rectangular_prism",
+                "dimensions_mm": {
+                  "length": 24.2,
+                  "width": 5.5,
+                  "height": 15.1
+                }
+              },
+              {
+                "name": "Scoring Marker",
+                "component_id": "component_5",
+                "quantity": 1,
+                "shape": "cylinder",
+                "dimensions_mm": {
+                  "length": 14.7,
+                  "width": 14.7,
+                  "height": 13.3
+                }
+              }
+            ],
+            "layers": 1,
+            "fit_basis": "bounding boxes arranged without overlap",
+            "arrangement_mm": [
+              {
+                "member": "Scoring Marker",
+                "x": 0.0,
+                "y": 0.0,
+                "w": 14.7,
+                "l": 14.7
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 14.7,
+                "y": 0.0,
+                "w": 24.2,
+                "l": 5.5
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 14.7,
+                "y": 5.5,
+                "w": 24.2,
+                "l": 5.5
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 14.7,
+                "y": 11.0,
+                "w": 24.2,
+                "l": 5.5
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 0.0,
+                "y": 16.5,
+                "w": 24.2,
+                "l": 5.5
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 0.0,
+                "y": 22.0,
+                "w": 24.2,
+                "l": 5.5
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 0.0,
+                "y": 27.5,
+                "w": 24.2,
+                "l": 5.5
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 0.0,
+                "y": 33.0,
+                "w": 24.2,
+                "l": 5.5
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 24.2,
+                "y": 16.5,
+                "w": 5.5,
+                "l": 24.2
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 29.7,
+                "y": 16.5,
+                "w": 5.5,
+                "l": 24.2
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 35.2,
+                "y": 16.5,
+                "w": 5.5,
+                "l": 24.2
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 0.0,
+                "y": 38.5,
+                "w": 24.2,
+                "l": 5.5
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 0.0,
+                "y": 44.0,
+                "w": 24.2,
+                "l": 5.5
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 0.0,
+                "y": 49.5,
+                "w": 24.2,
+                "l": 5.5
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 0.0,
+                "y": 55.0,
+                "w": 24.2,
+                "l": 5.5
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 24.2,
+                "y": 40.7,
+                "w": 5.5,
+                "l": 24.2
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 29.7,
+                "y": 40.7,
+                "w": 5.5,
+                "l": 24.2
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 35.2,
+                "y": 40.7,
+                "w": 5.5,
+                "l": 24.2
+              }
+            ]
+          }
+        }
+      ],
+      "features": [
+        {
+          "kind": "cavity",
+          "cell": "Player 2 Bus Set (17 buses + 1 Scoring Marker)",
+          "size_mm": [
+            106.2,
+            76.74,
+            25.9
+          ]
+        }
+      ],
+      "solid_volume_cm3": 41.417,
+      "mesh_validation": {
+        "triangles": 284,
+        "watertight": true,
+        "manifold": true,
+        "consistent_winding": true,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "inconsistent_edges": 0,
+        "degenerate_triangles": 0,
+        "shells": 1,
+        "euler_characteristic": 2,
+        "volume_mm3": 41417.04,
+        "outward_normals": true,
+        "bbox_mm": [
+          111.0,
+          81.538,
+          27.9
+        ],
+        "bbox_deviation_mm": 0.0,
+        "volume_vs_cad": 0.0,
+        "min_thickness": {
+          "x": {
+            "min_mm": 2.4,
+            "at_mm": [
+              -55.5,
+              -38.24,
+              2.61
+            ]
+          },
+          "y": {
+            "min_mm": 2.4,
+            "at_mm": [
+              -52.74,
+              -40.77,
+              2.93
+            ]
+          },
+          "z": {
+            "min_mm": 2.0,
+            "at_mm": [
+              -52.61,
+              -37.83,
+              0.0
+            ]
+          },
+          "overall_min_mm": 2.0
+        },
+        "problems": [],
+        "ok": true,
+        "single_open_cavity": {
+          "ok": true,
+          "cavity_points": 7875,
+          "rim_points": 560,
+          "cavity_points_not_on_floor": 0,
+          "rim_points_below_top": 0,
+          "cavity_floor_z_mm": 2.0
+        }
+      }
+    },
+    {
+      "name": "Player 3 Bus Set (17 buses + 1 Scoring Marker)",
+      "stl": "03_player_3_bus_set_17_buses_1_scoring_marker.stl",
+      "position_mm": {
+        "x": 1.5,
+        "y": 84.04,
+        "z": 0.0
+      },
+      "rotation_degrees": 0,
+      "outer_mm": {
+        "width": 111.0,
+        "length": 81.54,
+        "height": 27.9
+      },
+      "footprint_in_box_mm": {
+        "width": 111.0,
+        "length": 81.54
+      },
+      "cavity_mm": {
+        "width": 106.2,
+        "length": 76.74,
+        "depth": 25.9
+      },
+      "id": 3,
+      "type": "set",
+      "compartments": [
+        "Player 3 Bus Set (17 buses + 1 Scoring Marker)"
+      ],
+      "storage_style": "loose",
+      "contents": "17× Plastic Bus piece, 1× Scoring Marker",
+      "layer": 0,
+      "column": 2,
+      "center_mm": {
+        "x": 57.0,
+        "y": 124.81,
+        "z": 0.0
+      },
+      "transform_mm": [
+        [
+          1.0,
+          -0.0,
+          0.0,
+          57.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          124.807
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "assembled_position_mm": [
+        57.0,
+        124.81,
+        0.0
+      ],
+      "exploded_position_mm": [
+        37.4,
+        128.94,
+        74.0
+      ],
+      "assembly_order": 2,
+      "min_outer_mm": {
+        "width": 47.5,
+        "length": 71.7,
+        "height": 18.1
+      },
+      "size_group": "player bus set",
+      "cells": [
+        {
+          "name": "Player 3 Bus Set (17 buses + 1 Scoring Marker)",
+          "component": "Player 3 Bus Set (17 buses + 1 Scoring Marker)",
+          "type": "set",
+          "shape": "rect",
+          "cavity_center_mm": [
+            0.0,
+            0.0
+          ],
+          "cavity_mm": {
+            "width": 106.2,
+            "length": 76.74,
+            "depth": 25.9
+          },
+          "floor_thickness_mm": 2.0,
+          "grows_to_fill": true,
+          "contents": {
+            "storage_style": "loose",
+            "members": [
+              {
+                "name": "Plastic Bus piece",
+                "component_id": "component_2",
+                "quantity": 17,
+                "shape": "rectangular_prism",
+                "dimensions_mm": {
+                  "length": 24.2,
+                  "width": 5.5,
+                  "height": 15.1
+                }
+              },
+              {
+                "name": "Scoring Marker",
+                "component_id": "component_5",
+                "quantity": 1,
+                "shape": "cylinder",
+                "dimensions_mm": {
+                  "length": 14.7,
+                  "width": 14.7,
+                  "height": 13.3
+                }
+              }
+            ],
+            "layers": 1,
+            "fit_basis": "bounding boxes arranged without overlap",
+            "arrangement_mm": [
+              {
+                "member": "Scoring Marker",
+                "x": 0.0,
+                "y": 0.0,
+                "w": 14.7,
+                "l": 14.7
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 14.7,
+                "y": 0.0,
+                "w": 24.2,
+                "l": 5.5
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 14.7,
+                "y": 5.5,
+                "w": 24.2,
+                "l": 5.5
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 14.7,
+                "y": 11.0,
+                "w": 24.2,
+                "l": 5.5
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 0.0,
+                "y": 16.5,
+                "w": 24.2,
+                "l": 5.5
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 0.0,
+                "y": 22.0,
+                "w": 24.2,
+                "l": 5.5
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 0.0,
+                "y": 27.5,
+                "w": 24.2,
+                "l": 5.5
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 0.0,
+                "y": 33.0,
+                "w": 24.2,
+                "l": 5.5
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 24.2,
+                "y": 16.5,
+                "w": 5.5,
+                "l": 24.2
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 29.7,
+                "y": 16.5,
+                "w": 5.5,
+                "l": 24.2
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 35.2,
+                "y": 16.5,
+                "w": 5.5,
+                "l": 24.2
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 0.0,
+                "y": 38.5,
+                "w": 24.2,
+                "l": 5.5
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 0.0,
+                "y": 44.0,
+                "w": 24.2,
+                "l": 5.5
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 0.0,
+                "y": 49.5,
+                "w": 24.2,
+                "l": 5.5
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 0.0,
+                "y": 55.0,
+                "w": 24.2,
+                "l": 5.5
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 24.2,
+                "y": 40.7,
+                "w": 5.5,
+                "l": 24.2
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 29.7,
+                "y": 40.7,
+                "w": 5.5,
+                "l": 24.2
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 35.2,
+                "y": 40.7,
+                "w": 5.5,
+                "l": 24.2
+              }
+            ]
+          }
+        }
+      ],
+      "features": [
+        {
+          "kind": "cavity",
+          "cell": "Player 3 Bus Set (17 buses + 1 Scoring Marker)",
+          "size_mm": [
+            106.2,
+            76.74,
+            25.9
+          ]
+        }
+      ],
+      "solid_volume_cm3": 41.417,
+      "mesh_validation": {
+        "triangles": 284,
+        "watertight": true,
+        "manifold": true,
+        "consistent_winding": true,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "inconsistent_edges": 0,
+        "degenerate_triangles": 0,
+        "shells": 1,
+        "euler_characteristic": 2,
+        "volume_mm3": 41417.04,
+        "outward_normals": true,
+        "bbox_mm": [
+          111.0,
+          81.538,
+          27.9
+        ],
+        "bbox_deviation_mm": 0.0,
+        "volume_vs_cad": 0.0,
+        "min_thickness": {
+          "x": {
+            "min_mm": 2.4,
+            "at_mm": [
+              -55.5,
+              -38.24,
+              2.61
+            ]
+          },
+          "y": {
+            "min_mm": 2.4,
+            "at_mm": [
+              -52.74,
+              -40.77,
+              2.93
+            ]
+          },
+          "z": {
+            "min_mm": 2.0,
+            "at_mm": [
+              -52.61,
+              -37.83,
+              0.0
+            ]
+          },
+          "overall_min_mm": 2.0
+        },
+        "problems": [],
+        "ok": true,
+        "single_open_cavity": {
+          "ok": true,
+          "cavity_points": 7875,
+          "rim_points": 560,
+          "cavity_points_not_on_floor": 0,
+          "rim_points_below_top": 0,
+          "cavity_floor_z_mm": 2.0
+        }
+      }
+    },
+    {
+      "name": "Player 4 Bus Set (17 buses + 1 Scoring Marker)",
+      "stl": "04_player_4_bus_set_17_buses_1_scoring_marker.stl",
+      "position_mm": {
+        "x": 113.5,
+        "y": 84.04,
+        "z": 0.0
+      },
+      "rotation_degrees": 0,
+      "outer_mm": {
+        "width": 111.0,
+        "length": 81.54,
+        "height": 27.9
+      },
+      "footprint_in_box_mm": {
+        "width": 111.0,
+        "length": 81.54
+      },
+      "cavity_mm": {
+        "width": 106.2,
+        "length": 76.74,
+        "depth": 25.9
+      },
+      "id": 4,
+      "type": "set",
+      "compartments": [
+        "Player 4 Bus Set (17 buses + 1 Scoring Marker)"
+      ],
+      "storage_style": "loose",
+      "contents": "17× Plastic Bus piece, 1× Scoring Marker",
+      "layer": 0,
+      "column": 3,
+      "center_mm": {
+        "x": 169.0,
+        "y": 124.81,
+        "z": 0.0
+      },
+      "transform_mm": [
+        [
+          1.0,
+          -0.0,
+          0.0,
+          169.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          124.807
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "assembled_position_mm": [
+        169.0,
+        124.81,
+        0.0
+      ],
+      "exploded_position_mm": [
+        188.6,
+        128.94,
+        74.0
+      ],
+      "assembly_order": 3,
+      "min_outer_mm": {
+        "width": 47.5,
+        "length": 71.7,
+        "height": 18.1
+      },
+      "size_group": "player bus set",
+      "cells": [
+        {
+          "name": "Player 4 Bus Set (17 buses + 1 Scoring Marker)",
+          "component": "Player 4 Bus Set (17 buses + 1 Scoring Marker)",
+          "type": "set",
+          "shape": "rect",
+          "cavity_center_mm": [
+            0.0,
+            0.0
+          ],
+          "cavity_mm": {
+            "width": 106.2,
+            "length": 76.74,
+            "depth": 25.9
+          },
+          "floor_thickness_mm": 2.0,
+          "grows_to_fill": true,
+          "contents": {
+            "storage_style": "loose",
+            "members": [
+              {
+                "name": "Plastic Bus piece",
+                "component_id": "component_2",
+                "quantity": 17,
+                "shape": "rectangular_prism",
+                "dimensions_mm": {
+                  "length": 24.2,
+                  "width": 5.5,
+                  "height": 15.1
+                }
+              },
+              {
+                "name": "Scoring Marker",
+                "component_id": "component_5",
+                "quantity": 1,
+                "shape": "cylinder",
+                "dimensions_mm": {
+                  "length": 14.7,
+                  "width": 14.7,
+                  "height": 13.3
+                }
+              }
+            ],
+            "layers": 1,
+            "fit_basis": "bounding boxes arranged without overlap",
+            "arrangement_mm": [
+              {
+                "member": "Scoring Marker",
+                "x": 0.0,
+                "y": 0.0,
+                "w": 14.7,
+                "l": 14.7
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 14.7,
+                "y": 0.0,
+                "w": 24.2,
+                "l": 5.5
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 14.7,
+                "y": 5.5,
+                "w": 24.2,
+                "l": 5.5
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 14.7,
+                "y": 11.0,
+                "w": 24.2,
+                "l": 5.5
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 0.0,
+                "y": 16.5,
+                "w": 24.2,
+                "l": 5.5
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 0.0,
+                "y": 22.0,
+                "w": 24.2,
+                "l": 5.5
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 0.0,
+                "y": 27.5,
+                "w": 24.2,
+                "l": 5.5
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 0.0,
+                "y": 33.0,
+                "w": 24.2,
+                "l": 5.5
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 24.2,
+                "y": 16.5,
+                "w": 5.5,
+                "l": 24.2
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 29.7,
+                "y": 16.5,
+                "w": 5.5,
+                "l": 24.2
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 35.2,
+                "y": 16.5,
+                "w": 5.5,
+                "l": 24.2
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 0.0,
+                "y": 38.5,
+                "w": 24.2,
+                "l": 5.5
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 0.0,
+                "y": 44.0,
+                "w": 24.2,
+                "l": 5.5
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 0.0,
+                "y": 49.5,
+                "w": 24.2,
+                "l": 5.5
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 0.0,
+                "y": 55.0,
+                "w": 24.2,
+                "l": 5.5
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 24.2,
+                "y": 40.7,
+                "w": 5.5,
+                "l": 24.2
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 29.7,
+                "y": 40.7,
+                "w": 5.5,
+                "l": 24.2
+              },
+              {
+                "member": "Plastic Bus piece",
+                "x": 35.2,
+                "y": 40.7,
+                "w": 5.5,
+                "l": 24.2
+              }
+            ]
+          }
+        }
+      ],
+      "features": [
+        {
+          "kind": "cavity",
+          "cell": "Player 4 Bus Set (17 buses + 1 Scoring Marker)",
+          "size_mm": [
+            106.2,
+            76.74,
+            25.9
+          ]
+        }
+      ],
+      "solid_volume_cm3": 41.417,
+      "mesh_validation": {
+        "triangles": 284,
+        "watertight": true,
+        "manifold": true,
+        "consistent_winding": true,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "inconsistent_edges": 0,
+        "degenerate_triangles": 0,
+        "shells": 1,
+        "euler_characteristic": 2,
+        "volume_mm3": 41417.04,
+        "outward_normals": true,
+        "bbox_mm": [
+          111.0,
+          81.538,
+          27.9
+        ],
+        "bbox_deviation_mm": 0.0,
+        "volume_vs_cad": 0.0,
+        "min_thickness": {
+          "x": {
+            "min_mm": 2.4,
+            "at_mm": [
+              -55.5,
+              -38.24,
+              2.61
+            ]
+          },
+          "y": {
+            "min_mm": 2.4,
+            "at_mm": [
+              -52.74,
+              -40.77,
+              2.93
+            ]
+          },
+          "z": {
+            "min_mm": 2.0,
+            "at_mm": [
+              -52.61,
+              -37.83,
+              0.0
+            ]
+          },
+          "overall_min_mm": 2.0
+        },
+        "problems": [],
+        "ok": true,
+        "single_open_cavity": {
+          "ok": true,
+          "cavity_points": 7875,
+          "rim_points": 560,
+          "cavity_points_not_on_floor": 0,
+          "rim_points_below_top": 0,
+          "cavity_floor_z_mm": 2.0
+        }
+      }
+    },
+    {
+      "name": "Transportation Card Deck",
+      "stl": "05_transportation_card_deck.stl",
+      "position_mm": {
+        "x": 1.5,
+        "y": 166.58,
+        "z": 0.0
+      },
+      "rotation_degrees": 90,
+      "outer_mm": {
+        "width": 57.92,
+        "length": 111.0,
+        "height": 27.9
+      },
+      "footprint_in_box_mm": {
+        "width": 111.0,
+        "length": 57.92
+      },
+      "cavity_mm": {
+        "width": 53.12,
+        "length": 106.2,
+        "depth": 25.9
+      },
+      "id": 5,
+      "type": "set",
+      "compartments": [
+        "Transportation Card Deck"
+      ],
+      "storage_style": "card_stack",
+      "contents": "44× Transportation card",
+      "layer": 0,
+      "column": 4,
+      "center_mm": {
+        "x": 57.0,
+        "y": 195.54,
+        "z": 0.0
+      },
+      "transform_mm": [
+        [
+          0.0,
+          -1.0,
+          0.0,
+          57.0
+        ],
+        [
+          1.0,
+          0.0,
+          0.0,
+          195.538
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "assembled_position_mm": [
+        57.0,
+        195.54,
+        0.0
+      ],
+      "exploded_position_mm": [
+        37.4,
+        224.43,
+        74.0
+      ],
+      "assembly_order": 4,
+      "min_outer_mm": {
+        "width": 50.9,
+        "length": 74.5,
+        "height": 20.6
+      },
+      "size_group": "card deck",
+      "cells": [
+        {
+          "name": "Transportation Card Deck",
+          "component": "Transportation Card Deck",
+          "type": "set",
+          "shape": "rect",
+          "cavity_center_mm": [
+            0.0,
+            0.0
+          ],
+          "cavity_mm": {
+            "width": 53.12,
+            "length": 106.2,
+            "depth": 25.9
+          },
+          "floor_thickness_mm": 2.0,
+          "grows_to_fill": true,
+          "contents": {
+            "storage_style": "card_stack",
+            "members": [
+              {
+                "name": "Transportation card",
+                "component_id": "component_3",
+                "quantity": 44,
+                "shape": "rectangular_prism",
+                "dimensions_mm": {
+                  "length": 67.7,
+                  "width": 44.1,
+                  "height": 0.4
+                }
+              }
+            ],
+            "stack_height_mm": 17.6,
+            "fit_basis": "one deck lying flat: 44 × 0.4 mm"
+          }
+        }
+      ],
+      "features": [
+        {
+          "kind": "cavity",
+          "cell": "Transportation Card Deck",
+          "size_mm": [
+            53.12,
+            106.2,
+            25.9
+          ]
+        }
+      ],
+      "solid_volume_cm3": 33.239,
+      "mesh_validation": {
+        "triangles": 284,
+        "watertight": true,
+        "manifold": true,
+        "consistent_winding": true,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "inconsistent_edges": 0,
+        "degenerate_triangles": 0,
+        "shells": 1,
+        "euler_characteristic": 2,
+        "volume_mm3": 33238.75,
+        "outward_normals": true,
+        "bbox_mm": [
+          57.923,
+          111.0,
+          27.9
+        ],
+        "bbox_deviation_mm": 0.0,
+        "volume_vs_cad": 0.0,
+        "min_thickness": {
+          "x": {
+            "min_mm": 2.4,
+            "at_mm": [
+              -28.96,
+              -52.74,
+              2.93
+            ]
+          },
+          "y": {
+            "min_mm": 2.4,
+            "at_mm": [
+              -26.4,
+              -55.5,
+              2.61
+            ]
+          },
+          "z": {
+            "min_mm": 2.0,
+            "at_mm": [
+              -26.46,
+              -53.06,
+              0.0
+            ]
+          },
+          "overall_min_mm": 2.0
+        },
+        "problems": [],
+        "ok": true,
+        "single_open_cavity": {
+          "ok": true,
+          "cavity_points": 5460,
+          "rim_points": 488,
+          "cavity_points_not_on_floor": 0,
+          "rim_points_below_top": 0,
+          "cavity_floor_z_mm": 2.0
+        }
+      }
+    },
+    {
+      "name": "Destination Ticket Card Deck",
+      "stl": "06_destination_ticket_card_deck.stl",
+      "position_mm": {
+        "x": 113.5,
+        "y": 166.58,
+        "z": 0.0
+      },
+      "rotation_degrees": 90,
+      "outer_mm": {
+        "width": 57.92,
+        "length": 111.0,
+        "height": 27.9
+      },
+      "footprint_in_box_mm": {
+        "width": 111.0,
+        "length": 57.92
+      },
+      "cavity_mm": {
+        "width": 53.12,
+        "length": 106.2,
+        "depth": 25.9
+      },
+      "id": 6,
+      "type": "set",
+      "compartments": [
+        "Destination Ticket Card Deck"
+      ],
+      "storage_style": "card_stack",
+      "contents": "20× Destination Ticket card",
+      "layer": 0,
+      "column": 5,
+      "center_mm": {
+        "x": 169.0,
+        "y": 195.54,
+        "z": 0.0
+      },
+      "transform_mm": [
+        [
+          0.0,
+          -1.0,
+          0.0,
+          169.0
+        ],
+        [
+          1.0,
+          0.0,
+          0.0,
+          195.538
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "assembled_position_mm": [
+        169.0,
+        195.54,
+        0.0
+      ],
+      "exploded_position_mm": [
+        188.6,
+        224.43,
+        74.0
+      ],
+      "assembly_order": 5,
+      "min_outer_mm": {
+        "width": 50.3,
+        "length": 75.8,
+        "height": 11.0
+      },
+      "size_group": "card deck",
+      "cells": [
+        {
+          "name": "Destination Ticket Card Deck",
+          "component": "Destination Ticket Card Deck",
+          "type": "set",
+          "shape": "rect",
+          "cavity_center_mm": [
+            0.0,
+            0.0
+          ],
+          "cavity_mm": {
+            "width": 53.12,
+            "length": 106.2,
+            "depth": 25.9
+          },
+          "floor_thickness_mm": 2.0,
+          "grows_to_fill": true,
+          "contents": {
+            "storage_style": "card_stack",
+            "members": [
+              {
+                "name": "Destination Ticket card",
+                "component_id": "component_4",
+                "quantity": 20,
+                "shape": "rectangular_prism",
+                "dimensions_mm": {
+                  "length": 69.0,
+                  "width": 43.5,
+                  "height": 0.4
+                }
+              }
+            ],
+            "stack_height_mm": 8.0,
+            "fit_basis": "one deck lying flat: 20 × 0.4 mm"
+          }
+        }
+      ],
+      "features": [
+        {
+          "kind": "cavity",
+          "cell": "Destination Ticket Card Deck",
+          "size_mm": [
+            53.12,
+            106.2,
+            25.9
+          ]
+        }
+      ],
+      "solid_volume_cm3": 33.239,
+      "mesh_validation": {
+        "triangles": 284,
+        "watertight": true,
+        "manifold": true,
+        "consistent_winding": true,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "inconsistent_edges": 0,
+        "degenerate_triangles": 0,
+        "shells": 1,
+        "euler_characteristic": 2,
+        "volume_mm3": 33238.75,
+        "outward_normals": true,
+        "bbox_mm": [
+          57.923,
+          111.0,
+          27.9
+        ],
+        "bbox_deviation_mm": 0.0,
+        "volume_vs_cad": 0.0,
+        "min_thickness": {
+          "x": {
+            "min_mm": 2.4,
+            "at_mm": [
+              -28.96,
+              -52.74,
+              2.93
+            ]
+          },
+          "y": {
+            "min_mm": 2.4,
+            "at_mm": [
+              -26.4,
+              -55.5,
+              2.61
+            ]
+          },
+          "z": {
+            "min_mm": 2.0,
+            "at_mm": [
+              -26.46,
+              -53.06,
+              0.0
+            ]
+          },
+          "overall_min_mm": 2.0
+        },
+        "problems": [],
+        "ok": true,
+        "single_open_cavity": {
+          "ok": true,
+          "cavity_points": 5460,
+          "rim_points": 488,
+          "cavity_points_not_on_floor": 0,
+          "rim_points_below_top": 0,
+          "cavity_floor_z_mm": 2.0
+        }
+      }
+    }
+  ]
+}

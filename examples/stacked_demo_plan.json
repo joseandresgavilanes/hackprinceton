@@ -1,0 +1,153 @@
+{
+  "game": "Illustrative stacking demo — same components in a smaller box (made-up dimensions)",
+  "box_inner_mm": {
+    "width": 220,
+    "length": 220,
+    "height": 80
+  },
+  "printer_bed_mm": {
+    "width": 256,
+    "length": 256,
+    "height": 256
+  },
+  "settings": {
+    "wall_mm": 2.0,
+    "floor_mm": 1.6,
+    "clearance_mm": 1.0,
+    "tray_gap_mm": 1.0,
+    "box_margin_mm": 1.0,
+    "divider_mm": 1.6,
+    "headroom_mm": 8.0
+  },
+  "compartments": [
+    {
+      "name": "Market cards",
+      "type": "cards",
+      "quantity": 140,
+      "stacks": 2,
+      "piece_mm": {
+        "width": 63,
+        "length": 88,
+        "thickness": 0.32
+      },
+      "sleeve_mm": {
+        "width": 66,
+        "length": 91,
+        "thickness": 0.6
+      }
+    },
+    {
+      "name": "Event cards",
+      "type": "cards",
+      "quantity": 40,
+      "piece_mm": {
+        "width": 44,
+        "length": 68,
+        "thickness": 0.3
+      }
+    },
+    {
+      "name": "Land tiles",
+      "type": "tiles",
+      "quantity": 72,
+      "stacks": 3,
+      "piece_mm": {
+        "width": 45,
+        "length": 45,
+        "thickness": 2.0
+      }
+    },
+    {
+      "name": "Coins",
+      "type": "round_tokens",
+      "quantity": 40,
+      "piece_mm": {
+        "diameter": 25,
+        "thickness": 2.2
+      }
+    },
+    {
+      "name": "Victory tokens",
+      "type": "round_tokens",
+      "quantity": 30,
+      "stacks": 3,
+      "piece_mm": {
+        "diameter": 18,
+        "thickness": 2.0
+      }
+    },
+    {
+      "name": "Dice",
+      "type": "dice",
+      "quantity": 6,
+      "pockets": true,
+      "piece_mm": {
+        "edge": 16
+      }
+    },
+    {
+      "name": "Red workers",
+      "type": "bits",
+      "quantity": 8,
+      "tray": "Player pieces",
+      "piece_mm": {
+        "width": 16,
+        "length": 16,
+        "height": 10
+      }
+    },
+    {
+      "name": "Blue workers",
+      "type": "bits",
+      "quantity": 8,
+      "tray": "Player pieces",
+      "piece_mm": {
+        "width": 16,
+        "length": 16,
+        "height": 10
+      }
+    },
+    {
+      "name": "Green workers",
+      "type": "bits",
+      "quantity": 8,
+      "tray": "Player pieces",
+      "piece_mm": {
+        "width": 16,
+        "length": 16,
+        "height": 10
+      }
+    },
+    {
+      "name": "Yellow workers",
+      "type": "bits",
+      "quantity": 8,
+      "tray": "Player pieces",
+      "piece_mm": {
+        "width": 16,
+        "length": 16,
+        "height": 10
+      }
+    },
+    {
+      "name": "Resource cubes",
+      "type": "bits",
+      "quantity": 60,
+      "cells": 3,
+      "piece_mm": {
+        "width": 8,
+        "length": 8,
+        "height": 8
+      }
+    },
+    {
+      "name": "First player marker",
+      "type": "generic",
+      "required_mm": {
+        "width": 40,
+        "length": 30,
+        "height": 20
+      }
+    }
+  ]
+}

@@ -1,12 +1,16 @@
 {
-  "game": "GameFit demo (illustrative dimensions \u2014 not verified for a particular game)",
+  "schema_version": 2,
+  "engine": "inside-the-box organizer 2.0.0",
+  "status": "ok",
+  "game": "GameFit demo (illustrative dimensions — not verified for a particular game)",
   "units": "mm",
-  "method": "rectpack_maxrects_bssf",
+  "method": "maxrects_cp/area + fill_box",
   "box_inner_mm": {
     "width": 210.0,
     "length": 210.0,
     "height": 50.0
   },
+  "usable_height_mm": 50.0,
   "printer_bed_mm": {
     "width": 220.0,
     "length": 220.0
@@ -16,14 +20,83 @@
     "floor_mm": 2.0,
     "clearance_mm": 1.0,
     "tray_gap_mm": 1.5,
-    "box_margin_mm": 1.5
+    "box_margin_mm": 1.5,
+    "divider_mm": 1.6,
+    "min_feature_mm": 1.2,
+    "headroom_mm": 0.0,
+    "fill_height": true,
+    "fill_box": true,
+    "max_layers": 3
+  },
+  "coordinate_system": {
+    "origin": "lower-left corner of the box interior floor",
+    "axes": "x = box width, y = box length, z = up (millimetres)",
+    "stl_frame": "each STL is centred on x/y = 0 with its base at z = 0",
+    "placement": "rotate the STL by rotation_degrees counter-clockwise about +z, then translate it to center_mm (equivalently apply transform_mm, a row-major 4×4 matrix)",
+    "position_mm": "lower-left corner of the rotated footprint (schema v1 meaning)",
+    "glb": "organizer.glb root node converts this Z-up mm frame to glTF Y-up metres; tray nodes use the same mm values as this file"
+  },
+  "files": {
+    "stl": [
+      "01_playing_cards.stl",
+      "02_square_tiles.stl",
+      "03_red_meeples.stl",
+      "04_blue_meeples.stl",
+      "05_green_meeples.stl",
+      "06_yellow_meeples.stl",
+      "07_dice_and_tokens.stl"
+    ],
+    "glb": "organizer.glb",
+    "layout": "layout.json"
+  },
+  "stats": {
+    "trays": 7,
+    "layers": 1,
+    "floor_coverage": 0.932,
+    "tray_volume_fraction": 0.932,
+    "min_floor_area_needed_mm2": 26441
   },
   "notes": [
-    "Single flat layer of separate trays, not a stacked system.",
-    "Each required_mm specifies the total stored group size, not one piece.",
-    "Print each STL flat-side-down; verify slicer checks and a physical fit before production.",
-    "Packing heuristic is not guaranteed optimal."
+    "Trays are separate open-top parts. Trays with layer > 0 rest directly on the tray below (same footprint).",
+    "Print each STL as exported: flat side down, z = 0 on the build plate. Units are millimetres.",
+    "Raised floors and thickened walls are solid in CAD; the slicer fills them with infill (10–15% is plenty).",
+    "required_mm (when used) is the bounding box of the whole stored group, not one piece.",
+    "The packing heuristic is not guaranteed optimal. Verify slicer checks and a physical test fit before a full print."
   ],
+  "assumptions": [
+    "Playing cards: no type given; treated as 'cards' from its name (affects finger access features only, not dimensions)",
+    "Square tiles: no type given; treated as 'tiles' from its name (affects finger access features only, not dimensions)",
+    "Red meeples: no type given; treated as 'bits' from its name (affects finger access features only, not dimensions)",
+    "Blue meeples: no type given; treated as 'bits' from its name (affects finger access features only, not dimensions)",
+    "Green meeples: no type given; treated as 'bits' from its name (affects finger access features only, not dimensions)",
+    "Yellow meeples: no type given; treated as 'bits' from its name (affects finger access features only, not dimensions)",
+    "Dice and tokens: no type given; treated as 'dice' from its name (affects finger access features only, not dimensions)"
+  ],
+  "warnings": [
+    {
+      "severity": "warning",
+      "code": "no_printer_height",
+      "message": "printer_bed_mm.height not given: tray heights are not checked against the printer's Z limit"
+    },
+    {
+      "severity": "warning",
+      "code": "no_headroom",
+      "message": "settings.headroom_mm not given: no space is reserved under the lid. If a board or rulebook sits on top of the trays, measure that stack and set settings.headroom_mm, otherwise the lid may not close."
+    }
+  ],
+  "skipped_compartments": [],
+  "validation": {
+    "layout": {
+      "ok": true,
+      "problems": [],
+      "collisions": 0,
+      "unsupported_trays": 0,
+      "min_wall_mm": 2.4,
+      "min_divider_mm": null,
+      "min_floor_mm": 17.955
+    },
+    "meshes_ok": true
+  },
   "trays": [
     {
       "name": "Playing cards",
@@ -31,22 +104,179 @@
       "position_mm": {
         "x": 2.25,
         "y": 2.25,
-        "z": 0
+        "z": 0.0
       },
       "rotation_degrees": 0,
       "outer_mm": {
-        "width": 72.8,
-        "length": 98.8,
-        "height": 29.0
+        "width": 73.23,
+        "length": 104.55,
+        "height": 50.0
       },
       "footprint_in_box_mm": {
-        "width": 72.8,
-        "length": 98.8
+        "width": 73.23,
+        "length": 104.55
       },
       "cavity_mm": {
         "width": 68.0,
         "length": 94.0,
         "depth": 27.0
+      },
+      "id": 1,
+      "type": "cards",
+      "compartments": [
+        "Playing cards"
+      ],
+      "layer": 0,
+      "column": 0,
+      "center_mm": {
+        "x": 38.86,
+        "y": 54.52,
+        "z": 0.0
+      },
+      "transform_mm": [
+        [
+          1.0,
+          -0.0,
+          0.0,
+          38.863
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          54.524
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "assembled_position_mm": [
+        38.86,
+        54.52,
+        0.0
+      ],
+      "exploded_position_mm": [
+        15.72,
+        36.86,
+        80.0
+      ],
+      "assembly_order": 0,
+      "min_outer_mm": {
+        "width": 72.8,
+        "length": 98.8,
+        "height": 29.0
+      },
+      "cells": [
+        {
+          "name": "Playing cards",
+          "component": "Playing cards",
+          "type": "cards",
+          "shape": "rect",
+          "cavity_center_mm": [
+            0.0,
+            0.0
+          ],
+          "cavity_mm": {
+            "width": 68.0,
+            "length": 94.0,
+            "depth": 27.0
+          },
+          "floor_thickness_mm": 23.0,
+          "grows_to_fill": false,
+          "contents": {
+            "source": "required_mm",
+            "group_bbox_mm": {
+              "width": 66.0,
+              "length": 92.0,
+              "height": 26.0
+            }
+          }
+        }
+      ],
+      "features": [
+        {
+          "kind": "cavity",
+          "cell": "Playing cards",
+          "size_mm": [
+            68.0,
+            94.0,
+            27.0
+          ]
+        },
+        {
+          "kind": "finger_notch",
+          "cell": "Playing cards",
+          "side": "-x",
+          "width_mm": 20.0,
+          "depth_mm": 16.2
+        },
+        {
+          "kind": "finger_notch",
+          "cell": "Playing cards",
+          "side": "+x",
+          "width_mm": 20.0,
+          "depth_mm": 16.2
+        }
+      ],
+      "solid_volume_cm3": 208.686,
+      "mesh_validation": {
+        "triangles": 564,
+        "watertight": true,
+        "manifold": true,
+        "consistent_winding": true,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "inconsistent_edges": 0,
+        "degenerate_triangles": 0,
+        "shells": 1,
+        "euler_characteristic": 2,
+        "volume_mm3": 208687.13,
+        "outward_normals": true,
+        "bbox_mm": [
+          73.226,
+          104.548,
+          50.0
+        ],
+        "bbox_deviation_mm": 0.0,
+        "volume_vs_cad": 1e-05,
+        "min_thickness": {
+          "x": {
+            "min_mm": 2.613,
+            "at_mm": [
+              -36.61,
+              -45.72,
+              24.29
+            ]
+          },
+          "y": {
+            "min_mm": 5.274,
+            "at_mm": [
+              -33.54,
+              -52.27,
+              23.8
+            ]
+          },
+          "z": {
+            "min_mm": 23.0,
+            "at_mm": [
+              -33.92,
+              -46.05,
+              0.0
+            ]
+          },
+          "overall_min_mm": 2.613
+        },
+        "problems": [],
+        "ok": true
       }
     },
     {
@@ -54,143 +284,1020 @@
       "stl": "02_square_tiles.stl",
       "position_mm": {
         "x": 2.25,
-        "y": 102.55,
-        "z": 0
+        "y": 108.3,
+        "z": 0.0
       },
       "rotation_degrees": 0,
       "outer_mm": {
-        "width": 58.8,
-        "length": 58.8,
-        "height": 34.0
+        "width": 59.15,
+        "length": 99.45,
+        "height": 50.0
       },
       "footprint_in_box_mm": {
-        "width": 58.8,
-        "length": 58.8
+        "width": 59.15,
+        "length": 99.45
       },
       "cavity_mm": {
         "width": 54.0,
         "length": 54.0,
         "depth": 32.0
+      },
+      "id": 2,
+      "type": "tiles",
+      "compartments": [
+        "Square tiles"
+      ],
+      "layer": 0,
+      "column": 1,
+      "center_mm": {
+        "x": 31.82,
+        "y": 158.02,
+        "z": 0.0
+      },
+      "transform_mm": [
+        [
+          1.0,
+          -0.0,
+          0.0,
+          31.823
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          158.024
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "assembled_position_mm": [
+        31.82,
+        158.02,
+        0.0
+      ],
+      "exploded_position_mm": [
+        6.21,
+        176.58,
+        80.0
+      ],
+      "assembly_order": 1,
+      "min_outer_mm": {
+        "width": 58.8,
+        "length": 58.8,
+        "height": 34.0
+      },
+      "cells": [
+        {
+          "name": "Square tiles",
+          "component": "Square tiles",
+          "type": "tiles",
+          "shape": "rect",
+          "cavity_center_mm": [
+            0.0,
+            0.0
+          ],
+          "cavity_mm": {
+            "width": 54.0,
+            "length": 54.0,
+            "depth": 32.0
+          },
+          "floor_thickness_mm": 18.0,
+          "grows_to_fill": false,
+          "contents": {
+            "source": "required_mm",
+            "group_bbox_mm": {
+              "width": 52.0,
+              "length": 52.0,
+              "height": 31.0
+            }
+          }
+        }
+      ],
+      "features": [
+        {
+          "kind": "cavity",
+          "cell": "Square tiles",
+          "size_mm": [
+            54.0,
+            54.0,
+            32.0
+          ]
+        },
+        {
+          "kind": "finger_notch",
+          "cell": "Square tiles",
+          "side": "-x",
+          "width_mm": 20.0,
+          "depth_mm": 19.2
+        },
+        {
+          "kind": "finger_notch",
+          "cell": "Square tiles",
+          "side": "+x",
+          "width_mm": 20.0,
+          "depth_mm": 19.2
+        }
+      ],
+      "solid_volume_cm3": 198.998,
+      "mesh_validation": {
+        "triangles": 564,
+        "watertight": true,
+        "manifold": true,
+        "consistent_winding": true,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "inconsistent_edges": 0,
+        "degenerate_triangles": 0,
+        "shells": 1,
+        "euler_characteristic": 2,
+        "volume_mm3": 198998.64,
+        "outward_normals": true,
+        "bbox_mm": [
+          59.146,
+          99.452,
+          50.0
+        ],
+        "bbox_deviation_mm": 0.0,
+        "volume_vs_cad": 1e-05,
+        "min_thickness": {
+          "x": {
+            "min_mm": 2.573,
+            "at_mm": [
+              -29.57,
+              -26.27,
+              19.31
+            ]
+          },
+          "y": {
+            "min_mm": 22.726,
+            "at_mm": [
+              -26.82,
+              -49.73,
+              19.05
+            ]
+          },
+          "z": {
+            "min_mm": 18.0,
+            "at_mm": [
+              -25.66,
+              -25.62,
+              0.0
+            ]
+          },
+          "overall_min_mm": 2.573
+        },
+        "problems": [],
+        "ok": true
       }
     },
     {
       "name": "Red meeples",
       "stl": "03_red_meeples.stl",
       "position_mm": {
-        "x": 2.25,
-        "y": 166.85,
-        "z": 0
+        "x": 147.77,
+        "y": 2.25,
+        "z": 0.0
       },
       "rotation_degrees": 90,
       "outer_mm": {
-        "width": 40.8,
-        "length": 54.8,
-        "height": 25.0
+        "width": 56.01,
+        "length": 59.98,
+        "height": 50.0
       },
       "footprint_in_box_mm": {
-        "width": 54.8,
-        "length": 40.8
+        "width": 59.98,
+        "length": 56.01
       },
       "cavity_mm": {
-        "width": 36.0,
-        "length": 50.0,
-        "depth": 23.0
+        "width": 51.21,
+        "length": 55.18,
+        "depth": 25.41
+      },
+      "id": 3,
+      "type": "bits",
+      "compartments": [
+        "Red meeples"
+      ],
+      "layer": 0,
+      "column": 2,
+      "center_mm": {
+        "x": 177.76,
+        "y": 30.25,
+        "z": 0.0
+      },
+      "transform_mm": [
+        [
+          0.0,
+          -1.0,
+          0.0,
+          177.76
+        ],
+        [
+          1.0,
+          0.0,
+          0.0,
+          30.254
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "assembled_position_mm": [
+        177.76,
+        30.25,
+        0.0
+      ],
+      "exploded_position_mm": [
+        203.23,
+        4.09,
+        80.0
+      ],
+      "assembly_order": 2,
+      "min_outer_mm": {
+        "width": 45.63,
+        "length": 59.63,
+        "height": 27.41
+      },
+      "cells": [
+        {
+          "name": "Red meeples",
+          "component": "Red meeples",
+          "type": "bits",
+          "shape": "rect",
+          "cavity_center_mm": [
+            0.0,
+            0.0
+          ],
+          "cavity_mm": {
+            "width": 51.21,
+            "length": 55.18,
+            "depth": 25.41
+          },
+          "floor_thickness_mm": 24.59,
+          "grows_to_fill": true,
+          "contents": {
+            "source": "required_mm",
+            "group_bbox_mm": {
+              "width": 34.0,
+              "length": 48.0,
+              "height": 22.0
+            }
+          }
+        }
+      ],
+      "features": [
+        {
+          "kind": "cavity",
+          "cell": "Red meeples",
+          "size_mm": [
+            51.21,
+            55.18,
+            25.41
+          ],
+          "scoop_radius_mm": 8.05
+        }
+      ],
+      "solid_volume_cm3": 98.869,
+      "mesh_validation": {
+        "triangles": 452,
+        "watertight": true,
+        "manifold": true,
+        "consistent_winding": true,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "inconsistent_edges": 0,
+        "degenerate_triangles": 0,
+        "shells": 1,
+        "euler_characteristic": 2,
+        "volume_mm3": 98878.46,
+        "outward_normals": true,
+        "bbox_mm": [
+          56.007,
+          59.98,
+          50.0
+        ],
+        "bbox_deviation_mm": 0.0,
+        "volume_vs_cad": 9e-05,
+        "min_thickness": {
+          "x": {
+            "min_mm": 2.4,
+            "at_mm": [
+              -28.0,
+              -27.2,
+              33.18
+            ]
+          },
+          "y": {
+            "min_mm": 2.4,
+            "at_mm": [
+              -25.29,
+              -29.99,
+              33.53
+            ]
+          },
+          "z": {
+            "min_mm": 24.585,
+            "at_mm": [
+              -16.9,
+              -18.79,
+              0.0
+            ]
+          },
+          "overall_min_mm": 2.4
+        },
+        "problems": [],
+        "ok": true
       }
     },
     {
       "name": "Blue meeples",
       "stl": "04_blue_meeples.stl",
       "position_mm": {
-        "x": 58.55,
-        "y": 166.85,
-        "z": 0
+        "x": 76.98,
+        "y": 59.76,
+        "z": 0.0
       },
       "rotation_degrees": 90,
       "outer_mm": {
-        "width": 40.8,
-        "length": 54.8,
-        "height": 25.0
+        "width": 48.33,
+        "length": 130.77,
+        "height": 50.0
       },
       "footprint_in_box_mm": {
-        "width": 54.8,
-        "length": 40.8
+        "width": 130.77,
+        "length": 48.33
       },
       "cavity_mm": {
-        "width": 36.0,
-        "length": 50.0,
-        "depth": 23.0
+        "width": 43.53,
+        "length": 125.97,
+        "depth": 25.41
+      },
+      "id": 4,
+      "type": "bits",
+      "compartments": [
+        "Blue meeples"
+      ],
+      "layer": 0,
+      "column": 3,
+      "center_mm": {
+        "x": 142.36,
+        "y": 83.92,
+        "z": 0.0
+      },
+      "transform_mm": [
+        [
+          0.0,
+          -1.0,
+          0.0,
+          142.363
+        ],
+        [
+          1.0,
+          0.0,
+          0.0,
+          83.923
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "assembled_position_mm": [
+        142.36,
+        83.92,
+        0.0
+      ],
+      "exploded_position_mm": [
+        155.44,
+        76.55,
+        80.0
+      ],
+      "assembly_order": 3,
+      "min_outer_mm": {
+        "width": 45.63,
+        "length": 59.63,
+        "height": 27.41
+      },
+      "cells": [
+        {
+          "name": "Blue meeples",
+          "component": "Blue meeples",
+          "type": "bits",
+          "shape": "rect",
+          "cavity_center_mm": [
+            0.0,
+            0.0
+          ],
+          "cavity_mm": {
+            "width": 43.53,
+            "length": 125.97,
+            "depth": 25.41
+          },
+          "floor_thickness_mm": 24.59,
+          "grows_to_fill": true,
+          "contents": {
+            "source": "required_mm",
+            "group_bbox_mm": {
+              "width": 34.0,
+              "length": 48.0,
+              "height": 22.0
+            }
+          }
+        }
+      ],
+      "features": [
+        {
+          "kind": "cavity",
+          "cell": "Blue meeples",
+          "size_mm": [
+            43.53,
+            125.97,
+            25.41
+          ],
+          "scoop_radius_mm": 8.05
+        }
+      ],
+      "solid_volume_cm3": 181.123,
+      "mesh_validation": {
+        "triangles": 452,
+        "watertight": true,
+        "manifold": true,
+        "consistent_winding": true,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "inconsistent_edges": 0,
+        "degenerate_triangles": 0,
+        "shells": 1,
+        "euler_characteristic": 2,
+        "volume_mm3": 181139.28,
+        "outward_normals": true,
+        "bbox_mm": [
+          48.331,
+          130.774,
+          50.0
+        ],
+        "bbox_deviation_mm": 0.0,
+        "volume_vs_cad": 9e-05,
+        "min_thickness": {
+          "x": {
+            "min_mm": 2.4,
+            "at_mm": [
+              -24.17,
+              -62.92,
+              33.09
+            ]
+          },
+          "y": {
+            "min_mm": 2.4,
+            "at_mm": [
+              -21.63,
+              -65.39,
+              33.52
+            ]
+          },
+          "z": {
+            "min_mm": 24.585,
+            "at_mm": [
+              -13.68,
+              -53.4,
+              0.0
+            ]
+          },
+          "overall_min_mm": 2.4
+        },
+        "problems": [],
+        "ok": true
       }
     },
     {
       "name": "Green meeples",
       "stl": "05_green_meeples.stl",
       "position_mm": {
-        "x": 114.85,
-        "y": 2.25,
-        "z": 0
+        "x": 62.9,
+        "y": 109.59,
+        "z": 0.0
       },
       "rotation_degrees": 90,
       "outer_mm": {
-        "width": 40.8,
-        "length": 54.8,
-        "height": 25.0
+        "width": 48.33,
+        "length": 144.85,
+        "height": 50.0
       },
       "footprint_in_box_mm": {
-        "width": 54.8,
-        "length": 40.8
+        "width": 144.85,
+        "length": 48.33
       },
       "cavity_mm": {
-        "width": 36.0,
-        "length": 50.0,
-        "depth": 23.0
+        "width": 43.53,
+        "length": 140.05,
+        "depth": 25.41
+      },
+      "id": 5,
+      "type": "bits",
+      "compartments": [
+        "Green meeples"
+      ],
+      "layer": 0,
+      "column": 4,
+      "center_mm": {
+        "x": 135.32,
+        "y": 133.75,
+        "z": 0.0
+      },
+      "transform_mm": [
+        [
+          0.0,
+          -1.0,
+          0.0,
+          135.323
+        ],
+        [
+          1.0,
+          0.0,
+          0.0,
+          133.754
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "assembled_position_mm": [
+        135.32,
+        133.75,
+        0.0
+      ],
+      "exploded_position_mm": [
+        145.94,
+        143.82,
+        80.0
+      ],
+      "assembly_order": 4,
+      "min_outer_mm": {
+        "width": 45.63,
+        "length": 59.63,
+        "height": 27.41
+      },
+      "cells": [
+        {
+          "name": "Green meeples",
+          "component": "Green meeples",
+          "type": "bits",
+          "shape": "rect",
+          "cavity_center_mm": [
+            0.0,
+            0.0
+          ],
+          "cavity_mm": {
+            "width": 43.53,
+            "length": 140.05,
+            "depth": 25.41
+          },
+          "floor_thickness_mm": 24.59,
+          "grows_to_fill": true,
+          "contents": {
+            "source": "required_mm",
+            "group_bbox_mm": {
+              "width": 34.0,
+              "length": 48.0,
+              "height": 22.0
+            }
+          }
+        }
+      ],
+      "features": [
+        {
+          "kind": "cavity",
+          "cell": "Green meeples",
+          "size_mm": [
+            43.53,
+            140.05,
+            25.41
+          ],
+          "scoop_radius_mm": 8.05
+        }
+      ],
+      "solid_volume_cm3": 199.963,
+      "mesh_validation": {
+        "triangles": 452,
+        "watertight": true,
+        "manifold": true,
+        "consistent_winding": true,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "inconsistent_edges": 0,
+        "degenerate_triangles": 0,
+        "shells": 1,
+        "euler_characteristic": 2,
+        "volume_mm3": 199980.47,
+        "outward_normals": true,
+        "bbox_mm": [
+          48.331,
+          144.854,
+          50.0
+        ],
+        "bbox_deviation_mm": 0.0,
+        "volume_vs_cad": 9e-05,
+        "min_thickness": {
+          "x": {
+            "min_mm": 2.4,
+            "at_mm": [
+              -24.17,
+              -69.82,
+              33.64
+            ]
+          },
+          "y": {
+            "min_mm": 2.4,
+            "at_mm": [
+              -21.63,
+              -72.43,
+              33.52
+            ]
+          },
+          "z": {
+            "min_mm": 24.585,
+            "at_mm": [
+              -12.93,
+              -61.46,
+              0.0
+            ]
+          },
+          "overall_min_mm": 2.4
+        },
+        "problems": [],
+        "ok": true
       }
     },
     {
       "name": "Yellow meeples",
       "stl": "06_yellow_meeples.stl",
       "position_mm": {
-        "x": 76.55,
-        "y": 44.55,
-        "z": 0
+        "x": 62.9,
+        "y": 159.42,
+        "z": 0.0
       },
-      "rotation_degrees": 0,
+      "rotation_degrees": 90,
       "outer_mm": {
-        "width": 40.8,
-        "length": 54.8,
-        "height": 25.0
+        "width": 48.33,
+        "length": 144.85,
+        "height": 50.0
       },
       "footprint_in_box_mm": {
-        "width": 40.8,
-        "length": 54.8
+        "width": 144.85,
+        "length": 48.33
       },
       "cavity_mm": {
-        "width": 36.0,
-        "length": 50.0,
-        "depth": 23.0
+        "width": 43.53,
+        "length": 140.05,
+        "depth": 25.41
+      },
+      "id": 6,
+      "type": "bits",
+      "compartments": [
+        "Yellow meeples"
+      ],
+      "layer": 0,
+      "column": 5,
+      "center_mm": {
+        "x": 135.32,
+        "y": 183.58,
+        "z": 0.0
+      },
+      "transform_mm": [
+        [
+          0.0,
+          -1.0,
+          0.0,
+          135.323
+        ],
+        [
+          1.0,
+          0.0,
+          0.0,
+          183.585
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "assembled_position_mm": [
+        135.32,
+        183.58,
+        0.0
+      ],
+      "exploded_position_mm": [
+        145.94,
+        211.09,
+        80.0
+      ],
+      "assembly_order": 5,
+      "min_outer_mm": {
+        "width": 45.63,
+        "length": 59.63,
+        "height": 27.41
+      },
+      "cells": [
+        {
+          "name": "Yellow meeples",
+          "component": "Yellow meeples",
+          "type": "bits",
+          "shape": "rect",
+          "cavity_center_mm": [
+            0.0,
+            0.0
+          ],
+          "cavity_mm": {
+            "width": 43.53,
+            "length": 140.05,
+            "depth": 25.41
+          },
+          "floor_thickness_mm": 24.59,
+          "grows_to_fill": true,
+          "contents": {
+            "source": "required_mm",
+            "group_bbox_mm": {
+              "width": 34.0,
+              "length": 48.0,
+              "height": 22.0
+            }
+          }
+        }
+      ],
+      "features": [
+        {
+          "kind": "cavity",
+          "cell": "Yellow meeples",
+          "size_mm": [
+            43.53,
+            140.05,
+            25.41
+          ],
+          "scoop_radius_mm": 8.05
+        }
+      ],
+      "solid_volume_cm3": 199.963,
+      "mesh_validation": {
+        "triangles": 452,
+        "watertight": true,
+        "manifold": true,
+        "consistent_winding": true,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "inconsistent_edges": 0,
+        "degenerate_triangles": 0,
+        "shells": 1,
+        "euler_characteristic": 2,
+        "volume_mm3": 199980.47,
+        "outward_normals": true,
+        "bbox_mm": [
+          48.331,
+          144.854,
+          50.0
+        ],
+        "bbox_deviation_mm": 0.0,
+        "volume_vs_cad": 9e-05,
+        "min_thickness": {
+          "x": {
+            "min_mm": 2.4,
+            "at_mm": [
+              -24.17,
+              -69.82,
+              33.64
+            ]
+          },
+          "y": {
+            "min_mm": 2.4,
+            "at_mm": [
+              -21.63,
+              -72.43,
+              33.52
+            ]
+          },
+          "z": {
+            "min_mm": 24.585,
+            "at_mm": [
+              -12.93,
+              -61.46,
+              0.0
+            ]
+          },
+          "overall_min_mm": 2.4
+        },
+        "problems": [],
+        "ok": true
       }
     },
     {
       "name": "Dice and tokens",
       "stl": "07_dice_and_tokens.stl",
       "position_mm": {
-        "x": 62.55,
-        "y": 102.55,
-        "z": 0
+        "x": 76.98,
+        "y": 2.25,
+        "z": 0.0
       },
-      "rotation_degrees": 90,
+      "rotation_degrees": 0,
       "outer_mm": {
-        "width": 62.8,
-        "length": 46.8,
-        "height": 31.0
+        "width": 69.29,
+        "length": 56.01,
+        "height": 50.0
       },
       "footprint_in_box_mm": {
-        "width": 46.8,
-        "length": 62.8
+        "width": 69.29,
+        "length": 56.01
       },
       "cavity_mm": {
-        "width": 58.0,
-        "length": 42.0,
-        "depth": 29.0
+        "width": 64.49,
+        "length": 51.21,
+        "depth": 32.05
+      },
+      "id": 7,
+      "type": "dice",
+      "compartments": [
+        "Dice and tokens"
+      ],
+      "layer": 0,
+      "column": 6,
+      "center_mm": {
+        "x": 111.62,
+        "y": 30.25,
+        "z": 0.0
+      },
+      "transform_mm": [
+        [
+          1.0,
+          -0.0,
+          0.0,
+          111.623
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          30.254
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "assembled_position_mm": [
+        111.62,
+        30.25,
+        0.0
+      ],
+      "exploded_position_mm": [
+        113.94,
+        4.09,
+        80.0
+      ],
+      "assembly_order": 6,
+      "min_outer_mm": {
+        "width": 68.89,
+        "length": 52.89,
+        "height": 34.05
+      },
+      "cells": [
+        {
+          "name": "Dice and tokens",
+          "component": "Dice and tokens",
+          "type": "dice",
+          "shape": "rect",
+          "cavity_center_mm": [
+            0.0,
+            0.0
+          ],
+          "cavity_mm": {
+            "width": 64.49,
+            "length": 51.21,
+            "depth": 32.05
+          },
+          "floor_thickness_mm": 17.95,
+          "grows_to_fill": true,
+          "contents": {
+            "source": "required_mm",
+            "group_bbox_mm": {
+              "width": 56.0,
+              "length": 40.0,
+              "height": 28.0
+            }
+          }
+        }
+      ],
+      "features": [
+        {
+          "kind": "cavity",
+          "cell": "Dice and tokens",
+          "size_mm": [
+            64.49,
+            51.21,
+            32.05
+          ],
+          "scoop_radius_mm": 10.15
+        }
+      ],
+      "solid_volume_cm3": 92.889,
+      "mesh_validation": {
+        "triangles": 468,
+        "watertight": true,
+        "manifold": true,
+        "consistent_winding": true,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "inconsistent_edges": 0,
+        "degenerate_triangles": 0,
+        "shells": 1,
+        "euler_characteristic": 2,
+        "volume_mm3": 92902.45,
+        "outward_normals": true,
+        "bbox_mm": [
+          69.294,
+          56.007,
+          50.0
+        ],
+        "bbox_deviation_mm": 0.0,
+        "volume_vs_cad": 0.00014,
+        "min_thickness": {
+          "x": {
+            "min_mm": 2.4,
+            "at_mm": [
+              -34.65,
+              -25.29,
+              28.22
+            ]
+          },
+          "y": {
+            "min_mm": 2.4,
+            "at_mm": [
+              -31.64,
+              -28.0,
+              29.19
+            ]
+          },
+          "z": {
+            "min_mm": 17.955,
+            "at_mm": [
+              -21.4,
+              -14.91,
+              0.0
+            ]
+          },
+          "overall_min_mm": 2.4
+        },
+        "problems": [],
+        "ok": true
       }
     }
   ]
