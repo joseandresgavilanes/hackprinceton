@@ -547,6 +547,73 @@ def test_king_of_tokyo_five_printable_open_boxes(kot_output):
 
 
 # ---------------------------------------------------------------------------
+# When the boxes do not fit: stack more, pile mixed loose sets, stack identical boxes evenly.
+# The plan comes from a live run of King of Tokyo whose grouping made one loose box per player
+# (monster board + cardboard figure + stand): side by side they needed 1502 cm² of a 615 cm² floor.
+# ---------------------------------------------------------------------------
+SIX_KITS = ROOT / "tests" / "fixtures" / "plans" / "king_of_tokyo_six_player_kits.json"
+
+
+def test_six_player_kits_fit_with_the_no_fit_fallback():
+    plan_dict = json.loads(SIX_KITS.read_text())
+    plain = copy.deepcopy(plan_dict)
+    plain["settings"]["max_layers"] = 2              # fixed by the plan: piling alone (2 high) is not enough
+    with pytest.raises(PlanError) as e:
+        plan_layout(plain)
+    assert e.value.issues.errors[0].code == "does_not_fit"
+
+    plan, designs, packing = plan_layout(plan_dict)
+    assert len(packing.trays) == 11 and packing.layers == 3
+    assert [w.message for w in plan.issues.warnings if w.code == "no_fit_fallback"] == [
+        "The boxes did not fit side by side in at most 2 layer(s), so boxes are stacked up to 3 high and loose "
+        "boxes hold their pieces in layers (largest at the bottom)."]
+    assert "Identical boxes stacked into even columns to save floor space" in packing.notes
+    kits = [t for t in packing.trays if t.design.name.startswith("Player kit")]
+    assert sorted(t.layer for t in kits) == [0, 0, 1, 1, 2, 2]  # two even columns of three
+    kit = kits[0].design.cells[0]
+    assert kit.contents["layers"] == 2 and "arrangement_mm" not in kit.contents   # board below figure + stand
+    assert "piled in 2 layer(s)" in kit.contents["fit_basis"]
+    # the sets of identical pieces keep the usual single loose layer
+    cubes = next(d for d in designs if d.name == "Energy cubes").cells[0]
+    assert cubes.contents["layers"] == 1 and cubes.contents["arrangement_mm"]
+    box_w, box_l, box_h = plan.box
+    for i, a in enumerate(packing.trays):
+        aw, al = a.footprint
+        assert 0 <= a.x and a.x + aw <= box_w + 1e-6 and 0 <= a.y and a.y + al <= box_l + 1e-6
+        assert a.z + a.h <= box_h - plan.settings.headroom_mm + 1e-6
+        for b in packing.trays[i + 1:]:
+            bw, bl = b.footprint
+            assert not (_overlap(a.x, a.x + aw, b.x, b.x + bw) and _overlap(a.y, a.y + al, b.y, b.y + bl)
+                        and _overlap(a.z, a.z + a.h, b.z, b.z + b.h)), (a.design.name, b.design.name)
+
+
+def test_a_layout_that_fits_never_uses_the_fallback(grouping):
+    plan, _ = conv.convert(grouping, BED)
+    p, _, packing = plan_layout(plan)
+    assert not [w for w in p.issues.warnings if w.code == "no_fit_fallback"]
+    assert packing.layers == 1 and "Identical boxes stacked" not in " ".join(packing.notes)
+
+
+def test_piled_loose_box_is_as_small_as_its_largest_piece():
+    from organizer.components import _piled_layers
+    board, figure, stand = ({"quantity": 1}, 117.6, 87.5, 4.0), ({"quantity": 1}, 75.2, 64.4, 4.0), \
+                           ({"quantity": 1}, 32.5, 32.5, 9.9)
+    k, w, l, height = _piled_layers([board, figure, stand], room=50.0, limits=[])
+    assert (k, sorted((w, l)), height) == (2, [87.5, 117.6], pytest.approx(13.9))
+    assert _piled_layers([board, figure, stand], room=10.0, limits=[])[0] == 1   # no height for two layers
+
+
+@needs_cad
+def test_six_player_kits_are_printable(tmp_path):
+    from organizer import generate
+    layout = generate(json.loads(SIX_KITS.read_text()), tmp_path)
+    _check_open_boxes(tmp_path, layout, 11)
+    lv = layout["validation"]["layout"]
+    assert lv["ok"] and lv["unsupported_trays"] == 0 and lv["collisions"] == 0
+    assert any(w["code"] == "no_fit_fallback" for w in layout["warnings"])
+
+
+# ---------------------------------------------------------------------------
 # tight_pack (written by the grouping step for block-like pieces)
 # ---------------------------------------------------------------------------
 def _with_style(grouping, set_name, style, shape=None):

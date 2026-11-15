@@ -51,9 +51,10 @@ After the measurement stage (`backend/measurement.py`):
 - If a photo's scale was not read from the ruler's tick marks (`scale_source` `labels` or `assumed_length`),
   the job asks for the width of one reference piece (a card if there is one). The answer rescales every
   photo measurement by `answer / measured` (fixtures mode applies the same correction to the grouping JSON).
-- If the photos could not calculate the thickness of a card, board or rulebook (the height's uncertainty is
-  at least as large as the height itself), the CV script's own default is used instead: 4 mm for a board or
-  rulebook, 0.4 mm for a card. Heights that were calculated are never changed. The job's `warnings` say so.
+- If the photos could not calculate the thickness of a card, board or rulebook (the CV script's own error
+  model rates that height "low": error above 8 % and above 1.6 mm), the CV script's own default is used
+  instead: 4 mm for a board or rulebook, 0.4 mm for a card. Other heights are never changed. The job's
+  `warnings` say so.
 - Low-confidence measurements are listed in `warnings`; they don't stop the job.
 
 ### Errors the user can see

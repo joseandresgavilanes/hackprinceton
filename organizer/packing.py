@@ -742,7 +742,45 @@ def _bridges(designs: list, plan: Plan):
 # ---------------------------------------------------------------------------
 # Floor layout and final placement
 # ---------------------------------------------------------------------------
+def _stack_twins(cols: list, plan: Plan) -> Optional[list]:
+    """Identical single boxes stacked into even columns, as high as max_layers and the box height allow."""
+    s = plan.settings
+    idx = [i for i, c in enumerate(cols) if not isinstance(c, Bridge) and len(c.trays) == 1]
+    singles = [cols[i] for i in idx]
+    used, stacked = set(), []
+    for g in twin_groups(singles):
+        per = min(s.max_layers, int((plan.usable_height + EPS) // singles[g[0]].h))
+        if per < 2:
+            continue
+        n = math.ceil(len(g) / per)
+        for k in range(n):
+            part = g[k::n]
+            col = singles[part[0]]
+            for j in part[1:]:
+                col = _merge(col, singles[j], False)
+            stacked.append(col)
+            used.update(idx[j] for j in part)
+    return [c for i, c in enumerate(cols) if i not in used] + stacked if stacked else None
+
+
 def _pack_floor(cols: list, plan: Plan, cap) -> tuple:
+    """Lay the columns out on the floor (see ``_pack_floor_greedy``). If that finds nothing, identical
+    boxes are first stacked into even columns and the floor is tried again.
+
+    Returns (cols, twins, found, notes); ``found`` is None when nothing fits.
+    """
+    result = _pack_floor_greedy(cols, plan, cap)
+    if result[2] is None and plan.settings.max_layers > 1:
+        stacked = _stack_twins(cols, plan)
+        if stacked:
+            retry = _pack_floor_greedy(stacked, plan, cap)
+            if retry[2] is not None:
+                c, twins, found, notes = retry
+                return c, twins, found, ["Identical boxes stacked into even columns to save floor space"] + notes
+    return result
+
+
+def _pack_floor_greedy(cols: list, plan: Plan, cap) -> tuple:
     """Lay the columns out on the floor, merging two columns whenever one layer is not enough.
 
     Returns (cols, twins, found, notes); ``found`` is None when nothing fits.

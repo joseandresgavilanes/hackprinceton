@@ -8,10 +8,11 @@ Rules (a dimension is never guessed):
   "assumed_length"), the whole reconstruction may be off by a few percent. The user is asked to measure the
   width of one reference component (a card if there is one, else the widest measured piece). The answer
   rescales every photo measurement by the same ratio.
-* If the photos could not calculate the thickness of a card, board or rulebook (the fitted height's
-  uncertainty is at least as large as the height itself), the CV script's own default thickness is used
-  instead: 4 mm for a board or rulebook, 0.4 mm for a card (``assumed_dimensions`` in
-  ``pipeline/boardgame_dimensions_ruler_v7.py``). This is listed in the job's warnings.
+* If the photos could not calculate the thickness of a card, board or rulebook (the CV script's own error
+  model rates that height as low confidence: its error is above 8 % AND above 1.6 mm), the CV script's own
+  default thickness is used instead: 4 mm for a board or rulebook, 0.4 mm for a card (``assumed_dimensions``
+  and ``CONF_MEDIUM``/``CONF_MEDIUM_MM`` in ``pipeline/boardgame_dimensions_ruler_v7.py``). This is listed in
+  the job's warnings.
 * Low-confidence components are reported as warnings; they do not stop the job.
 """
 from __future__ import annotations
@@ -24,6 +25,8 @@ TRUSTED_SCALE = {"ticks"}
 MAX_RATIO = 2.0           # an answer more than 2× off the measured width is almost certainly a units mistake
 # The CV script's fallback thicknesses, and how it recognises those pieces by name.
 DEFAULT_THICKNESS_MM = {"rulebook": 4.0, "board": 4.0, "card": 0.4}
+# The CV script's limits for a measurement better than "low" confidence: relative error ≤ 8 % or error ≤ 1.6 mm.
+CONF_MEDIUM, CONF_MEDIUM_MM = 0.08, 1.6
 FLAT_KINDS = (
     ("rulebook", re.compile(r"\b(?:rule\s*books?|instruction(?:s| manuals?| booklets?)?|rules booklets?|manuals?)\b", re.I)),
     ("board", re.compile(r"\b(?:boards?|cardboard)\b", re.I)),
@@ -69,12 +72,14 @@ def missing_components(cv: dict) -> list[str]:
 
 
 def thickness_not_calculated(c: dict) -> bool:
-    """The photos gave a height, but its uncertainty is at least as large as the height itself."""
+    """The photos gave a height, but the CV script's error model rates it as low confidence."""
     d, m = usable_dims(c), c.get("measurement") or {}
     err = (c.get("estimated_error_mm") or {}).get("height")
     if d is None or m.get("height_assumed") or m.get("height_method") == "upright_ruler":
         return False
-    return isinstance(err, (int, float)) and not isinstance(err, bool) and err >= d["height"]
+    if not isinstance(err, (int, float)) or isinstance(err, bool):
+        return False
+    return err / d["height"] > CONF_MEDIUM and err > CONF_MEDIUM_MM
 
 
 def default_thickness(cv: dict) -> tuple[dict, dict, list[str]]:

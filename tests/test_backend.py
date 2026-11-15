@@ -258,9 +258,9 @@ def flat_piece(index, name, height, error, method="multi_angle_silhouette", assu
 def test_uncalculated_thickness_gets_the_cv_default():
     from backend import measurement
     cv = cv_json()
-    cv["components"] += [flat_piece(3, "Race track board", 24.1, 28.7),       # ± larger than the value
-                         flat_piece(4, "Rulebook", 15.9, 16.5),
-                         flat_piece(5, "Rule leaflet (rulebook)", 12.1, 8.1),  # calculated: kept, even if odd
+    cv["components"] += [flat_piece(3, "Race track board", 24.1, 28.7),       # low confidence for the CV script:
+                         flat_piece(4, "Rulebook", 11.0, 10.7),                #   error > 8 % and > 1.6 mm
+                         flat_piece(5, "Rule leaflet (rulebook)", 3.2, 1.5),   # calculated (≤ 1.6 mm): kept
                          flat_piece(6, "Upright board", 9.0, 12.0, method="upright_ruler"),
                          flat_piece(7, "Wooden star", 4.0, 6.0),               # not a card, board or rulebook
                          flat_piece(8, "Action card", 0.4, None, method="assumed_card_thickness", assumed=True)]
@@ -271,11 +271,11 @@ def test_uncalculated_thickness_gets_the_cv_default():
     assert by_name["Race track board"]["measurement"]["height_assumed"] is True
     assert by_name["Race track board"]["measurement"]["uncalculated_height_mm"] == 24.1
     assert [by_name[n]["dimensions_mm"]["height"] for n in
-            ("Rule leaflet (rulebook)", "Upright board", "Wooden star", "Action card")] == [12.1, 9.0, 4.0, 0.4]
+            ("Rule leaflet (rulebook)", "Upright board", "Wooden star", "Action card")] == [3.2, 9.0, 4.0, 0.4]
     assert cv["components"][2]["dimensions_mm"]["height"] == 24.1          # the input is not modified
     assert warnings == ["Race track board: the photos could not calculate its thickness (24.1 ± 28.7 mm), so the "
                         "default 4 mm for a board was used.",
-                        "Rulebook: the photos could not calculate its thickness (15.9 ± 16.5 mm), so the "
+                        "Rulebook: the photos could not calculate its thickness (11 ± 10.7 mm), so the "
                         "default 4 mm for a rulebook was used."]
 
 

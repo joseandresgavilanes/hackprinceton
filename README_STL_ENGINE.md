@@ -116,6 +116,11 @@ grouping decided upstream is used as-is:
   one layer; two are stacked (same footprint, fully supported) only if one layer cannot fit (`max_layers: 2`).
   If that is not enough either, one box may rest on several boxes that stand at one common height and
   together cover its footprint (a *bridge*, e.g. King of Tokyo's Monster Kits on the other four sets).
+  Identical boxes (e.g. one kit per player) are then stacked into even columns. If nothing fits, the plan is
+  tried again with boxes up to 3 high, then with loose boxes of mixed pieces holding them in layers (largest
+  at the bottom, e.g. a player board under its figure), then up to 4 high; the layout's warnings say which
+  was used (`no_fit_fallback`). A plan that fits without it never changes, and settings the plan gives
+  itself are kept.
   Several small boxes are never put on top of one larger box: it is open, so they would sit over its cavity;
 - boxes that hold the same thing (e.g. one bus set per player) always come out the **same size**: they grow
   together, never one more than another (listed as "Same contents, same size" in `layout.json` notes);

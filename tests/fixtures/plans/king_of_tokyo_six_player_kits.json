@@ -1,0 +1,410 @@
+{
+ "game": "King of Tokyo",
+ "organizer": "boxes",
+ "box_inner_mm": {
+  "width": 250.0,
+  "length": 250.0,
+  "height": 67.0
+ },
+ "printer_bed_mm": {
+  "width": 256.0,
+  "length": 256.0,
+  "height": 256.0
+ },
+ "settings": {
+  "headroom_mm": 8.0
+ },
+ "compartments": [
+  {
+   "name": "Player kit 1",
+   "type": "set",
+   "storage_style": "loose",
+   "members": [
+    {
+     "component_id": "component_2",
+     "name": "Monster board",
+     "quantity": 1,
+     "shape": "rectangular_prism",
+     "dimensions_mm": {
+      "length": 117.6,
+      "width": 87.5,
+      "height": 4.0
+     }
+    },
+    {
+     "component_id": "component_3",
+     "name": "Cardboard monster figure",
+     "quantity": 1,
+     "shape": "rectangular_prism",
+     "dimensions_mm": {
+      "length": 75.2,
+      "width": 64.4,
+      "height": 4.0
+     }
+    },
+    {
+     "component_id": "component_4",
+     "name": "Plastic figure stand",
+     "quantity": 1,
+     "shape": "cylinder",
+     "dimensions_mm": {
+      "length": 32.5,
+      "width": 32.5,
+      "height": 9.9
+     }
+    }
+   ]
+  },
+  {
+   "name": "Player kit 2",
+   "type": "set",
+   "storage_style": "loose",
+   "members": [
+    {
+     "component_id": "component_2",
+     "name": "Monster board",
+     "quantity": 1,
+     "shape": "rectangular_prism",
+     "dimensions_mm": {
+      "length": 117.6,
+      "width": 87.5,
+      "height": 4.0
+     }
+    },
+    {
+     "component_id": "component_3",
+     "name": "Cardboard monster figure",
+     "quantity": 1,
+     "shape": "rectangular_prism",
+     "dimensions_mm": {
+      "length": 75.2,
+      "width": 64.4,
+      "height": 4.0
+     }
+    },
+    {
+     "component_id": "component_4",
+     "name": "Plastic figure stand",
+     "quantity": 1,
+     "shape": "cylinder",
+     "dimensions_mm": {
+      "length": 32.5,
+      "width": 32.5,
+      "height": 9.9
+     }
+    }
+   ]
+  },
+  {
+   "name": "Player kit 3",
+   "type": "set",
+   "storage_style": "loose",
+   "members": [
+    {
+     "component_id": "component_2",
+     "name": "Monster board",
+     "quantity": 1,
+     "shape": "rectangular_prism",
+     "dimensions_mm": {
+      "length": 117.6,
+      "width": 87.5,
+      "height": 4.0
+     }
+    },
+    {
+     "component_id": "component_3",
+     "name": "Cardboard monster figure",
+     "quantity": 1,
+     "shape": "rectangular_prism",
+     "dimensions_mm": {
+      "length": 75.2,
+      "width": 64.4,
+      "height": 4.0
+     }
+    },
+    {
+     "component_id": "component_4",
+     "name": "Plastic figure stand",
+     "quantity": 1,
+     "shape": "cylinder",
+     "dimensions_mm": {
+      "length": 32.5,
+      "width": 32.5,
+      "height": 9.9
+     }
+    }
+   ]
+  },
+  {
+   "name": "Player kit 4",
+   "type": "set",
+   "storage_style": "loose",
+   "members": [
+    {
+     "component_id": "component_2",
+     "name": "Monster board",
+     "quantity": 1,
+     "shape": "rectangular_prism",
+     "dimensions_mm": {
+      "length": 117.6,
+      "width": 87.5,
+      "height": 4.0
+     }
+    },
+    {
+     "component_id": "component_3",
+     "name": "Cardboard monster figure",
+     "quantity": 1,
+     "shape": "rectangular_prism",
+     "dimensions_mm": {
+      "length": 75.2,
+      "width": 64.4,
+      "height": 4.0
+     }
+    },
+    {
+     "component_id": "component_4",
+     "name": "Plastic figure stand",
+     "quantity": 1,
+     "shape": "cylinder",
+     "dimensions_mm": {
+      "length": 32.5,
+      "width": 32.5,
+      "height": 9.9
+     }
+    }
+   ]
+  },
+  {
+   "name": "Player kit 5",
+   "type": "set",
+   "storage_style": "loose",
+   "members": [
+    {
+     "component_id": "component_2",
+     "name": "Monster board",
+     "quantity": 1,
+     "shape": "rectangular_prism",
+     "dimensions_mm": {
+      "length": 117.6,
+      "width": 87.5,
+      "height": 4.0
+     }
+    },
+    {
+     "component_id": "component_3",
+     "name": "Cardboard monster figure",
+     "quantity": 1,
+     "shape": "rectangular_prism",
+     "dimensions_mm": {
+      "length": 75.2,
+      "width": 64.4,
+      "height": 4.0
+     }
+    },
+    {
+     "component_id": "component_4",
+     "name": "Plastic figure stand",
+     "quantity": 1,
+     "shape": "cylinder",
+     "dimensions_mm": {
+      "length": 32.5,
+      "width": 32.5,
+      "height": 9.9
+     }
+    }
+   ]
+  },
+  {
+   "name": "Player kit 6",
+   "type": "set",
+   "storage_style": "loose",
+   "members": [
+    {
+     "component_id": "component_2",
+     "name": "Monster board",
+     "quantity": 1,
+     "shape": "rectangular_prism",
+     "dimensions_mm": {
+      "length": 117.6,
+      "width": 87.5,
+      "height": 4.0
+     }
+    },
+    {
+     "component_id": "component_3",
+     "name": "Cardboard monster figure",
+     "quantity": 1,
+     "shape": "rectangular_prism",
+     "dimensions_mm": {
+      "length": 75.2,
+      "width": 64.4,
+      "height": 4.0
+     }
+    },
+    {
+     "component_id": "component_4",
+     "name": "Plastic figure stand",
+     "quantity": 1,
+     "shape": "cylinder",
+     "dimensions_mm": {
+      "length": 32.5,
+      "width": 32.5,
+      "height": 9.9
+     }
+    }
+   ]
+  },
+  {
+   "name": "Power card deck",
+   "type": "set",
+   "storage_style": "card_stack",
+   "members": [
+    {
+     "component_id": "component_8",
+     "name": "Power card",
+     "quantity": 66,
+     "shape": "rectangular_prism",
+     "dimensions_mm": {
+      "length": 88.5,
+      "width": 64.6,
+      "height": 0.4
+     }
+    }
+   ]
+  },
+  {
+   "name": "Energy cubes",
+   "type": "set",
+   "storage_style": "loose",
+   "members": [
+    {
+     "component_id": "component_7",
+     "name": "Energy cube",
+     "quantity": 50,
+     "shape": "cylinder",
+     "dimensions_mm": {
+      "length": 10.3,
+      "width": 10.3,
+      "height": 14.0
+     }
+    }
+   ]
+  },
+  {
+   "name": "Black dice",
+   "type": "set",
+   "storage_style": "loose",
+   "members": [
+    {
+     "component_id": "component_5",
+     "name": "Black custom engraved die",
+     "quantity": 6,
+     "shape": "cylinder",
+     "dimensions_mm": {
+      "length": 19.7,
+      "width": 19.7,
+      "height": 21.8
+     }
+    }
+   ]
+  },
+  {
+   "name": "Poison and Shrink tokens",
+   "type": "set",
+   "storage_style": "loose",
+   "members": [
+    {
+     "component_id": "component_9",
+     "name": "Poison token",
+     "quantity": 12,
+     "shape": "cylinder",
+     "dimensions_mm": {
+      "length": 20.7,
+      "width": 20.7,
+      "height": 4.0
+     }
+    },
+    {
+     "component_id": "component_10",
+     "name": "Shrink token",
+     "quantity": 12,
+     "shape": "cylinder",
+     "dimensions_mm": {
+      "length": 15.1,
+      "width": 15.1,
+      "height": 19.6
+     }
+    }
+   ]
+  },
+  {
+   "name": "Occasional card-specific pieces",
+   "type": "set",
+   "storage_style": "loose",
+   "members": [
+    {
+     "component_id": "component_6",
+     "name": "Green custom engraved die",
+     "quantity": 2,
+     "shape": "cylinder",
+     "dimensions_mm": {
+      "length": 27.8,
+      "width": 27.8,
+      "height": 34.6
+     }
+    },
+    {
+     "component_id": "component_11",
+     "name": "Smoke token (counter)",
+     "quantity": 3,
+     "shape": "cylinder",
+     "dimensions_mm": {
+      "length": 14.8,
+      "width": 14.8,
+      "height": 19.3
+     }
+    },
+    {
+     "component_id": "component_12",
+     "name": "Mimic token",
+     "quantity": 1,
+     "shape": "cylinder",
+     "dimensions_mm": {
+      "length": 15.9,
+      "width": 15.9,
+      "height": 20.3
+     }
+    }
+   ]
+  }
+ ],
+ "source": {
+  "organizer": "boxes",
+  "set_count": 11,
+  "physical_fit_verified": false,
+  "edition": "Second Edition (2016, IELLO), standard retail version",
+  "box_basis": "estimated_from_external",
+  "excluded_ignored": [
+   "Tokyo game board",
+   "Rulebook"
+  ],
+  "on_top_of_boxes": [
+   {
+    "name": "Tokyo game board",
+    "height_mm": 4.0
+   },
+   {
+    "name": "Rulebook",
+    "height_mm": 4.0
+   }
+  ]
+ },
+ "conversion_notes": [
+  "box.dimensions_mm is used as the INSIDE size of the game box (basis: estimated_from_external).",
+  "The box size is an ESTIMATE in the source; measure the real box interior before printing.",
+  "Ignored 2 excluded component(s) (no container, floor space or fit check): Tokyo game board; Rulebook.",
+  "Boxes made 8 mm shorter so these lie on top of them under the lid: 'Tokyo game board' 4 mm; 'Rulebook' 4 mm.",
+  "Source says physical_fit_verified = false: this plan is for CAD, not a verified physical fit."
+ ]
+}

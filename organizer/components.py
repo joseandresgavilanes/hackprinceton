@@ -410,6 +410,18 @@ def _set_box(comp: Compartment, s: Settings, max_depth: float, issues: Issues, l
         pieces.append((p, dl, dw, dh))
     h_layer = max(dh for _, _, _, dh in pieces)
     inner_limits = [(a - 2 * (c + s.wall_mm), b - 2 * (c + s.wall_mm)) for a, b in (limits or [])]
+    if style == "loose" and s.loose_piles and len(parsed) > 1:   # mixed sets only (e.g. a board and its figure)
+        piled = _piled_layers(pieces, room, inner_limits)
+        if piled:
+            k, W, L, height = piled
+            comp.assumptions.append(
+                f"{comp.name}: loose box sized for its pieces piled in {k} layer(s) of at most {W:.1f} × {L:.1f} mm, "
+                f"largest pieces at the bottom ({height:.1f} mm in all); poured in at random they may need "
+                f"settling. Physical fit is not verified.")
+            return [Cell(w=W + 2 * c, l=L + 2 * c, depth=height + c,
+                         contents={"storage_style": style, "members": parsed, "layers": k,
+                                   "fit_basis": f"pieces piled in {k} layer(s), largest at the bottom"
+                                                + (f"; {'; '.join(notes)}" if notes else "")}, **plain)]
     best = None
     for k in range(1, max(1, math.floor(room / h_layer + 1e-9)) + 1):
         rects, owners = [], []
@@ -445,6 +457,38 @@ def _set_box(comp: Compartment, s: Settings, max_depth: float, issues: Issues, l
                  contents={"storage_style": style, "members": parsed, "layers": k,
                            "fit_basis": basis + (f"; {'; '.join(notes)}" if notes else ""),
                            "arrangement_mm": arrangement}, **plain)]
+
+
+def _piled_layers(pieces: list, room: float, limits: list) -> tuple | None:
+    """Smallest footprint for a loose set whose pieces may be piled in layers that differ.
+
+    Pieces go into k layers, largest first, each into the layer holding the least area so far; a layer is
+    as tall as its tallest piece and all layers together must fit in ``room``. Returns (k, W, L, height)
+    for the k with the smallest footprint (fewest layers on a tie), or None.
+    """
+    units = sorted(((dl, dw, dh) for p, dl, dw, dh in pieces for _ in range(p["quantity"])),
+                   key=lambda u: -u[0] * u[1])
+    best = None
+    for k in range(1, len(units) + 1):
+        layers, area = [[] for _ in range(k)], [0.0] * k
+        for u in units:
+            j = min(range(k), key=lambda i: area[i])
+            layers[j].append(u)
+            area[j] += u[0] * u[1]
+        height = sum(max(u[2] for u in layer) for layer in layers)
+        if height > room + 1e-9:
+            break
+        sizes = []
+        for layer in layers:
+            found = _min_enclosing([(dw, dl) for dl, dw, _ in layer], limits)
+            if not found:
+                break
+            sizes.append(sorted(found[:2]))
+        else:
+            W, L = max(sz[0] for sz in sizes), max(sz[1] for sz in sizes)
+            if best is None or W * L < best[1] * best[2] - 1e-6:
+                best = (k, W, L, height)
+    return best
 
 
 DESIGNERS = {

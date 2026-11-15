@@ -187,6 +187,8 @@ class Settings:
     fill_box: bool = True                # grow trays sideways into empty floor space
     similar_names_same_size: bool = True # organizer "boxes": similarly named sets share one box size
     max_layers: int = 3                  # max trays stacked in one column
+    loose_piles: bool = False            # organizer "boxes": a loose box may hold its pieces in layers that differ
+                                         # (largest pieces at the bottom) to save floor; used when nothing else fits
     corner_radius_mm: float = 1.0        # outer vertical edge rounding
     finger_notch_width_mm: float = 20.0  # U-notch width for cards/tiles
     scoop_radius_mm: float = 12.0        # max bottom scoop radius for bins
@@ -236,7 +238,7 @@ def parse_settings(raw: Any, issues: Issues, mode: str = "trays") -> Settings:
             if v is not None:
                 setattr(s, name, v)
                 given.append(name)
-    for name in ("fill_height", "fill_box", "similar_names_same_size"):
+    for name in ("fill_height", "fill_box", "similar_names_same_size", "loose_piles"):
         if name in raw:
             if isinstance(raw[name], bool):
                 setattr(s, name, raw[name])

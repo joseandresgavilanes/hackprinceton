@@ -38,12 +38,49 @@ class GenerationError(RuntimeError):
         self.layout = layout
 
 
-def plan_layout(plan_dict: dict, allow_partial: bool = False) -> tuple[Plan, list, PackResult]:
-    """Validate, group and pack without running CAD (fast; used by --check and the tests)."""
+# Organizer "boxes": when the boxes do not fit, these settings are tried in turn (any setting the plan
+# gives itself is kept). Layouts that fit with the defaults never change.
+NO_FIT_FALLBACKS = (
+    ({"max_layers": 3}, "boxes are stacked up to 3 high"),
+    ({"max_layers": 3, "loose_piles": True},
+     "boxes are stacked up to 3 high and loose boxes hold their pieces in layers (largest at the bottom)"),
+    ({"max_layers": 4, "loose_piles": True},
+     "boxes are stacked up to 4 high and loose boxes hold their pieces in layers (largest at the bottom)"),
+)
+
+
+def _plan_layout(plan_dict: dict, allow_partial: bool) -> tuple[Plan, list, PackResult]:
     plan = parse_plan(plan_dict, allow_partial=allow_partial)
     designs = build_tray_designs(plan)
     packing = pack_organizer(designs, plan)
     return plan, designs, packing
+
+
+def plan_layout(plan_dict: dict, allow_partial: bool = False) -> tuple[Plan, list, PackResult]:
+    """Validate, group and pack without running CAD (fast; used by --check and the tests)."""
+    try:
+        return _plan_layout(plan_dict, allow_partial)
+    except PlanError as first:
+        errors = first.issues.errors
+        if (str(plan_dict.get("organizer", "")).strip().lower() != "boxes" or not errors
+                or any(e.code != "does_not_fit" for e in errors)):
+            raise
+        own = plan_dict.get("settings") if isinstance(plan_dict.get("settings"), dict) else {}
+        tried = set()
+        for extra, how in NO_FIT_FALLBACKS:
+            settings = {**{k: v for k, v in extra.items() if k not in own}, **own}
+            key = tuple(sorted(settings.items()))
+            if settings == own or key in tried:
+                continue
+            tried.add(key)
+            try:
+                plan, designs, packing = _plan_layout({**plan_dict, "settings": settings}, allow_partial)
+            except PlanError:
+                continue
+            plan.issues.warn("no_fit_fallback", f"The boxes did not fit side by side in at most "
+                                                f"{own.get('max_layers', 2)} layer(s), so {how}.")
+            return plan, designs, packing
+        raise
 
 
 # ---------------------------------------------------------------------------
