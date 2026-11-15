@@ -19,7 +19,7 @@ def load(name):
 
 @pytest.fixture
 def legacy_plan():
-    return copy.deepcopy(load("organizer_plan_example.json"))
+    return copy.deepcopy(load("examples/organizer_plan_example.json"))
 
 
 @pytest.fixture
@@ -45,7 +45,7 @@ def generated(tmp_path_factory):
         pytest.skip("CadQuery not installed")
     from organizer import generate
     out = {}
-    for key, name in (("legacy", "organizer_plan_example.json"), ("typed", "examples/typed_demo_plan.json"),
+    for key, name in (("legacy", "examples/organizer_plan_example.json"), ("typed", "examples/typed_demo_plan.json"),
                       ("stacked", "examples/stacked_demo_plan.json")):
         dest = tmp_path_factory.mktemp(key)
         out[key] = (dest, generate(load(name), dest))

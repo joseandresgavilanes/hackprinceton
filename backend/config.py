@@ -7,7 +7,7 @@
 | ``ITB_JOBS_DIR`` | ``organizer_jobs/`` | one folder per job: photos, intermediate JSON, STL/GLB/layout. |
 | ``ITB_PRINTER_BED`` | ``256,256,256`` | printer build volume in mm (illustrative default). |
 | ``ITB_COMPACT`` | ``0`` | ``1``: boxes sized to their contents instead of filling the game box. |
-| ``ITB_CV_SCRIPT`` / ``ITB_GROUPING_SCRIPT`` | ``Final stuff/…`` | live-mode stage scripts. |
+| ``ITB_CV_SCRIPT`` / ``ITB_GROUPING_SCRIPT`` | ``pipeline/…`` | live-mode stage scripts. |
 | ``ITB_STAGE_TIMEOUT_S`` | ``1800`` | live mode: give up on a stage script after this many seconds. |
 | ``ITB_CORS_ORIGINS`` | ``http://localhost:8000,http://127.0.0.1:8000`` | extra origins allowed to call the API (the backend also serves the frontend itself). |
 | ``ITB_FIXTURES`` | — | JSON file with extra fixture games: ``{"<name>": {"title", "grouping", "dimensions"?}}``, paths relative to it. |
@@ -27,10 +27,10 @@ MODES = ("fixtures", "live")
 # Committed pipeline outputs, keyed by normalised game name. "dimensions" is a CV measurement JSON
 # (optional), "grouping" is Holden's grouping JSON. Paths are relative to the repository root.
 DEFAULT_FIXTURES = {
-    "king of tokyo": {"title": "King of Tokyo", "grouping": "kotoutput.json"},
+    "king of tokyo": {"title": "King of Tokyo", "grouping": "examples/king_of_tokyo_grouping.json"},
     "ticket to ride london": {"title": "Ticket to Ride: London",
-                              "dimensions": "boardgame/ticket_to_ride_london_dimensions.json",
-                              "grouping": "ttrloutput.json"},
+                              "dimensions": "examples/ttr_london_dimensions.json",
+                              "grouping": "examples/ttr_london_grouping.json"},
     "hypothetical battle game": {"title": "Hypothetical Battle Game",
                                  "grouping": "examples/holden_boxes_grouping.json"},
 }
@@ -81,9 +81,9 @@ class Config:
     fixtures: dict = field(default_factory=lambda: {k: dict(v) for k, v in DEFAULT_FIXTURES.items()})
     fixtures_root: Path = ROOT
     cv_command: list = field(default_factory=lambda: _script(
-        "ITB_CV_SCRIPT", ROOT / "Final stuff" / "boardgame_dimensions_ruler_v7.py"))
+        "ITB_CV_SCRIPT", ROOT / "pipeline" / "boardgame_dimensions_ruler_v7.py"))
     grouping_command: list = field(default_factory=lambda: _script(
-        "ITB_GROUPING_SCRIPT", ROOT / "Final stuff" / "organize_game_boxes.py"))
+        "ITB_GROUPING_SCRIPT", ROOT / "pipeline" / "organize_game_boxes.py"))
     stage_timeout_s: float = 1800.0
     min_photos: int = 2                  # reference photos per job (the web UI reads these limits)
     max_photos: int = 6

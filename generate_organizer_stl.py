@@ -2,7 +2,7 @@
 """Inside the Box: turn a board-game compartment plan into printable organizer trays.
 
     pip install cadquery rectpack  # rectpack is optional; built-in MaxRects is always used too
-    python generate_organizer_stl.py organizer_plan_example.json -o generated_organizer
+    python generate_organizer_stl.py examples/organizer_plan_example.json -o generated_organizer
 
 Outputs (all millimetres): one STL per tray, organizer.glb (whole organizer for
 the 3-D preview, built from the same triangles) and layout.json (positions,
@@ -19,7 +19,7 @@ import json
 import sys
 from pathlib import Path
 
-from organizer import GenerationError, PlanError, generate, plan_from_cv, plan_layout, write_failure_report
+from organizer import GenerationError, PlanError, generate, plan_layout, write_failure_report
 
 
 def _print_issues(err: PlanError) -> None:
@@ -30,24 +30,10 @@ def _print_issues(err: PlanError) -> None:
         print(f"Missing measurements ({len(miss)}): measure these rather than guessing.", file=sys.stderr)
 
 
-def _dims_arg(values, keys, label):
-    if values is None:
-        return None
-    if len(values) not in (len(keys), len(keys) - 1) or (len(values) < len(keys) and keys[-1] != "height"):
-        raise SystemExit(f"{label} expects {' '.join(k.upper() for k in keys)}")
-    return dict(zip(keys, values))
-
-
 def main(argv=None) -> int:
     p = argparse.ArgumentParser(description="Generate 3D-printable board game organizer trays (STL + GLB)")
-    p.add_argument("plan", nargs="?", help="reviewed JSON compartment plan")
+    p.add_argument("plan", help="plan JSON (from convert_grouping_output.py, or hand-written)")
     p.add_argument("-o", "--out", default="generated_organizer", help="output directory")
-    p.add_argument("--from-cv", metavar="DIMENSIONS_JSON",
-                   help="start from the CV measurement JSON instead of a plan (writes plan_draft.json)")
-    p.add_argument("--box", nargs=3, type=float, metavar=("W", "L", "H"),
-                   help="with --from-cv: INSIDE size of the game box in mm")
-    p.add_argument("--bed", nargs="+", type=float, metavar="MM",
-                   help="with --from-cv: printer bed width length [height] in mm")
     p.add_argument("--check", action="store_true", help="validate, group and pack only (no CAD, no files)")
     p.add_argument("--allow-partial", action="store_true",
                    help="skip compartments with errors/missing measurements instead of failing")
@@ -57,21 +43,7 @@ def main(argv=None) -> int:
     out = Path(args.out)
 
     try:
-        if args.from_cv:
-            cv = json.loads(Path(args.from_cv).read_text(encoding="utf-8"))
-            box = _dims_arg(args.box, ("width", "length", "height"), "--box")
-            bed = _dims_arg(args.bed, ("width", "length", "height"), "--bed")
-            plan = plan_from_cv(cv, box=box, bed=bed)
-            out.mkdir(parents=True, exist_ok=True)
-            draft = out / "plan_draft.json"
-            draft.write_text(json.dumps(plan, indent=2, ensure_ascii=False), encoding="utf-8")
-            print(f"Wrote draft plan {draft} ({len(plan['compartments'])} compartments)")
-            for n in plan["cv_notes"]:
-                print(f"  note: {n}")
-        elif args.plan:
-            plan = json.loads(Path(args.plan).read_text(encoding="utf-8"))
-        else:
-            p.error("give a plan JSON file or --from-cv DIMENSIONS_JSON")
+        plan = json.loads(Path(args.plan).read_text(encoding="utf-8"))
 
         if args.check:
             pl, designs, packing = plan_layout(plan, allow_partial=args.allow_partial)

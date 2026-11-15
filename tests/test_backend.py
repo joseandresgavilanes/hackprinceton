@@ -17,7 +17,7 @@ from backend import Config, create_app
 
 KEY = "fake-test-key-DO-NOT-LEAK-0123456789"   # a dummy value; must never appear in responses or logs
 PNG = b"\x89PNG\r\n\x1a\n" + b"\0" * 64          # the backend sniffs the type; fixtures mode never decodes it
-REAL_PHOTOS = sorted((ROOT / "boardgame" / "photos").glob("*.jpg"))[:4]
+REAL_PHOTOS = sorted((ROOT / "examples" / "photos").glob("*.jpg"))[:4]
 KOT_SETS = ["Power Card Deck", "Dice Pool", "Energy Cubes", "Status & Special Tokens", "Monster Kits (All Players)"]
 
 

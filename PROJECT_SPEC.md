@@ -13,7 +13,7 @@ Inside the Box (a HackPrinceton project) designs **3D-printable organizers for b
 
 ```
 game name + 2–6 ruler photos ─► CV measurement ──► grouping into sets ──► converter ──► CAD engine ──► STL + GLB + layout.json ──► web UI / 3D preview
- (frontend/)                    (…ruler_v7.py,      (organize_game_       (convert_      (organizer/)                               (frontend/, preview/)
+ (frontend/)                    (…ruler_v7.py,      (organize_game_       (convert_      (organizer/)                               (frontend/)
                                  Claude + OpenCV)    boxes.py, Claude)     grouping_
                                                                            output.py)
 ```
@@ -26,7 +26,7 @@ game name + 2–6 ruler photos ─► CV measurement ──► grouping into set
 4. **Generate** one simple open-top storage box per set, packed to fill the game box. The parametric
    CadQuery engine writes one STL per box, an assembled `organizer.glb` and `layout.json`.
 5. **Show** the result: the web UI (`frontend/`) for the user flow and downloads, with a full-screen 3D
-   studio, and the same viewer as a standalone page (`preview/`).
+   studio.
 
 The backend (`backend/`, `python -m backend`) runs the five stages as one job behind the web UI's API; each
 stage also still works as its own command-line script (§10).
@@ -35,11 +35,9 @@ stage also still works as its own command-line script (§10).
 
 | Path | Role |
 |---|---|
-| `backend/` | FastAPI server for the whole journey (`python -m backend`, see `backend/README.md`): serves the web UI and the job API of `frontend/BACKEND_CONTRACT.md`, and runs measure → group → convert → generate as a background job per upload, in `organizer_jobs/<id>/`. **fixtures** mode (default) reads committed CV/grouping JSON (no paid calls); **live** mode runs the `Final stuff/` scripts with the server's `ANTHROPIC_API_KEY`. The converter and CAD engine always run for real. |
-| `frontend/` | "GameFit" web UI (PR #2): game name + 2–6 ruler photos → loading scene with the job's stage → optional measurement question → STL downloads + three.js viewer. `config.js` points it at the backend's API when the backend serves it; served statically, it stays in demo mode and shows `generated_organizer/`. |
-| `Final stuff/` | The folder the team started for the final pipeline: `boardgame_dimensions_ruler_v7.py` (CV, identical to `boardgame/`'s copy) and `organize_game_boxes.py` (newest grouping script; always writes `organizer: "boxes"`). |
-| `boardgame/` | Pipeline workspace. CV scripts (`boardgame_dimensions_ruler.py`, `_relative.py`, `_cv.py`, `_ruler_v7.py`), grouping scripts (`organize_game.py`, `_compatible.py`, `_shapes.py`), sample dimensions JSONs (`ticket_to_ride_london_dimensions.json`, `root_dimensions.json`, `excape_dimensions.json`, `example_game.json`), grouping outputs, and test photos (`photos/`). |
-| `boardgame_dimensions_ruler.py`, `boardgame_dimensions_relative.py` (root) | Earlier CV versions; they differ from the `boardgame/` copies. Ruler: perspective from the ruler's 4 corners (homography), GrabCut outlines, Claude marks ruler and pieces. Relative: one least-squares log-scale solve across photos plus one real measurement as anchor. **Do not modify unless absolutely necessary.** |
+| `backend/` | FastAPI server for the whole journey (`python -m backend`, see `backend/README.md`): serves the web UI and the job API of `frontend/BACKEND_CONTRACT.md`, and runs measure → group → convert → generate as a background job per upload, in `organizer_jobs/<id>/`. **fixtures** mode (default) reads committed CV/grouping JSON (no paid calls); **live** mode runs the `pipeline/` scripts with the server's `ANTHROPIC_API_KEY`. The converter and CAD engine always run for real. |
+| `frontend/` | "GameFit" web UI (PR #2): game name + 2–6 ruler photos → loading scene with the job's stage → optional measurement question → STL downloads + three.js viewer. `config.js` points it at the backend's API when the backend serves it; served statically, it stays in demo mode and shows the example organizer in `generated_organizer/`. |
+| `pipeline/` | The live pipeline stages (formerly `Final stuff/`): `boardgame_dimensions_ruler_v7.py` (CV) and `organize_game_boxes.py` (grouping; always writes `organizer: "boxes"`). Older CV and grouping versions were removed from the tree; they are in the git history before the cleanup. |
 | `convert_grouping_output.py` | Grouping JSON → engine *plan* JSON (§4). |
 | `generate_organizer_stl.py` | CLI for the engine: plan → STL/GLB/layout. |
 | `organizer/schema.py` | Plan parsing, `Settings`, `Plan`, issue collection (errors, warnings, missing measurements). |
@@ -50,15 +48,13 @@ stage also still works as its own command-line script (§10).
 | `organizer/mesh.py` | numpy-only STL IO and validation (watertight, manifold, thickness ray-casts, single-cavity check). |
 | `organizer/gltf.py` | Writes the GLB from the exact STL triangles. |
 | `organizer/pipeline.py` | Orchestration (`plan_layout`, `generate`), layout validation (incl. rim support), `layout.json`, failure `report.json`. |
-| `organizer/cv_adapter.py` | CV dimensions JSON → draft *tray-mode* plan (bypasses grouping). Never fills gaps. |
 | `frontend/viewer/` | Shared three.js 0.160 viewer: `organizer-viewer.js` draws each STL placed by `layout.json` (stacked boxes keep their height) with selection, details panel + STL download, isolate/hide, dimension lines, Iso/Top/Front, fit/reset, explode + assembly, game box toggle, filament colours; `contents.js` computes approximate non-printed stand-ins for the stored pieces (tested in `tests/js/`). Visual only. |
-| `preview/index.html` | Standalone page around that viewer: `?layout=` or `?glb=` (reads the folder's `layout.json` + STLs), plus deep links (`view`, `explode`, `contents`, `select`, `filament`, `box`). |
-| `tests/` | pytest suite (121 tests, one of them runs the viewer's JS tests with Node): engine, converter, backend API and the viewer's contents module. Nothing tests the CV or grouping scripts or the web UI's interaction code (checked by hand in a browser). |
-| `examples/` | Sample plans, Holden's grouping JSONs (`holden_boxes_grouping.json` = 4 sets, `ttr_london_grouping.json` = Ticket to Ride: London). |
-| `exoutput.json`, `ttrloutput.json`, `kotoutput.json` | Holden's grouping outputs: 3 sets ("divider"), TTR London with 6 sets, King of Tokyo with 5 sets. |
-| `holden_final/` | **Current** generated results for every grouping JSON (§7), plus a compact TTR variant. |
-| `holden_boxes_demo/`, `holden_demo/`, `generated_organizer/`, `examples/output/` | Older demo outputs. Keep them; don't overwrite them. |
-| `README_STL_ENGINE.md`, `HOW_TO_TEST_HOLDEN_DATA.md` | User docs for the engine and for running Holden's data. |
+| `tests/` | pytest suite (118 tests, one of them runs the viewer's JS tests with Node): engine, converter, backend API and the viewer's contents module. Nothing tests the CV or grouping scripts or the web UI's interaction code (checked by hand in a browser). |
+| `examples/` | Inputs: Holden's grouping JSONs (`king_of_tokyo_grouping.json` = 5 sets, `ttr_london_grouping.json` = Ticket to Ride: London with 6 sets, `holden_boxes_grouping.json` = Hypothetical Battle Game with 4 sets), the TTR London CV output (`ttr_london_dimensions.json`), hand-written plans (`organizer_plan_example.json`, `typed_demo_plan.json`, `stacked_demo_plan.json`) and the ruler test photos (`photos/`). The backend's fixtures mode reads these. |
+| `tests/fixtures/layouts/` | Generated `layout.json` files the viewer's JS tests read (King of Tokyo, TTR London, both battle-game groupings, the stacked tray demo). |
+| `README_STL_ENGINE.md` | User docs for the engine, including running Holden's grouping data. |
+
+Generated output is not committed: `organizer_jobs/` (backend jobs) and `out/` are git-ignored. `generated_organizer/` is the web UI's static demo (and the CLI's default `-o`, so pass `-o out/…` to keep it intact).
 
 Dependencies:
 - **Engine:** `requirements-engine.txt`: `cadquery>=2.4` (tested 2.8.0, Python 3.12), `numpy`, optional
@@ -72,7 +68,7 @@ Dependencies:
 
 ## 3. Input: Holden's grouping JSON
 
-Produced by the grouping step (newest: `Final stuff/organize_game_boxes.py <dimensions.json> <out.json>`,
+Produced by the grouping step (`pipeline/organize_game_boxes.py <dimensions.json> <out.json>`,
 which accepts the CV ruler JSON or the `example_game.json` schema). The converter must accept it
 **unedited**.
 
@@ -252,14 +248,13 @@ Implemented in `organizer/packing.py::pack_organizer`.
 9. **`--compact`** (`fill_box`/`fill_height` false): boxes are sized only to their contents. Size groups
    still apply. Boxes under a bridge are still raised and stretched (support requires it).
 
-Current results (`holden_final/`, bed 256³):
+Current results (bed 256³; regenerate with §10):
 
 | Input | Boxes | Size (mm) |
 |---|---|---|
-| `exoutput.json` | 3 | 2 × 73.6×123, 1 × 172.4×247; all 57 tall (8 mm board on top) |
-| `exoutput (1).json` / `examples/holden_boxes_grouping.json` | 4 | kits 2 × 123×150.8, supplies 2 × 95.2×123; 57 tall |
-| `ttrloutput.json` | 6 | buses 4 × 111×81.5, card decks 2 × 57.9×111; 27.9 tall |
-| `kotoutput.json` (`king_of_tokyo_5_boxes`) | 5 | Power Card Deck 100.6×145.4, Dice Pool 100.6×100.6, Energy Cubes 100.5×145.4, Status & Special Tokens 145.4×145.5, all 38 tall on the floor; Monster Kits 247×247×21 on top (z 38 → 59) |
+| `examples/holden_boxes_grouping.json` | 4 | kits 2 × 123×150.8, supplies 2 × 95.2×123; 57 tall |
+| `examples/ttr_london_grouping.json` | 6 | buses 4 × 111×81.5, card decks 2 × 57.9×111; 27.9 tall |
+| `examples/king_of_tokyo_grouping.json` | 5 | Power Card Deck 100.6×145.4, Dice Pool 100.6×100.6, Energy Cubes 100.5×145.4, Status & Special Tokens 145.4×145.5, all 38 tall on the floor; Monster Kits 247×247×21 on top (z 38 → 59) |
 
 ## 8. CAD, validation and outputs
 
@@ -331,8 +326,8 @@ These are printer/process defaults, not game measurements.
 Full chain, one stage at a time (`ANTHROPIC_API_KEY` must be set for the first two):
 
 ```bash
-python "Final stuff/boardgame_dimensions_ruler_v7.py" "King of Tokyo" photos/ -o dims.json   # CV
-python "Final stuff/organize_game_boxes.py" dims.json grouping.json                          # grouping (web search)
+python pipeline/boardgame_dimensions_ruler_v7.py "King of Tokyo" photos/ -o dims.json   # CV
+python pipeline/organize_game_boxes.py dims.json grouping.json                          # grouping (web search)
 mkdir -p out
 python convert_grouping_output.py grouping.json --bed 256 256 256 -o out/plan.json
 python generate_organizer_stl.py out/plan.json -o out
@@ -342,11 +337,11 @@ Engine only, on the committed grouping JSONs:
 
 ```bash
 pip install -r requirements-engine.txt
-python convert_grouping_output.py kotoutput.json --bed 256 256 256 -o holden_final/king_of_tokyo_5_boxes/plan.json
-python generate_organizer_stl.py holden_final/king_of_tokyo_5_boxes/plan.json -o holden_final/king_of_tokyo_5_boxes
+mkdir -p out/king_of_tokyo
+python convert_grouping_output.py examples/king_of_tokyo_grouping.json --bed 256 256 256 -o out/king_of_tokyo/plan.json
+python generate_organizer_stl.py out/king_of_tokyo/plan.json -o out/king_of_tokyo
 python generate_organizer_stl.py <plan.json> --check          # validate + pack only, no CAD
-python generate_organizer_stl.py --from-cv dims.json --box W L H --bed W L H -o out   # tray mode straight from CV output
-python -m pytest tests -q    # 121 tests, ~38 s with CadQuery (Node runs tests/js)
+python -m pytest tests -q    # 118 tests, ~35 s with CadQuery (Node runs tests/js)
 ```
 
 The whole journey in the browser (no terminal steps after this one):
@@ -356,12 +351,10 @@ pip install -r requirements-engine.txt -r requirements-backend.txt
 python -m backend                  # fixtures mode, http://127.0.0.1:8000/  (--port, --mode live, --fixtures FILE)
 ```
 
-Viewers without the backend (serve the repo root; any free port works):
+The web UI without the backend (demo mode, shows `generated_organizer/`; serve the repo root):
 
 ```bash
-python -m http.server 8000
-# 3D preview:  http://localhost:8000/preview/?glb=../holden_final/king_of_tokyo_5_boxes/organizer.glb
-# Web UI demo: http://localhost:8000/frontend/
+python -m http.server 8000         # http://localhost:8000/frontend/
 ```
 
 Other CLI flags: `--allow-partial` (skip broken compartments), `--no-glb`, `--no-thickness-check`.
@@ -390,7 +383,7 @@ Other CLI flags: `--allow-partial` (skip broken compartments), `--no-glb`, `--no
 
 ## 12. Current state
 
-**Works and is tested (121 tests):**
+**Works and is tested (118 tests):**
 - Holden's grouping JSON → converter → one plain open box per set → packed, validated STL + GLB +
   `layout.json`, for all four committed grouping outputs (3, 4, 6 and 5 sets), default and `--compact`.
 - One-layer, column and bridge layouts; same-size twins and similar-name groups; full-floor filling;
@@ -403,7 +396,7 @@ Other CLI flags: `--allow-partial` (skip broken compartments), `--no-glb`, `--no
   that job. Upload checks, missing-measurement, conversion, `does_not_fit` and stage-failure errors reach the
   user with the backend's message. Fixture games: King of Tokyo, Ticket to Ride: London, Hypothetical Battle
   Game (more with `--fixtures FILE`).
-- The shared 3D viewer (web UI studio and `preview/`) renders every output, including stacked layers;
+- The web UI's 3D viewer renders every output, including stacked layers;
   checked in a browser on Ticket to Ride: London and King of Tokyo, desktop and phone width.
 
 **Live mode, run once against the real API (2026-11-14):**
@@ -436,18 +429,15 @@ finished jobs' files downloadable after a restart; one real live run (§12).
    `warnings` in the web UI (it shows none today).
 
 **P1: correctness and consistency**
-2. **Pick one canonical version of each script** and archive the rest: CV exists as root
-   `…ruler.py`/`…relative.py`, `boardgame/…ruler.py`/`…relative.py`/`…cv.py`/`…ruler_v7.py` and
-   `Final stuff/…ruler_v7.py`; grouping as `organize_game.py`, `_compatible.py`, `_shapes.py` and
-   `organize_game_boxes.py`. Rename `Final stuff/` to a path without a space (e.g. `pipeline/`) and update
-   `ITB_CV_SCRIPT` / `ITB_GROUPING_SCRIPT` defaults in `backend/config.py`.
+2. ~~Pick one canonical version of each script~~ Done: `pipeline/` holds the only CV and grouping scripts
+   (the older versions are in the git history).
 3. **The measurement question only covers the image scale.** Missing dimensions stop the job (the UI can
    ask for one width only), and low-confidence pieces are only listed as warnings. A UI for a few answers
    (e.g. a missing height) would let those jobs continue instead of asking for new photos.
 4. **The backend is a local single-user server:** job status lives in memory (a restart forgets it; finished
    jobs' files stay downloadable), jobs run one at a time, old job folders are never deleted, and there is no
    authentication or rate limiting. Don't expose it to the internet as is.
-5. **Web UI demo data:** point the static demo at a boxes-mode result (e.g. `holden_final/…`), not the
+5. **Web UI demo data:** point the static demo (`generated_organizer/`) at a boxes-mode result, not the
    legacy tray demo, and stop hard-coding "SUMMIT SUPPLIES" (the tray count now comes from the job).
 6. **Model IDs:** CV uses `claude-sonnet-5-5` (hard-coded), grouping defaults to `claude-sonnet-4-6` unless
    `ANTHROPIC_MODEL` is set (the live run set it to `claude-sonnet-5-5`). On Sonnet 5.5, LangChain cannot force
@@ -461,10 +451,8 @@ finished jobs' files downloadable after a restart; one real live run (§12).
 9. **Physical verification:** print one organizer and test-fit it. King of Tokyo's 250 × 250 × 67 and
    TTR's 226 × 226 × 44 box sizes are estimated from the outside; TTR's 12.1 mm rule leaflet looks too
    thick. Use the real printer's bed (`ITB_PRINTER_BED`) instead of the illustrative 256³.
-10. **Repo hygiene:** ~18 MB of test photos (`boardgame/photos/`) and two unrelated stock images
-    (`boardgame/a-beautiful-sunset-…jpg`, `boardgame/nuclear-test-explosion-…jpg`) are committed;
-    local scratch folders (`king_of_tokyo_demo/`, `ticket_to_ride_*`, `ttrloutput_test.json`) are
-    untracked clutter. Consider Git LFS or removing them, and add scratch patterns to `.gitignore`.
+10. **Repo hygiene:** old outputs, duplicate scripts and stray images were removed. The ~18 MB of ruler test
+    photos (`examples/photos/`, used by the backend tests) are still committed; consider Git LFS.
 11. **Packing limits:** the block layout covers ≤ 5 kinds of set (more fall back to MaxRects, which can
     leave gaps); bridges are searched for ≤ 8 boxes and at most one bridge per layout; `--compact` doesn't
     force different kinds to look different.

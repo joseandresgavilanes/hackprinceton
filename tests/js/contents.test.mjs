@@ -6,8 +6,9 @@ import { contentsProxies, heightFor, proxyShape } from '../../frontend/viewer/co
 
 const root = new URL('../../', import.meta.url);
 const read = (rel) => JSON.parse(readFileSync(new URL(rel, root), 'utf-8'));
-const LAYOUTS = ['holden_final/king_of_tokyo_5_boxes/layout.json', 'holden_final/ttr_london_6_boxes/layout.json',
-  'holden_final/exoutput_3_boxes/layout.json', 'holden_final/exoutput_1_4_boxes/layout.json'];
+// Generated layouts of the committed grouping JSONs (kept as fixtures: the STL files are not needed here).
+const LAYOUTS = ['king_of_tokyo_5_boxes', 'ttr_london_6_boxes', 'battle_game_4_boxes']
+  .map((name) => `tests/fixtures/layouts/${name}.json`);
 const EPS = 0.02;
 
 function inside(p, cav) {
@@ -45,7 +46,7 @@ for (const rel of LAYOUTS) {
 }
 
 test('King of Tokyo: the Monster Kits box shows 3 layers, the deck is one flat stack of 66 cards', () => {
-  const trays = read('holden_final/king_of_tokyo_5_boxes/layout.json').trays;
+  const trays = read('tests/fixtures/layouts/king_of_tokyo_5_boxes.json').trays;
   const kits = contentsProxies(trays.find((t) => t.name.startsWith('Monster Kits')));
   assert.equal(kits.mode, 'layout');
   assert.equal(new Set(kits.pieces.map((p) => p.z.toFixed(2))).size, 3);
@@ -66,7 +67,7 @@ test('helpers: footprint vs height and shape mapping', () => {
 });
 
 test('typed tray layouts without member data show nothing instead of guessing', () => {
-  for (const rel of ['generated_organizer/layout.json', 'examples/output/stacked_demo/layout.json']) {
+  for (const rel of ['generated_organizer/layout.json']) {
     if (!existsSync(new URL(rel, root))) continue;
     for (const tray of read(rel).trays) assert.equal(contentsProxies(tray).pieces.length, 0, `${rel}: ${tray.name}`);
   }

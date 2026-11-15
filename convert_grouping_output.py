@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Convert an Inside the Box grouping result (e.g. exoutput.json) to an STL engine plan.
+"""Convert an Inside the Box grouping result (e.g. examples/king_of_tokyo_grouping.json) to an STL engine plan.
 
 Usage:
-  python convert_grouping_output.py ttrloutput.json --bed 256 256 256 -o organizer_plan.json
+  python convert_grouping_output.py examples/ttr_london_grouping.json --bed 256 256 256 -o organizer_plan.json
 
 --bed must be the ACTUAL printer build volume (width, length, height), in mm.
 No missing physical dimensions are silently guessed; every problem is listed.

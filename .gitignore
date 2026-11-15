@@ -7,3 +7,6 @@ __pycache__/
 # Inside the Box backend
 organizer_jobs/
 .env
+
+# Generated organizer output (the folder the docs use)
+out/

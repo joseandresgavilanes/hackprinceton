@@ -99,7 +99,7 @@ def test_typed_features_present(generated):
 def test_cli_success_and_failure(tmp_path):
     out = tmp_path / "ok"
     r = subprocess.run([sys.executable, str(ROOT / "generate_organizer_stl.py"),
-                        str(ROOT / "organizer_plan_example.json"), "-o", str(out), "--no-thickness-check"],
+                        str(ROOT / "examples" / "organizer_plan_example.json"), "-o", str(out), "--no-thickness-check"],
                        capture_output=True, text=True, cwd=ROOT)
     assert r.returncode == 0, r.stderr
     assert "Generated 7 printable STL files" in r.stdout

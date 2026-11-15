@@ -19,11 +19,10 @@ spec = importlib.util.spec_from_file_location("convert_grouping_output", ROOT / 
 conv = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(conv)
 
-BED = (256, 256, 256)  # illustrative printer volume, same as HOW_TO_TEST_HOLDEN_DATA.md
+BED = (256, 256, 256)  # illustrative printer volume, same as the web app's default
 SETS = ["Red Player Kit", "Blue Player Kit", "Shared Supply: Dice", "Shared Supply: Battle Tokens"]
 # Holden's grouping outputs, converted with no manual edits: (file, number of sets)
-GROUPINGS = [("exoutput.json", 3), ("examples/holden_boxes_grouping.json", 4),
-             ("examples/ttr_london_grouping.json", 6)]
+GROUPINGS = [("examples/holden_boxes_grouping.json", 4), ("examples/ttr_london_grouping.json", 6)]
 
 
 def load_grouping(name):
@@ -167,12 +166,10 @@ def test_one_plain_box_per_set_without_edits(name, n_sets):
                         and _overlap(a.z, a.z + a.h, b.z, b.z + b.h)), (a.design.name, b.design.name)
 
 
-@pytest.mark.skipif(not (ROOT / "exoutput.json").exists(), reason="earlier grouping output not present")
-def test_typed_divider_conversion_still_available():
-    old = load_grouping("exoutput.json")
-    plan, _ = conv.convert(old, BED, typed=True)
+def test_typed_divider_conversion_still_available(grouping):
+    plan, _ = conv.convert(grouping, BED, typed=True)
     assert plan["organizer"] == "trays" and "bottom_layer" not in plan
-    assert {c["tray"] for c in plan["compartments"]} == {s["name"] for s in old["sets"]}
+    assert {c["tray"] for c in plan["compartments"]} == {s["name"] for s in grouping["sets"]}
     plan_layout(plan)  # still a valid plan for the tray engine
 
 
@@ -452,7 +449,7 @@ def test_ttr_london_six_printable_open_boxes(ttr_output):
 
 
 # ---------------------------------------------------------------------------
-# King of Tokyo (kotoutput.json): the big box only fits on top of the four others
+# King of Tokyo (examples/king_of_tokyo_grouping.json): the big box only fits on top of the four others
 # ---------------------------------------------------------------------------
 KOT_SETS = ["Power Card Deck", "Dice Pool", "Energy Cubes", "Status & Special Tokens", "Monster Kits (All Players)"]
 KOT_TOP = "Monster Kits (All Players)"
@@ -463,7 +460,7 @@ KOT_MIN = {"Power Card Deck": (74.1, 96.2, 29.4), "Dice Pool": (66.5, 74.5, 38.0
 
 @pytest.fixture
 def kot():
-    return load_grouping("kotoutput.json")
+    return load_grouping("examples/king_of_tokyo_grouping.json")
 
 
 def _geoms(plan, trays):
@@ -530,7 +527,7 @@ def kot_output(tmp_path_factory):
     if not HAS_CADQUERY:
         pytest.skip("CadQuery not installed")
     from organizer import generate
-    plan, _ = conv.convert(load_grouping("kotoutput.json"), BED)
+    plan, _ = conv.convert(load_grouping("examples/king_of_tokyo_grouping.json"), BED)
     dest = tmp_path_factory.mktemp("king_of_tokyo")
     return dest, generate(plan, dest)
 

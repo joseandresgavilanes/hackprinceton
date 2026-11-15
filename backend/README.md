@@ -18,8 +18,8 @@ app, the `inside-the-box` entry in `.claude/launch.json` starts it on port 8790.
 
 | mode | measurement + grouping | cost | games |
 |---|---|---|---|
-| `fixtures` (default) | committed JSON: `kotoutput.json`, `ttrloutput.json` + `boardgame/ticket_to_ride_london_dimensions.json`, `examples/holden_boxes_grouping.json` | free | King of Tokyo, Ticket to Ride: London, Hypothetical Battle Game (+ any from `--fixtures FILE`) |
-| `live` (`--mode live` or `ITB_PIPELINE_MODE=live`) | `Final stuff/boardgame_dimensions_ruler_v7.py`, then `Final stuff/organize_game_boxes.py` | Anthropic API calls (+ web search) | any |
+| `fixtures` (default) | committed JSON in `examples/`: `king_of_tokyo_grouping.json`, `ttr_london_grouping.json` + `ttr_london_dimensions.json`, `holden_boxes_grouping.json` | free | King of Tokyo, Ticket to Ride: London, Hypothetical Battle Game (+ any from `--fixtures FILE`) |
+| `live` (`--mode live` or `ITB_PIPELINE_MODE=live`) | `pipeline/boardgame_dimensions_ruler_v7.py`, then `pipeline/organize_game_boxes.py` | Anthropic API calls (+ web search) | any |
 
 In both modes the converter (`convert_grouping_output.py`) and the CAD engine (`organizer/`) run for real in
 the job's own folder: every job's STL, GLB and layout are generated for that job, never taken from a demo.
@@ -40,7 +40,7 @@ never sent to the browser, and it is removed from stage logs and error messages.
 | `GET /api/health` | mode, fixture games or whether live mode has its key (never the key) |
 
 Uploads are checked before a job starts: a game name (≤ 120 characters), 2 to 6 files (`Config.min_photos` / `max_photos`, sent to the web UI in `config.js`), each a real
-JPEG/PNG/HEIC/WebP (by its bytes, not its name), ≤ 25 MB. Photos are saved as `photo_1…4.<ext>`.
+JPEG/PNG/HEIC/WebP (by its bytes, not its name), ≤ 25 MB. Photos are saved as `photo_1…6.<ext>`.
 
 ### When the user is asked for a measurement
 

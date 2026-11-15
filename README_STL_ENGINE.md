@@ -4,11 +4,11 @@ Turns measured board-game components into printable organizer trays:
 
 ```
 component measurements → grouping → spatial optimisation → parametric CAD → STL + GLB → 3-D preview
-   (CV scripts / plan)    (trays)     (layers, packing)      (CadQuery)    (validated)  (preview/)
+   (CV scripts / plan)    (trays)     (layers, packing)      (CadQuery)    (validated)  (web UI)
 ```
 
-Everything is in **millimetres**. No LLM or paid API is called here. The computer-vision scripts
-(`boardgame_dimensions_relative.py`, `boardgame_dimensions_ruler.py`) are unchanged.
+Everything is in **millimetres**. No LLM or paid API is called here. The computer-vision and grouping
+scripts (`pipeline/`) are separate stages and are not part of the engine.
 
 ## Install
 
@@ -23,25 +23,21 @@ MaxRects packer and adds rectpack's packers as extra candidates when installed.
 
 ```bash
 # Original example (the v1 JSON format still works unchanged)
-python generate_organizer_stl.py organizer_plan_example.json -o generated_organizer
+python generate_organizer_stl.py examples/organizer_plan_example.json -o out/example
 
 # Typed components: cards with sleeves, coins, dice pockets, grouped player pieces…
-python generate_organizer_stl.py examples/typed_demo_plan.json -o examples/output/typed_demo
+python generate_organizer_stl.py examples/typed_demo_plan.json -o out/typed_demo
 
 # Same components in a smaller box → trays are stacked in 2 layers
-python generate_organizer_stl.py examples/stacked_demo_plan.json -o examples/output/stacked_demo
+python generate_organizer_stl.py examples/stacked_demo_plan.json -o out/stacked_demo
 
 # Validate + pack only (no CAD, instant)
 python generate_organizer_stl.py examples/typed_demo_plan.json --check
 
-# Start from the CV output instead of a hand-written plan
-python generate_organizer_stl.py --from-cv carcassonne_dimensions.json --box 290 290 70 --bed 256 256 256 -o out
-
-# Preview (any static server works; the GLB can't load from file://)
-python -m http.server 8000
-#   open http://localhost:8000/preview/                       (generated_organizer/organizer.glb)
-#   open http://localhost:8000/preview/?glb=../examples/output/stacked_demo/organizer.glb
 ```
+
+To look at the result in 3D, run the backend (`python -m backend`, see `backend/README.md`) and use the web
+UI, or open `organizer.glb` in any glTF viewer.
 
 All example dimensions are **made up for testing** and are not from a real game edition.
 
@@ -50,7 +46,7 @@ with every problem is written to the output folder) · `2` geometry was generate
 (files kept for inspection, `layout.json` has `"status": "invalid"`).
 
 Flags: `--check`, `--allow-partial` (skip compartments that have errors, generate the rest),
-`--no-glb`, `--no-thickness-check`, `--from-cv FILE --box W L H --bed W L [H]`.
+`--no-glb`, `--no-thickness-check`.
 
 ## Input plan
 
@@ -225,28 +221,17 @@ Tray `extras` carry `name`, `stl`, `layer`, `assembled_translation_mm`, `explode
 `assembly_order`. For an exploded view, lerp each tray node's `position` between those two vectors.
 three.js `GLTFLoader` exposes `extras` as `object.userData`.
 
-### `preview/index.html`
+### 3D viewer
 
-A thin page around the shared viewer in `frontend/viewer/` (also used by the web UI). It draws each box from
-its STL file, placed by `layout.json` (rotation, `center_mm`, so stacked boxes keep their height), next to
-`?layout=<folder>/layout.json` or, as before, `?glb=<folder>/organizer.glb` (default `generated_organizer/`).
-
-- Hover and click a box: outline, dimension lines, a panel with its contents, sizes and an STL download;
-  isolate or hide it. Boxes stacked on a selected box turn see-through.
-- Iso / Top / Front views, Fit, Reset; a smooth Explode slider and Assemble (in `assembly_order`).
-- Contents: approximate, non-printed stand-ins for the stored pieces (`frontend/viewer/contents.js`): the
-  arrangement the engine sized each `loose`/`tight_pack` box for, card decks lying flat, stacks; labelled
-  approximate. Game box outline toggle; filament colour previews.
-- Deep links: `&view=top|front|iso&explode=0..1.5&contents=1&select=<index>&filament=sage&box=0`.
-
-Nothing in the viewer changes a printable part.
+The web UI's viewer (`frontend/viewer/`) draws each box from its STL file, placed by `layout.json`
+(rotation, `center_mm`, so stacked boxes keep their height). Nothing in the viewer changes a printable part.
 
 ## From Holden's grouping output
 
 ```bash
-python convert_grouping_output.py ttrloutput.json --bed 256 256 256 -o holden_final/ttr_london_6_boxes/plan.json
-python generate_organizer_stl.py holden_final/ttr_london_6_boxes/plan.json -o holden_final/ttr_london_6_boxes
-python -m http.server 8000   # → http://localhost:8000/preview/?glb=../holden_final/ttr_london_6_boxes/organizer.glb
+mkdir -p out/ttr_london
+python convert_grouping_output.py examples/ttr_london_grouping.json --bed 256 256 256 -o out/ttr_london/plan.json
+python generate_organizer_stl.py out/ttr_london/plan.json -o out/ttr_london
 ```
 
 The grouping JSON is the single source of truth:
@@ -268,15 +253,6 @@ divider conversion (typed compartments per member, one tray per set). All conver
 together and nothing is guessed. The 256 mm bed is an illustrative value — use your printer's real build
 volume.
 
-## From the CV output
-
-`--from-cv` (or `organizer.plan_from_cv`) maps the CV JSON to a draft plan (`plan_draft.json`): cards and tiles
-become stacks (CV `height` = thickness), flat cylinders become `round_tokens`, dice become `dice`, everything
-else `bits`. The box, boards and rulebooks are not stored in trays; their measurements are turned into notes
-(the box size from photos is the *outside*, and the board/rulebook stack belongs in `headroom_mm`). Anything
-the CV step didn't measure — card thickness, quantities, the box interior, the printer bed — stays missing and
-is reported, so edit the draft and re-run with the draft as the plan.
-
 ## Tests
 
 ```bash
@@ -286,7 +262,8 @@ python -m pytest tests -q        # ~15 s; geometry tests are skipped if CadQuery
 Covers parsing and every error path, cavity maths, missing-measurement reporting, randomised packing
 (no overlaps, in bounds), fill-box expansion, stacking support, printer-bed limits, mesh checks on synthetic
 meshes, GLB round-trip, full CAD runs of all three example plans (every STL validated, no 3-D collisions,
-GLB triangles == STL triangles), the CLI and the CV adapter.
+GLB triangles == STL triangles), the CLI, the converter on Holden's grouping JSONs, the backend API and the
+viewer's contents module.
 
 ## Limitations (be honest in the demo)
 

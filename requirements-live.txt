@@ -1,4 +1,4 @@
-# Live mode only (ITB_PIPELINE_MODE=live): the CV and grouping stage scripts in "Final stuff/"
+# Live mode only (ITB_PIPELINE_MODE=live): the CV and grouping stage scripts in pipeline/
 anthropic
 langchain-anthropic
 langchain-core
