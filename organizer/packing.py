@@ -6,14 +6,17 @@
    heights fit the box and the merge saves the most floor area. Trays in a
    column share one footprint, so every upper tray is fully supported.
 3. With ``fill_box`` the placed footprints grow into the free floor space (no
-   rattling); with ``fill_height`` the top tray of each column grows to the
+   rattling); trays that hold the same thing always keep the same size (they
+   grow together); with ``fill_height`` the top tray of each column grows to the
    usable box height (flush surface under the lid/board).
 
 Everything here is pure Python so it can be tested without CadQuery.
 """
 from __future__ import annotations
 
+import itertools
 import math
+import re
 from dataclasses import dataclass, field
 from typing import Optional
 
@@ -306,10 +309,283 @@ def scale_to_fill(rects: dict, bin_w: float, bin_l: float, cap=None) -> dict:
     return {k: [x * fx, y * fy, w * fx, l * fy] for k, (x, y, w, l) in rects.items()}
 
 
-def _score(res: dict, bin_w: float, bin_l: float, fill: bool, cap) -> tuple:
+# ---------------------------------------------------------------------------
+# Identical trays stay identical
+# ---------------------------------------------------------------------------
+def _design_sig(d: TrayDesign) -> tuple:
+    """What a tray physically has to hold: two trays with the same signature get the same size."""
+    cells = tuple((c.type, c.kind, round(c.w, 3), round(c.l, 3), round(c.depth, 3), c.growable, c.deepens,
+                   c.notch, round(c.scoop_r, 3), len(c.wells)) for c in d.cells)
+    return round(d.min_w, 3), round(d.min_l, 3), round(d.min_h, 3), cells
+
+
+def twin_groups(cols: list) -> list[list[int]]:
+    """Indices of columns that must be the same size: identical contents (e.g. one bus set per player)
+    or one similar-name group (``TrayDesign.size_group``)."""
+    sig: dict = {}
+    for i, c in enumerate(cols):
+        key = (round(c.w, 3), round(c.l, 3),
+               tuple(("group", t.size_group) if t.size_group else (_design_sig(t), r)
+                     for t, r in zip(c.trays, c.rel_rot)))
+        sig.setdefault(key, []).append(i)
+    return [g for g in sig.values() if len(g) > 1]
+
+
+# Words that do not say what a set is: colours, filler words (numbers and brackets are dropped too)
+_NAME_NOISE = {"red", "blue", "green", "yellow", "black", "white", "orange", "purple", "pink", "grey", "gray",
+               "brown", "and", "the", "of", "for", "a", "an", "with"}
+
+
+def name_key(name: str) -> tuple:
+    name = re.sub(r"\([^)]*\)|\[[^\]]*\]", " ", name.lower())
+    return tuple(w for w in re.findall(r"[a-z]+", name) if w not in _NAME_NOISE)
+
+
+def similar_names(a: str, b: str) -> bool:
+    """Same name apart from numbers/colours/brackets, or the same first or last two words.
+
+    'Player 1 Bus Set' ~ 'Player 2 Bus Set', 'Transportation Card Deck' ~ 'Destination Ticket Card Deck',
+    'Shared Supply: Dice' ~ 'Shared Supply: Battle Tokens'.
+    """
+    ka, kb = name_key(a), name_key(b)
+    if not ka or not kb:
+        return False
+    return ka == kb or (min(len(ka), len(kb)) >= 2 and (ka[:2] == kb[:2] or ka[-2:] == kb[-2:]))
+
+
+def similar_name_groups(designs: list) -> list[list]:
+    parent = list(range(len(designs)))
+
+    def root(i):
+        while parent[i] != i:
+            parent[i] = parent[parent[i]]
+            i = parent[i]
+        return i
+
+    for i in range(len(designs)):
+        for j in range(i + 1, len(designs)):
+            if similar_names(designs[i].name, designs[j].name):
+                parent[root(j)] = root(i)
+    groups: dict = {}
+    for i, d in enumerate(designs):
+        groups.setdefault(root(i), []).append(d)
+    return [g for g in groups.values() if len(g) > 1]
+
+
+def _group_label(group: list) -> str:
+    """The words the names share, e.g. 'card deck' for 'Transportation/Destination Ticket Card Deck'."""
+    keys = [name_key(d.name) for d in group]
+    n = min(len(k) for k in keys)
+    pre = next((i for i in range(n) if len({k[i] for k in keys}) > 1), n)
+    suf = next((i for i in range(n) if len({k[-1 - i] for k in keys}) > 1), n)
+    words = keys[0][:pre] if pre >= suf else keys[0][len(keys[0]) - suf:]
+    return " ".join(words) or group[0].name
+
+
+def share_similar_sizes(designs: list, plan: Plan) -> list[str]:
+    """organizer "boxes": similarly named sets get one box size and orientation (the largest each needs)."""
+    s = plan.settings
+    if plan.mode != "boxes" or not s.similar_names_same_size:
+        return []
+    notes = []
+    limits = [(plan.bed[0], plan.bed[1]), plan.bin_size]
+    for group in similar_name_groups(designs):
+        short = max(min(d.content_min_w, d.content_min_l) for d in group)
+        long = max(max(d.content_min_w, d.content_min_l) for d in group)
+        h = max(d.content_min_h for d in group)
+        names = ", ".join(f"'{d.name}'" for d in group)
+        if not all(fits(short, long, W, L) for W, L in limits) or h > plan.max_tray_height + EPS:
+            plan.issues.warn("similar_size_skipped", f"Similarly named sets {names} cannot share one box size "
+                                                     f"({short:.1f} × {long:.1f} × {h:.1f} mm does not fit); "
+                                                     f"each keeps its own size")
+            continue
+        label = _group_label(group)
+        for d in group:
+            d.size_floor = (short, long, h) if d.content_min_w <= d.content_min_l else (long, short, h)
+            d.size_group = label
+        notes.append(f"Similar names, same box shape and size (at least {short:.1f} × {long:.1f} × {h:.1f} mm, "
+                     f"what the largest needs): {names}")
+    return notes
+
+
+def _own(r, rot) -> tuple:
+    return (r[2], r[3]) if rot == 0 else (r[3], r[2])
+
+
+def _try_grow(rect, axis, step, others, bins, cap_size) -> bool:
+    """Grow ``rect`` by ``step`` along ``axis`` on the + side, else the − side, if nothing is in the way."""
+    if rect[axis + 2] + step > cap_size + EPS:
+        return False
+    for sign in (1, -1):
+        cand = list(rect)
+        cand[axis + 2] += step
+        if sign < 0:
+            cand[axis] -= step
+        if cand[axis] < -EPS or cand[axis] + cand[axis + 2] > bins[axis] + EPS:
+            continue
+        if any(_intersects(tuple(cand), tuple(o)) for o in others):
+            continue
+        rect[:] = cand
+        return True
+    return False
+
+
+def equalize(rects: dict, rots: dict, groups: list, bin_w: float, bin_l: float, cap=None) -> dict:
+    """Make every tray of a twin group the same size, then let groups grow together.
+
+    Each group is first shrunk to its smallest member (in the trays' own frame, so a rotated
+    twin counts too); then, in decreasing steps, a group grows only if ALL its members can grow
+    by the same amount, and single trays fill whatever is left. Shrinking and growing into free
+    space never creates an overlap.
+    """
+    r = {k: list(v) for k, v in rects.items()}
+    for g in groups:
+        ow = min(_own(r[k], rots[k])[0] for k in g)
+        ol = min(_own(r[k], rots[k])[1] for k in g)
+        for k in g:
+            r[k][2], r[k][3] = (ow, ol) if rots[k] == 0 else (ol, ow)
+    in_group = {k for g in groups for k in g}
+    units = [list(g) for g in groups] + [[k] for k in r if k not in in_group]
+    bins = (bin_w, bin_l)
+    for step in (16.0, 8.0, 4.0, 2.0, 1.0, 0.5, 0.25, 0.1):
+        changed = True
+        while changed:
+            changed = False
+            for unit in units:
+                for own_axis in (0, 1):
+                    trial = {k: list(r[k]) for k in unit}
+                    ok = True
+                    for k in unit:
+                        axis = own_axis if rots[k] == 0 else 1 - own_axis
+                        others = [trial[j] if j in trial else r[j] for j in r if j != k]
+                        limit = cap(k, r[k][2], r[k][3], axis) if cap is not None else math.inf
+                        if not _try_grow(trial[k], axis, step, others, bins, limit):
+                            ok = False
+                            break
+                    if ok:
+                        r.update(trial)
+                        changed = True
+    return r
+
+
+# ---------------------------------------------------------------------------
+# Boxes mode: one block per set type, the blocks tile the whole floor
+# ---------------------------------------------------------------------------
+DISTINCT_RATIO = 1.25   # different set types: ≥ 25 % apart in width or length
+MAX_BLOCKS = 5          # exhaustive guillotine search up to this many set types
+MAX_ASPECT = 2.5        # preferred limit on box length / width
+
+
+def _subset_trees(blocks: tuple, leaf_opts: dict, memo: dict) -> list:
+    """Every guillotine arrangement of ``blocks`` as [(min_w, min_l, tree)]."""
+    if blocks in memo:
+        return memo[blocks]
+    if len(blocks) == 1:
+        out = list(leaf_opts[blocks[0]])
+    else:
+        out = []
+        first, rest = blocks[0], blocks[1:]
+        for mask in range(2 ** len(rest) - 1):          # side A holds `first`; side B is never empty
+            a = (first,) + tuple(b for i, b in enumerate(rest) if mask >> i & 1)
+            b = tuple(b for i, b in enumerate(rest) if not mask >> i & 1)
+            for aw, al, ta in _subset_trees(a, leaf_opts, memo):
+                for bw, bl, tb in _subset_trees(b, leaf_opts, memo):
+                    out.append((aw + bw, max(al, bl), ("v", ta, tb, aw, bw)))
+                    out.append((max(aw, bw), al + bl, ("h", ta, tb, al, bl)))
+        if len(out) > 400:  # keep the arrangements that are smallest in some direction (Pareto front)
+            out.sort(key=lambda t: (t[0], t[1]))
+            front, best_l = [], math.inf
+            for t in out:
+                if t[1] < best_l - EPS:
+                    front.append(t)
+                    best_l = t[1]
+            out = front + [t for t in out if t not in front][: 400 - len(front)]
+    memo[blocks] = out
+    return out
+
+
+def _place_tree(tree, x, y, w, l, blocks, out):
+    """Slack is shared in proportion to each side's minimum, so every box keeps its proportions."""
+    if tree[0] == "leaf":
+        _, b, cols, rows, rot = tree
+        cw, cl = w / cols, l / rows
+        for i, k in enumerate(blocks[b]):
+            out[k] = (x + (i % cols) * cw, y + (i // cols) * cl, cw, cl, rot)
+    elif tree[0] == "v":
+        _, ta, tb, aw, bw = tree
+        wa = w * aw / (aw + bw)
+        _place_tree(ta, x, y, wa, l, blocks, out)
+        _place_tree(tb, x + wa, y, w - wa, l, blocks, out)
+    else:
+        _, ta, tb, al, bl = tree
+        la = l * al / (al + bl)
+        _place_tree(ta, x, y, w, la, blocks, out)
+        _place_tree(tb, x, y + la, w, l - la, blocks, out)
+
+
+def _shape_distance(a, b) -> float:
+    (a1, a2), (b1, b2) = sorted(a), sorted(b)
+    return max(abs(math.log(a1 / b1)), abs(math.log(a2 / b2)))
+
+
+def block_layout(sizes: dict, groups: list, bin_w: float, bin_l: float, gap: float, cap=None):
+    """Fill the whole floor: every set type (a group of same-size boxes, or one box) is one rectangular
+    block laid out as a full grid, and the blocks tile the box by straight (guillotine) cuts.
+
+    Of the arrangements that fit, the best one gives different set types clearly different boxes
+    (≥ DISTINCT_RATIO apart in width or length), then avoids long narrow boxes (> MAX_ASPECT), then
+    grows every box most evenly. Returns (method, placements, rects, distinct), or None.
+    """
+    in_group = {k for g in groups for k in g}
+    blocks = [list(g) for g in groups] + [[k] for k in sizes if k not in in_group]
+    if len(blocks) > MAX_BLOCKS:
+        return None
+    leaf_opts = {}
+    for b, keys in enumerate(blocks):
+        w, l = sizes[keys[0]]
+        n = len(keys)
+        opts = []
+        for cols in (c for c in range(1, n + 1) if n % c == 0):
+            for rot in ((0,) if abs(w - l) < EPS else (0, 90)):
+                bw, bl = (w, l) if rot == 0 else (l, w)
+                opts.append((cols * bw, (n // cols) * bl, ("leaf", b, cols, n // cols, rot)))
+        leaf_opts[b] = opts
+    best = None
+    for mw, ml, tree in _subset_trees(tuple(range(len(blocks))), leaf_opts, {}):
+        if mw > bin_w + EPS or ml > bin_l + EPS:
+            continue
+        out = {}
+        _place_tree(tree, 0.0, 0.0, bin_w, bin_l, blocks, out)
+        own, ok = {}, True
+        for k, (x, y, w, l, rot) in out.items():
+            if cap is not None and (w > cap(k, w, l, 0) + EPS or l > cap(k, w, l, 1) + EPS):
+                ok = False
+                break
+            own[k] = (w - gap, l - gap) if rot == 0 else (l - gap, w - gap)
+        if not ok:
+            continue
+        growth = max(own[k][0] * own[k][1] / ((sizes[k][0] - gap) * (sizes[k][1] - gap)) for k in own)
+        aspect = max(max(v) / min(v) for v in own.values())
+        dist = min((_shape_distance(own[a[0]], own[b[0]]) for a, b in itertools.combinations(blocks, 2)),
+                   default=math.inf)
+        # long narrow troughs (> MAX_ASPECT) only when nothing squarer fits
+        key = (dist < math.log(DISTINCT_RATIO) - 1e-9, round(max(aspect, MAX_ASPECT), 1), round(growth, 2),
+               round(aspect, 2))
+        if best is None or key < best[0]:
+            best = (key, out)
+    if best is None:
+        return None
+    out = best[1]
+    return ("blocks", {k: v for k, v in out.items()}, {k: list(v[:4]) for k, v in out.items()},
+            not best[0][0])
+
+
+def _score(res: dict, bin_w: float, bin_l: float, fill: bool, cap, groups=()) -> tuple:
     if fill:
         base = {k: list(v[:4]) for k, v in res.items()}
         grown = expand(scale_to_fill(base, bin_w, bin_l, cap), bin_w, bin_l, cap)
+        if groups:
+            grown = equalize(grown, {k: v[4] for k, v in res.items()}, groups, bin_w, bin_l, cap)
         covered = sum(v[2] * v[3] for v in grown.values())
         # most floor covered first (1 cm² buckets), then the most even growth between trays
         worst = max((g[2] * g[3]) / (b[2] * b[3]) for g, b in zip(grown.values(), base.values()))
@@ -319,7 +595,7 @@ def _score(res: dict, bin_w: float, bin_l: float, fill: bool, cap) -> tuple:
     return (round(ext_w * ext_l, 3), round(ext_w + ext_l, 3)), {k: list(v[:4]) for k, v in res.items()}
 
 
-def best_layout(sizes: dict, bin_w: float, bin_l: float, fill: bool = False, cap=None):
+def best_layout(sizes: dict, bin_w: float, bin_l: float, fill: bool = False, cap=None, groups=()):
     """Try every heuristic/order (and rectpack); return (method, placements, rects) or None."""
     cands = []
     orders = _orders(sizes)
@@ -333,7 +609,7 @@ def best_layout(sizes: dict, bin_w: float, bin_l: float, fill: bool = False, cap
     for method, res in cands:
         if not valid_placement(res, bin_w, bin_l):
             continue
-        score, rects = _score(res, bin_w, bin_l, fill, cap)
+        score, rects = _score(res, bin_w, bin_l, fill, cap, groups)
         if best is None or score < best[0]:
             best = (score, method, res, rects)
     return None if best is None else best[1:]
@@ -354,9 +630,11 @@ def pack_organizer(designs: list[TrayDesign], plan: Plan) -> PackResult:
     if plan.issues.errors:
         raise PlanError(plan.issues)
 
-    cols = [Column([d], [False], d.min_w, d.min_l) for d in designs]
+    notes = share_similar_sizes(designs, plan)
+    # similar-name groups: every box in the column frame (short side, long side) so they line up
+    cols = [Column([d], [d.min_w > d.min_l], min(d.min_w, d.min_l), max(d.min_w, d.min_l)) if d.size_group
+            else Column([d], [False], d.min_w, d.min_l) for d in designs]
     min_area = sum((d.min_w + gap) * (d.min_l + gap) for d in designs)
-    notes = []
 
     def cap_for(cmap):
         def cap(k, w, l, axis):
@@ -372,7 +650,16 @@ def pack_organizer(designs: list[TrayDesign], plan: Plan) -> PackResult:
 
     while True:
         sizes = {i: (c.w + gap, c.l + gap) for i, c in enumerate(cols)}
-        found = best_layout(sizes, bin_w, bin_l, s.fill_box, cap_for(cols))
+        twins = twin_groups(cols)
+        if plan.mode == "boxes" and s.fill_box and all(len(c.trays) == 1 for c in cols):
+            blocks = block_layout(sizes, twins, bin_w, bin_l, gap, cap_for(cols))
+            if blocks:
+                *found, distinct = blocks
+                notes.append("Each kind of set is one block of equal boxes; the blocks fill the whole box floor"
+                             + ("" if distinct else ". Some different kinds could not be given clearly "
+                                                    "different box shapes"))
+                break
+        found = best_layout(sizes, bin_w, bin_l, s.fill_box, cap_for(cols), twins)
         if found:
             break
         merge = _best_merge(cols, stack_h, s.max_layers, gap, limits)
@@ -395,6 +682,9 @@ def pack_organizer(designs: list[TrayDesign], plan: Plan) -> PackResult:
     method, placements, rects = found
     if s.fill_box:
         method += " + fill_box"
+    for g in twins:
+        if not any(t.size_group for i in g for t in cols[i].trays):
+            notes.append("Same contents, same size: " + ", ".join(f"'{cols[i].name}'" for i in g))
     placed: list[PlacedTray] = []
     layers = 1
     for ci, col in enumerate(cols):

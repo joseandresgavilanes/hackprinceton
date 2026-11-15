@@ -318,6 +318,9 @@ def _min_enclosing(rects: list, limits: list) -> tuple | None:
     return None if best is None else best[1:]
 
 
+SET_STYLES = ("loose", "stack", "card_stack")
+
+
 def _set_box(comp: Compartment, s: Settings, max_depth: float, issues: Issues, limits=None) -> list[Cell]:
     """Exactly one rectangular open cavity for all members of a set (no dividers or shaped cutouts)."""
     d = comp.data
@@ -330,8 +333,8 @@ def _set_box(comp: Compartment, s: Settings, max_depth: float, issues: Issues, l
         return [Cell(w=req["width"] + 2 * c, l=req["length"] + 2 * c, depth=req["height"] + c,
                      contents={"source": "required_mm", "group_bbox_mm": req}, **plain)]
     style = str(d.get("storage_style", "")).strip().lower()
-    if style not in ("loose", "stack"):
-        issues.error("invalid_value", f"{comp.name}: storage_style must be 'loose' or 'stack', got "
+    if style not in SET_STYLES:
+        issues.error("invalid_value", f"{comp.name}: storage_style must be one of {', '.join(SET_STYLES)}, got "
                                       f"{d.get('storage_style')!r}", comp.name, "storage_style")
     members = d.get("members")
     if not isinstance(members, list) or not members:
@@ -349,26 +352,38 @@ def _set_box(comp: Compartment, s: Settings, max_depth: float, issues: Issues, l
         if md and q:
             parsed.append({"name": mname, "component_id": m.get("component_id"), "quantity": q,
                            "shape": m.get("shape"), "dimensions_mm": md})
-    if len(parsed) != len(members) or style not in ("loose", "stack"):
+    if len(parsed) != len(members) or style not in SET_STYLES:
         return []
     room = max_depth - c
 
-    if style == "stack":
+    if style in ("stack", "card_stack"):
+        # One vertical stack (card_stack: one deck lying flat); height is the piece/card thickness.
+        what = "deck" if style == "card_stack" else "stack"
         total = sum(p["quantity"] * p["dimensions_mm"]["height"] for p in parsed)
         W = max(p["dimensions_mm"]["width"] for p in parsed)
         L = max(p["dimensions_mm"]["length"] for p in parsed)
         if len({(p["dimensions_mm"]["width"], p["dimensions_mm"]["length"]) for p in parsed}) > 1:
             issues.warn("mixed_stack", f"{comp.name}: stacked members have different footprints; the box is sized "
                                        f"to the largest ({W:g} × {L:g} mm)", comp.name)
+        if style == "card_stack":
+            for p in parsed:
+                md = p["dimensions_mm"]
+                if md["height"] > min(md["length"], md["width"]):
+                    issues.warn("card_thickness", f"{comp.name}: '{p['name']}' height {md['height']:g} mm is used "
+                                                  f"as the card thickness but is not its smallest dimension",
+                                comp.name)
         if total > room + 1e-9:
-            issues.error("too_tall", f"{comp.name}: the {total:g} mm stack is taller than the {room:.1f} mm "
-                                     f"available. storage_style 'stack' is never split automatically; change the "
-                                     f"grouping (e.g. two sets) or the box/board/headroom measurements.",
+            issues.error("too_tall", f"{comp.name}: the {total:g} mm {what} is taller than the {room:.1f} mm "
+                                     f"available. storage_style '{style}' is never split automatically; change the "
+                                     f"grouping (e.g. two sets) or the box/headroom measurements.",
                          comp.name, "storage_style")
             return []
+        basis = ("one deck lying flat: " + " + ".join(f"{p['quantity']} × {p['dimensions_mm']['height']:g} mm"
+                                                      for p in parsed)
+                 if style == "card_stack" else "one vertical stack of all listed pieces")
         return [Cell(w=W + 2 * c, l=L + 2 * c, depth=total + c,
-                     contents={"storage_style": "stack", "members": parsed, "stack_height_mm": round(total, 3),
-                               "fit_basis": "one vertical stack of all listed pieces"}, **plain)]
+                     contents={"storage_style": style, "members": parsed, "stack_height_mm": round(total, 3),
+                               "fit_basis": basis}, **plain)]
 
     # loose: every piece's bounding box laid out in one arranged layer (or a few identical layers)
     pieces, notes = [], []

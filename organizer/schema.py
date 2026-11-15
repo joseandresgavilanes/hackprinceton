@@ -185,6 +185,7 @@ class Settings:
     headroom_mm: float = 0.0             # height reserved under the lid (board, rulebook)
     fill_height: bool = True             # raise trays to a flush top (raised floors)
     fill_box: bool = True                # grow trays sideways into empty floor space
+    similar_names_same_size: bool = True # organizer "boxes": similarly named sets share one box size
     max_layers: int = 3                  # max trays stacked in one column
     corner_radius_mm: float = 1.0        # outer vertical edge rounding
     finger_notch_width_mm: float = 20.0  # U-notch width for cards/tiles
@@ -215,9 +216,10 @@ def parse_settings(raw: Any, issues: Issues, mode: str = "trays") -> Settings:
     s = Settings()
     if mode == "boxes":
         # Simple removable boxes that together fit the game box: all the same height (flush with
-        # the lid), grown to cover the floor, one layer. Set fill_height / fill_box to false for
-        # compact boxes sized only to their contents.
-        s.fill_height, s.fill_box, s.max_layers = True, True, 1
+        # the lid) and grown to cover the floor; each box keeps ONE cavity that deepens/widens with
+        # it, so no solid plastic is added. Set fill_height / fill_box to false for compact boxes
+        # sized only to their contents. Two boxes are stacked only if one layer cannot fit.
+        s.fill_height, s.fill_box, s.max_layers = True, True, 2
     if raw is None:
         raw = {}
     if not isinstance(raw, dict):
@@ -234,7 +236,7 @@ def parse_settings(raw: Any, issues: Issues, mode: str = "trays") -> Settings:
             if v is not None:
                 setattr(s, name, v)
                 given.append(name)
-    for name in ("fill_height", "fill_box"):
+    for name in ("fill_height", "fill_box", "similar_names_same_size"):
         if name in raw:
             if isinstance(raw[name], bool):
                 setattr(s, name, raw[name])

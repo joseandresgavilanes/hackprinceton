@@ -45,18 +45,33 @@ class TrayDesign:
     wall: float
     floor: float
     layer_pref: str = "any"
+    # Shared minimum outer size (w, l, h) when this box must match similarly named boxes
+    size_floor: Optional[tuple] = None
+    size_group: Optional[str] = None
 
     @property
-    def min_w(self) -> float:
+    def content_min_w(self) -> float:
         return self.arrangement.inner_w + 2 * self.wall
 
     @property
-    def min_l(self) -> float:
+    def content_min_l(self) -> float:
         return self.arrangement.inner_l + 2 * self.wall
 
     @property
-    def min_h(self) -> float:
+    def content_min_h(self) -> float:
         return max(c.depth for c in self.cells) + self.floor
+
+    @property
+    def min_w(self) -> float:
+        return max(self.content_min_w, self.size_floor[0]) if self.size_floor else self.content_min_w
+
+    @property
+    def min_l(self) -> float:
+        return max(self.content_min_l, self.size_floor[1]) if self.size_floor else self.content_min_l
+
+    @property
+    def min_h(self) -> float:
+        return max(self.content_min_h, self.size_floor[2]) if self.size_floor else self.content_min_h
 
     @property
     def type(self) -> str:

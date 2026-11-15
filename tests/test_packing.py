@@ -7,7 +7,8 @@ import pytest
 from conftest import minimal_plan
 from organizer import PlanError, plan_layout
 from organizer.grouping import place_cells
-from organizer.packing import best_layout, expand, maxrects, scale_to_fill, valid_placement
+from organizer.packing import (block_layout, best_layout, equalize, expand, maxrects, scale_to_fill,
+                               similar_names, valid_placement)
 from organizer.pipeline import validate_layout
 
 
@@ -49,6 +50,86 @@ def test_expansion_keeps_rects_disjoint_and_in_bounds():
         for (x, y, w, l), (bx, by, bw, bl) in zip(rects, base.values()):
             assert x >= -1e-6 and y >= -1e-6 and x + w <= 200 + 1e-6 and y + l <= 180 + 1e-6
             assert w >= bw - 1e-9 and l >= bl - 1e-9
+
+
+def test_equalize_gives_twins_one_size_even_when_rotated():
+    """Twins 0, 1 (rotated 90°) and 2 start at different sizes; afterwards they match and nothing overlaps."""
+    rng = random.Random(7)
+    for _ in range(60):
+        rects = {0: [0, 0, 40, 60], 1: [50, 0, 70, 30], 2: [130, 0, 45, 65], 3: [0, 80, 90, 50]}
+        rects = {k: [v[0] + rng.uniform(0, 5), v[1] + rng.uniform(0, 5), v[2], v[3]] for k, v in rects.items()}
+        rots = {0: 0, 1: 90, 2: 0, 3: 0}
+        out = equalize(rects, rots, [[0, 1, 2]], 200, 200)
+        own = [(out[k][2], out[k][3]) if rots[k] == 0 else (out[k][3], out[k][2]) for k in (0, 1, 2)]
+        assert own[0] == own[1] == own[2]
+        assert own[0][0] >= 40 - 1e-9 or own[0][1] >= 30 - 1e-9
+        assert _no_overlap([tuple(v) for v in out.values()])
+        assert all(-1e-6 <= x and -1e-6 <= y and x + w <= 200 + 1e-6 and y + l <= 200 + 1e-6
+                   for x, y, w, l in out.values())
+
+
+def test_identical_trays_keep_the_same_size_after_fill():
+    piece = {"type": "bits", "quantity": 10, "piece_mm": {"width": 10, "length": 20, "height": 10}}
+    plan = minimal_plan(*[{**piece, "name": f"Player {i}"} for i in range(1, 6)],
+                        {"name": "Big", "type": "bits", "quantity": 4, "piece_mm": {"width": 30, "length": 40, "height": 20}},
+                        box=(230, 180, 50))
+    p, _, packing = plan_layout(plan)
+    sizes = {(round(t.w, 6), round(t.l, 6), round(t.h, 6)) for t in packing.trays if t.design.name.startswith("Player")}
+    assert len(sizes) == 1
+    assert any("same size" in n for n in packing.notes)
+    geoms = {t.design.id: place_cells(t.design, t.w, t.l, t.h, p.settings) for t in packing.trays}
+    assert validate_layout(p, packing.trays, geoms)["ok"]
+
+
+@pytest.mark.parametrize("a,b,expected", [
+    ("Player 1 Bus Set (17 buses + 1 Scoring Marker)", "Player 4 Bus Set (17 buses + 1 Scoring Marker)", True),
+    ("Transportation Card Deck", "Destination Ticket Card Deck", True),
+    ("Shared Supply: Dice", "Shared Supply: Battle Tokens", True),
+    ("Red Player Kit", "Blue Player Kit", True),
+    ("Red Player Kit", "Shared Supply: Dice", False),
+    ("Transportation Card Deck", "Player 1 Bus Set", False),
+    ("Shared Dice and Battle Tokens", "Red Player Components", False),
+    ("Dice", "Battle Tokens", False),
+])
+def test_similar_names(a, b, expected):
+    assert similar_names(a, b) is expected
+
+
+def test_block_layout_tiles_the_floor_and_keeps_groups_equal():
+    rng = random.Random(11)
+    done = 0
+    for _ in range(80):
+        groups, sizes, k = [], {}, 0
+        for _ in range(rng.randint(1, 5)):                     # up to 5 kinds of set
+            n = rng.choice([1, 1, 2, 3, 4])
+            w, l = rng.uniform(20, 70), rng.uniform(20, 90)
+            keys = list(range(k, k + n))
+            for key in keys:
+                sizes[key] = (w + 1, l + 1)
+            k += n
+            if n > 1:
+                groups.append(keys)
+        res = block_layout(sizes, groups, 240, 230, 1.0)
+        if res is None:
+            continue
+        done += 1
+        _, placements, rects, _ = res
+        assert set(rects) == set(sizes)
+        assert _no_overlap([tuple(v) for v in rects.values()])
+        assert sum(v[2] * v[3] for v in rects.values()) == pytest.approx(240 * 230)
+        for key, (x, y, w, l, rot) in placements.items():
+            ow, ol = (w, l) if rot == 0 else (l, w)
+            assert ow >= sizes[key][0] - 1e-6 and ol >= sizes[key][1] - 1e-6   # still holds its contents
+        for g in groups:
+            own = {(round(w if r == 0 else l, 6), round(l if r == 0 else w, 6))
+                   for x, y, w, l, r in (placements[key] for key in g)}
+            assert len(own) == 1
+    assert done > 40
+
+
+def test_block_layout_skips_many_kinds():
+    sizes = {i: (20 + i, 30 + i) for i in range(6)}
+    assert block_layout(sizes, [], 240, 240, 1.0) is None
 
 
 def test_legacy_single_layer_layout_is_valid(legacy_plan):

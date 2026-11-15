@@ -78,7 +78,7 @@ Flags: `--check`, `--allow-partial` (skip compartments that have errors, generat
 | `dice` | `piece_mm {edge}` (or width/length/height), `quantity`, optional `pockets: true` | Scooped bin (dice in a grid, up to 2 deep) or one pocket per die. |
 | `bits` | `piece_mm {width, length, height}` + `quantity`, **or** `required_mm`; optional `cells: n` | Scooped bin (rounded bottom edges). Size from piece boxes uses `bulk_packing_efficiency` and is reported as an assumption. |
 | `generic` | `required_mm {width, length, height}` | Rectangular bin with a shallow rim notch (the v1 behaviour). |
-| `set` | `storage_style` (`loose`/`stack`) + `members[] {name, quantity, shape, dimensions_mm {length, width, height}}`, or `required_mm` | One plain open rectangular cavity for the whole set (see organizer `boxes`). |
+| `set` | `storage_style` (`loose`/`stack`/`card_stack`) + `members[] {name, quantity, shape, dimensions_mm {length, width, height}}`, or `required_mm` | One plain open rectangular cavity for the whole set (see organizer `boxes`). |
 
 Common optional fields: `"tray": "Player pieces"` puts several compartments in one tray, separated by
 dividers (e.g. one cell per player colour); `"layer": "top" | "bottom"` hints the stacking order.
@@ -104,18 +104,34 @@ grouping decided upstream is used as-is:
   are rejected with an error);
 - `stack`: cavity = largest piece footprint + clearance, depth = whole stack + clearance. A stack that
   is too tall is an error — it is never split;
+- `card_stack`: the same for one card deck lying flat — cavity = card length × width + clearance, depth =
+  quantity × card thickness (`dimensions_mm.height`) + clearance. No card slots; the deck is never split;
 - `loose`: cavity = smallest rectangle in which every piece's bounding box can be laid out without
   overlap (one layer, more only if one layer can't fit), + clearance. The arrangement is written to
   `layout.json` (`cells[].contents.arrangement_mm`). Pieces poured in at random may need settling, so
   physical fit is reported as not verified;
-- the boxes together fit the game box: by default (`fill_height`/`fill_box` true, `max_layers: 1`) every box
-  is the full usable height (flush with the lid) and the boxes grow to cover the floor area. Each box's single
-  cavity grows and deepens with it, so the floor stays `floor_mm` thick (no solid fill). Set
-  `"fill_height": false, "fill_box": false` for compact boxes sized only to their contents;
+- the boxes together fit the game box: by default (`fill_height`/`fill_box` true) every box is the full
+  usable height (flush with the lid) and the boxes grow to cover the floor area. Each box's single cavity
+  grows and deepens with it, so walls stay `wall_mm` and the floor stays `floor_mm` thick (no solid fill). Set
+  `"fill_height": false, "fill_box": false` for compact boxes sized only to their contents. Boxes are put in
+  one layer; two are stacked (same footprint, fully supported) only if one layer cannot fit (`max_layers: 2`);
+- boxes that hold the same thing (e.g. one bus set per player) always come out the **same size**: they grow
+  together, never one more than another (listed as "Same contents, same size" in `layout.json` notes);
+- **similarly named** sets share one box shape and size too: names that match once numbers, colours and
+  bracketed text are ignored, or that share their first or last two words ("Transportation Card Deck" ~
+  "Destination Ticket Card Deck", "Shared Supply: Dice" ~ "Shared Supply: Battle Tokens"). The shared box is
+  big enough for each member (largest short side, long side and height), all lie the same way, and they grow
+  together. Each tray's `size_group` in `layout.json` names the group. Turn off with
+  `"similar_names_same_size": false`;
+- with `fill_box`, each kind of set (a group of equal boxes, or a single box) becomes one rectangular block
+  laid out as a full grid, and the blocks tile the **whole** box floor with straight cuts (up to 5 kinds;
+  more fall back to the general packer). The chosen layout gives different kinds clearly different boxes
+  (≥ 25 % apart in width or length), avoids boxes longer than 2.5 × their width when possible, then grows
+  every box most evenly;
 - after export, vertical rays over each STL prove there is exactly one open rectangular cavity
   (`mesh_validation.single_open_cavity`).
 
-### Bottom layer (board under the trays)
+### Bottom layer (board under the trays, hand-written plans only)
 
 ```json
 "bottom_layer": [{"name": "Folded game board", "quantity": 1,
@@ -126,7 +142,8 @@ Flat items listed here lie on the box floor **under** the storage. They are neve
 lid headroom: every tray starts at their height (`floor_offset_mm`), the usable height is
 `box height − bottom layer − headroom_mm`, and trays are placed only where the board covers the floor in
 every position it can slide to (a 245 mm board in a 250 mm box → x, y ∈ [5, 245]). The preview draws the
-board as a non-printed slab.
+board as a non-printed slab. `convert_grouping_output.py` never writes a bottom layer: an excluded board
+or rulebook only shortens the boxes (headroom), see below.
 
 ### Settings (defaults)
 
@@ -139,8 +156,9 @@ board as a non-printed slab.
 | `tray_gap_mm` / `box_margin_mm` | 1.0 / 1.0 | air between trays / between trays and the box walls |
 | `headroom_mm` | 0 (warns) | height kept free under the lid for the board and rulebook — **measure it** |
 | `fill_height` | true | raise each tray to the usable height (flush top, contents sit near the rim on a raised floor) |
-| `fill_box` | true | grow trays into empty floor space so nothing rattles; bins grow with the tray, fixed cavities keep their size (solid wall around them) — no extra pockets or dividers |
-| `max_layers` | 3 | max trays stacked in one column |
+| `fill_box` | true | grow trays into empty floor space so nothing rattles; bins grow with the tray, fixed cavities keep their size (solid wall around them) — no extra pockets or dividers; identical trays stay identical |
+| `max_layers` | 3 (boxes: 2) | max trays stacked in one column |
+| `similar_names_same_size` | true | organizer `boxes`: similarly named sets share one box shape and size |
 | `finger_notch_width_mm`, `scoop_radius_mm` | 20, 12 | ergonomics |
 | `bulk_packing_efficiency` | 0.6 | loose-pile density used only for `bits` sized from piece boxes |
 | `stl_tolerance_mm`, `stl_angular_tolerance_rad` | 0.05, 0.2 | STL tessellation accuracy |
@@ -158,7 +176,8 @@ These are printer/process defaults, not game measurements.
    single layer. If nothing fits, it stacks trays into columns, merging the pair that saves the most floor
    area while the column height fits the box. Trays in a column share one footprint, so every upper tray
    is fully supported. With `fill_box`, the best layout is scaled proportionally to the box and remaining
-   gaps are filled; candidates are ranked by covered floor area, then by how evenly trays grew.
+   gaps are filled; trays with identical contents are kept the same size (each group grows only by amounts
+   all its members can take); candidates are ranked by covered floor area, then by how evenly trays grew.
 5. **CAD** (`organizer/cad.py`) — CadQuery: rounded outer box minus cavities (cut from the rim down),
    scoop fillets, U-notches, coin wells + slots. Must produce exactly one valid solid.
 6. **Validate output** (`organizer/mesh.py`, `pipeline.validate_layout`) — on the triangles actually written to
@@ -203,17 +222,29 @@ click-to-inspect. It reads `?glb=` (default `../generated_organizer/organizer.gl
 ## From Holden's grouping output
 
 ```bash
-python convert_grouping_output.py examples/holden_boxes_grouping.json --bed 256 256 256 -o examples/holden_boxes_plan.json
-python generate_organizer_stl.py examples/holden_boxes_plan.json -o holden_boxes_demo
-python -m http.server 8000   # → http://localhost:8000/preview/?glb=../holden_boxes_demo/organizer.glb
+python convert_grouping_output.py ttrloutput.json --bed 256 256 256 -o holden_final/ttr_london_6_boxes/plan.json
+python generate_organizer_stl.py holden_final/ttr_london_6_boxes/plan.json -o holden_final/ttr_london_6_boxes
+python -m http.server 8000   # → http://localhost:8000/preview/?glb=../holden_final/ttr_london_6_boxes/organizer.glb
 ```
 
-`organizer: "boxes"` → one `set` per upstream set (names, quantities, dimensions, shapes and
-`storage_style` copied verbatim). `organizer: "divider"` keeps the earlier typed-tray conversion.
-Excluded flat items become `bottom_layer` when the input places them at the bottom (the board), or
-headroom when it places them on top; if it doesn't say, the converter picks one and prints an
-`AMBIGUOUS` note. All conversion problems are listed together and nothing is guessed. The 256 mm bed is
-an illustrative value — use your printer's real build volume.
+The grouping JSON is the single source of truth:
+
+- `box.dimensions_mm` is the space the boxes must fit in (used as the inside size; an estimated size is
+  flagged);
+- every entry of `sets` becomes exactly one `set` box (names, quantities, dimensions, shapes and
+  `storage_style` — `loose`, `stack` or `card_stack` — copied verbatim), for `organizer: "boxes"` and
+  `"divider"` alike. No sets are added, merged or split;
+- everything in `excluded` is **ignored**: no container, no floor space and no fit check. It is listed in
+  `conversion_notes` and `source.excluded_ignored`. The one exception is height: an excluded **board or
+  rulebook** (found by name: board, map, rules, rulebook, leaflet, booklet, manual, instructions) lies on
+  top of the boxes, so its listed `dimensions_mm.height × quantity` becomes `settings.headroom_mm` and every
+  box is that much shorter (`source.on_top_of_boxes`). A board/rulebook without a height is reported as
+  `MISSING`, never guessed.
+
+`--compact` sizes boxes to their contents instead of filling the game box; `--typed` restores the earlier
+divider conversion (typed compartments per member, one tray per set). All conversion problems are listed
+together and nothing is guessed. The 256 mm bed is an illustrative value — use your printer's real build
+volume.
 
 ## From the CV output
 

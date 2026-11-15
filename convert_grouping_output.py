@@ -2,18 +2,24 @@
 """Convert an Inside the Box grouping result (e.g. exoutput.json) to an STL engine plan.
 
 Usage:
-  python convert_grouping_output.py "exoutput (1).json" --bed 256 256 256 -o organizer_plan.json
+  python convert_grouping_output.py ttrloutput.json --bed 256 256 256 -o organizer_plan.json
 
 --bed must be the ACTUAL printer build volume (width, length, height), in mm.
 No missing physical dimensions are silently guessed; every problem is listed.
 
-organizer "boxes"   → one plain open box per set (type "set"), preserving set names,
-                      member quantities, dimensions and storage_style. No dividers.
-organizer "divider" → the earlier behaviour: typed compartments grouped into trays.
+The JSON is the single source of truth:
+  * box.dimensions_mm is the space the boxes must fit in.
+  * Every entry of ``sets`` becomes exactly ONE plain open box (type "set") with one
+    rectangular cavity, preserving the set's name, members, quantities, dimensions and
+    storage_style (loose, stack or card_stack). No dividers, wells or slots; no extra sets.
+  * Everything in ``excluded`` is ignored: no container, no floor space and no fit check.
+    The one exception: an excluded BOARD or RULEBOOK lies on top of the boxes, so every box
+    is made shorter by its listed thickness (dimensions_mm.height × quantity) — that height
+    is kept free under the lid (settings.headroom_mm).
 
-Excluded flat items that lie at the bottom of the box (e.g. the folded board) become the
-plan's ``bottom_layer``: the trays rest on them. They are never printed and never counted
-as headroom under the lid.
+This applies to organizer "boxes" and "divider" alike. ``--typed`` restores the earlier
+divider conversion (one typed compartment per member, grouped into one tray per set).
+``--compact`` sizes each box to its contents instead of filling the game box.
 """
 import argparse
 import json
@@ -22,9 +28,10 @@ import sys
 from pathlib import Path
 
 SUPPORTED_ORGANIZERS = ("boxes", "divider", "trays")
-BOX_STYLES = ("loose", "stack")
-_BOTTOM_CUES = re.compile(r"\b(bottom|beneath|underneath|under|base|below|floor)\b", re.I)
-_TOP_CUES = re.compile(r"\b(top|above|over|lid)\b", re.I)
+BOX_STYLES = ("loose", "stack", "card_stack")
+# Excluded items that lie flat on top of the boxes (identified by their name)
+_LID_ITEMS = re.compile(r"\b(board|boards|gameboard|map|rules?|rulebooks?|leaflet|booklet|manual|instructions?)\b",
+                        re.I)
 
 
 class ConversionError(ValueError):
@@ -95,23 +102,13 @@ def set_compartment(group, problems):
     return {"name": name, "type": "set", "storage_style": style, "members": members}
 
 
-def _excluded_position(part, notes):
-    """Decide whether an excluded flat item lies under the trays ('bottom') or on top ('top')."""
-    text = f"{part.get('reason', '')}"
-    name = (part.get("name") or part.get("component_id") or "").lower()
-    bottom, top = bool(_BOTTOM_CUES.search(text)), bool(_TOP_CUES.search(text))
-    if bottom and not top:
-        return "bottom"
-    if top and not bottom:
-        return "top"
-    guess = "bottom" if "board" in name else "top"
-    notes.append(f"AMBIGUOUS: the input does not say whether '{part.get('name')}' lies under or on top of the "
-                 f"storage; treated as '{guess}'. Check this before printing.")
-    return guess
+def convert(src, bed, typed=False, compact=False):
+    """Return (plan, notes). Raises ConversionError listing every problem found.
 
-
-def convert(src, bed):
-    """Return (plan, notes). Raises ConversionError listing every problem found."""
+    ``typed``: per-member typed compartments in one tray per set (the earlier divider
+    conversion) instead of one plain box per set. ``compact``: boxes sized to their contents
+    instead of the default flush-height boxes that fill the game box floor.
+    """
     problems, notes = [], []
     organizer = str(src.get("organizer") or "divider").strip().lower()
     if organizer not in SUPPORTED_ORGANIZERS:
@@ -121,8 +118,10 @@ def convert(src, bed):
     w = _positive(box, "width", "box.dimensions_mm", problems)
     l = _positive(box, "length", "box.dimensions_mm", problems)
     h = _positive(box, "height", "box.dimensions_mm", problems)
-    notes.append("box.dimensions_mm is used as the INSIDE size of the game box (the input does not label it "
-                 "inside/outside; basis: %s)." % ((src.get("box") or {}).get("basis") or "unknown"))
+    basis = (src.get("box") or {}).get("basis") or "unknown"
+    notes.append(f"box.dimensions_mm is used as the INSIDE size of the game box (basis: {basis}).")
+    if "estimate" in str(basis).lower():
+        notes.append("The box size is an ESTIMATE in the source; measure the real box interior before printing.")
     sets = src.get("sets") or []
     if not sets:
         problems.append("No sets in grouping output")
@@ -140,7 +139,7 @@ def convert(src, bed):
         if not g.get("members"):
             problems.append(f"Set {g.get('name')!r} has no members")
             continue
-        if organizer == "boxes":
+        if not typed:
             compartments.append(set_compartment(g, problems))
         else:
             for m in g["members"]:
@@ -148,44 +147,57 @@ def convert(src, bed):
                     compartments.append(compartment_from_member(m, g.get("name")))
                 except ConversionError as e:
                     problems.extend(e.problems)
-    if organizer == "divider" and src.get("divider_set_limit") and len(sets) > src["divider_set_limit"]:
+    if typed and src.get("divider_set_limit") and len(sets) > src["divider_set_limit"]:
         notes.append(f"{len(sets)} sets exceed divider_set_limit {src['divider_set_limit']}.")
+    if not typed and organizer != "boxes":
+        notes.append(f"organizer {src.get('organizer')!r}: one plain box per set (use --typed for the earlier "
+                     f"divided trays).")
 
-    bottom_layer, headroom = [], 0.0
-    for part in src.get("excluded", []):
-        pname = part.get("name") or part.get("component_id")
-        d = {k: _positive(part.get("dimensions_mm"), k, f"excluded {pname}.dimensions_mm", problems)
-             for k in ("length", "width", "height")}
-        q = part.get("quantity") or 1
-        if None in d.values():
+    # Excluded components are not part of the organizer: no container, floor space or fit check.
+    # Boards and rulebooks lie on top of the boxes, so their listed thickness is kept free under the lid.
+    excluded, on_top = [], []
+    for part in src.get("excluded") or []:
+        if not isinstance(part, dict):
             continue
-        if _excluded_position(part, notes) == "bottom":
-            bottom_layer.append({"name": pname, "component_id": part.get("component_id"), "quantity": q,
-                                 "dimensions_mm": d})
-            notes.append(f"'{pname}' ({d['length']:g} × {d['width']:g} × {d['height']:g} mm) lies on the box floor; "
-                         f"the storage sits on top of it (not printed, not lid headroom).")
-        else:
-            headroom += d["height"] * q
-            notes.append(f"'{pname}' lies on top of the storage: {d['height'] * q:g} mm reserved as headroom.")
-    if w and l and h:
-        floor = sum(b["dimensions_mm"]["height"] * b["quantity"] for b in bottom_layer)
-        if floor + headroom >= h:
-            problems.append("Excluded flat components occupy the entire box height")
+        pname = part.get("name") or part.get("component_id") or "unnamed"
+        excluded.append(pname)
+        if not _LID_ITEMS.search(pname):
+            continue
+        t = (part.get("dimensions_mm") or {}).get("height")
+        q = part.get("quantity") or 1
+        if not isinstance(t, (int, float)) or isinstance(t, bool) or t <= 0 or not isinstance(q, int) or q < 1:
+            notes.append(f"MISSING: '{pname}' has no valid dimensions_mm.height/quantity, so no height is kept "
+                         f"for it on top of the boxes. Measure it before printing.")
+            continue
+        on_top.append({"name": pname, "height_mm": round(float(t) * q, 3)})
+    headroom = round(sum(i["height_mm"] for i in on_top), 3)
+    if excluded:
+        notes.append(f"Ignored {len(excluded)} excluded component(s) (no container, floor space or fit check): "
+                     f"{'; '.join(excluded)}.")
+    if on_top:
+        notes.append("Boxes made " + f"{headroom:g} mm shorter so these lie on top of them under the lid: "
+                     + "; ".join(f"'{i['name']}' {i['height_mm']:g} mm" for i in on_top) + ".")
+    if h and headroom >= h:
+        problems.append(f"The excluded board/rulebook stack ({headroom:g} mm) is as tall as the {h:g} mm box: "
+                        f"no height is left for the storage boxes")
     if not src.get("physical_fit_verified", False):
         notes.append("Source says physical_fit_verified = false: this plan is for CAD, not a verified physical fit.")
     if problems:
         raise ConversionError(problems)
 
+    settings = {"headroom_mm": headroom}
+    if compact:
+        settings.update(fill_height=False, fill_box=False)
     plan = {
         "game": src.get("game") or "Unnamed game",
-        "organizer": "boxes" if organizer == "boxes" else "trays",
+        "organizer": "trays" if typed else "boxes",
         "box_inner_mm": {"width": w, "length": l, "height": h},
         "printer_bed_mm": {"width": float(bed[0]), "length": float(bed[1]), "height": float(bed[2])},
-        "settings": {"headroom_mm": headroom},
-        "bottom_layer": bottom_layer,
+        "settings": settings,
         "compartments": compartments,
         "source": {"organizer": src.get("organizer"), "set_count": src.get("set_count"),
-                   "physical_fit_verified": src.get("physical_fit_verified"), "edition": src.get("edition")},
+                   "physical_fit_verified": src.get("physical_fit_verified"), "edition": src.get("edition"),
+                   "box_basis": basis, "excluded_ignored": excluded, "on_top_of_boxes": on_top},
         "conversion_notes": notes,
     }
     return plan, notes
@@ -196,12 +208,16 @@ def main(argv=None):
     p.add_argument("input", type=Path, help="JSON from the game grouping AI")
     p.add_argument("--bed", nargs=3, type=float, metavar=("WIDTH", "LENGTH", "HEIGHT"), required=True)
     p.add_argument("-o", "--output", type=Path, default=Path("organizer_plan.json"))
+    p.add_argument("--typed", action="store_true",
+                   help="earlier divider conversion: typed compartments per member, one tray per set")
+    p.add_argument("--compact", action="store_true",
+                   help="boxes sized to their contents instead of flush boxes filling the game box")
     a = p.parse_args(argv)
     if any(x <= 0 for x in a.bed):
         p.error("Printer bed measurements must be positive mm")
     src = json.loads(a.input.read_text(encoding="utf-8"))
     try:
-        plan, notes = convert(src, a.bed)
+        plan, notes = convert(src, a.bed, typed=a.typed, compact=a.compact)
     except ConversionError as e:
         print(f"ERROR: cannot convert {a.input} ({len(e.problems)} problem(s)):", file=sys.stderr)
         for pr in e.problems:
