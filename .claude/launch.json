@@ -1,0 +1,19 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "inside-the-box",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "backend", "--port", "8790"],
+      "port": 8790,
+      "autoPort": false
+    },
+    {
+      "name": "organizer-preview",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "8792", "--bind", "127.0.0.1"],
+      "port": 8792,
+      "autoPort": false
+    }
+  ]
+}

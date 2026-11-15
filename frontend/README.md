@@ -16,4 +16,12 @@ The demo loads the existing files from `generated_organizer/`. Submitting four p
 
 ## Backend connection
 
-With `ORGANIZER_API_URL` empty, the page stays in demo mode. Set it to your backend's `POST /api/organizer-jobs` URL to submit the game name and every selected image as multipart form data. A backend may return `202` with `{ "status": "processing", "job_id": "..." }`; the page then keeps the loading scene visible and polls `GET {ORGANIZER_API_URL}/{job_id}` every 1.5 seconds until it receives `complete` or `needs_measurement`. Keep the Claude key in the backend's environment, never in the browser.
+Run the backend from the repository root instead of a static server:
+
+```bash
+python -m backend
+```
+
+Then open [http://127.0.0.1:8000/](http://127.0.0.1:8000/). The backend serves this page with a `config.js` that points `ORGANIZER_API_URL` at its own `POST /api/organizer-jobs`; every submission is then a real job (the `Bypass` and `loading` demo names only work without a backend). The page polls `GET /api/organizer-jobs/{job_id}` every 1.5 seconds, shows the backend's current stage on the loading screen, fills in the piece to measure when it receives `needs_measurement`, and shows the backend's error message when a job fails. Keep the Claude key in the backend's environment, never in the browser. See `backend/README.md`.
+
+Served by `python -m http.server` (no backend), `config.js` leaves the API URL empty and the page stays in demo mode, loading the files from `generated_organizer/`.
